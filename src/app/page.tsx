@@ -635,13 +635,13 @@ export default function WaterfallManagementPage() {
   const isIndeterminate = selectedSources.size > 0 && selectedSources.size < allSourceIds.length;
 
   // 切换全选
-  const toggleSelectAll = useCallback(() => {
+  const toggleSelectAll = () => {
     if (isAllSelected) {
       setSelectedSources(new Set());
     } else {
       setSelectedSources(new Set(allSourceIds));
     }
-  }, [isAllSelected, allSourceIds]);
+  };
 
   // 切换单个选择
   const toggleSelectSource = useCallback((id: string) => {
@@ -1035,18 +1035,22 @@ export default function WaterfallManagementPage() {
                   <div className="flex items-center gap-2">
                     <span className="text-sm text-[#1D2129]">广告位：</span>
                     <div className="flex flex-wrap gap-1">
-                      {currentGroup.adSlots && currentGroup.adSlots.length > 0 ? (
-                        currentGroup.adSlots.map((slotId, index) => {
-                          const slotName = SLOT_NAME_MAP[slotId as keyof typeof SLOT_NAME_MAP] || slotId;
-                          return (
-                            <Badge key={index} variant="secondary" className="bg-[#E8F3FF] text-[#165DFF] border border-[#A5C8FF]">
-                              {slotId} - {slotName}
-                            </Badge>
-                          );
-                        })
-                      ) : (
-                        <span className="text-sm text-[#86909C]">暂无广告位</span>
-                      )}
+                      {(() => {
+                        const sceneSlotIds = SCENE_SLOT_IDS[activeScene as AdScene] || [];
+                        const filteredSlots = (currentGroup.adSlots || []).filter(slotId => sceneSlotIds.includes(slotId));
+                        return filteredSlots.length > 0 ? (
+                          filteredSlots.map((slotId, index) => {
+                            const slotName = SLOT_NAME_MAP[slotId as keyof typeof SLOT_NAME_MAP] || slotId;
+                            return (
+                              <Badge key={index} variant="secondary" className="bg-[#E8F3FF] text-[#165DFF] border border-[#A5C8FF]">
+                                {slotId} - {slotName}
+                              </Badge>
+                            );
+                          })
+                        ) : (
+                          <span className="text-sm text-[#86909C]">暂无广告位</span>
+                        );
+                      })()}
                     </div>
                   </div>
 
@@ -2066,18 +2070,22 @@ export default function WaterfallManagementPage() {
               <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0 pt-2">广告位</label>
               <div className="flex-1">
                 <div className="flex flex-wrap gap-2">
-                  {currentGroup?.adSlots && currentGroup.adSlots.length > 0 ? (
-                    currentGroup.adSlots.map((slotId) => {
-                      const slotName = SLOT_NAME_MAP[slotId] || slotId;
-                      return (
-                        <span key={slotId} className="inline-flex items-center px-2.5 py-1 bg-[#F2F3F5] text-[#4E5969] rounded text-sm">
-                          {slotId} - {slotName}
-                        </span>
-                      );
-                    })
-                  ) : (
-                    <span className="text-[#86909C] text-sm">当前分组未配置广告位</span>
-                  )}
+                  {(() => {
+                    const sceneSlotIds = SCENE_SLOT_IDS[activeScene as AdScene] || [];
+                    const filteredSlots = (currentGroup?.adSlots || []).filter(slotId => sceneSlotIds.includes(slotId));
+                    return filteredSlots.length > 0 ? (
+                      filteredSlots.map((slotId) => {
+                        const slotName = SLOT_NAME_MAP[slotId] || slotId;
+                        return (
+                          <span key={slotId} className="inline-flex items-center px-2.5 py-1 bg-[#F2F3F5] text-[#4E5969] rounded text-sm">
+                            {slotId} - {slotName}
+                          </span>
+                        );
+                      })
+                    ) : (
+                      <span className="text-[#86909C] text-sm">当前分组未配置广告位</span>
+                    );
+                  })()}
                 </div>
                 <p className="text-xs text-[#86909C] mt-1">广告位根据分组配置自动带入</p>
               </div>
