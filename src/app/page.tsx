@@ -720,7 +720,7 @@ export default function WaterfallManagementPage() {
     setShowAddGroupDialog(false);
   }, [newGroupName, newGroupPriority, newGroupSlots, newGroupRules, editingGroup]);
 
-  // 添加DSP来源
+  // 添加PID
   const handleAddSource = useCallback(() => {
     if (!newSourceName || newSourceName.length === 0) return;
     if (newSourcePlatform.length === 0) return;
@@ -1191,7 +1191,7 @@ export default function WaterfallManagementPage() {
                   onClick={() => setShowAddSourceDialog(true)}
                 >
                   <Plus className="w-4 h-4 mr-1" />
-                  添加DSP来源
+                  添加PID
                 </Button>
               </div>
             </div>
@@ -2004,11 +2004,11 @@ export default function WaterfallManagementPage() {
         </DialogContent>
       </Dialog>
 
-      {/* 添加DSP来源弹窗 */}
+      {/* 添加PID弹窗 */}
       <Dialog open={showAddSourceDialog} onOpenChange={setShowAddSourceDialog}>
         <DialogContent className="sm:max-w-[520px]">
           <DialogHeader>
-            <DialogTitle>{editingSource ? '编辑DSP来源' : '添加DSP来源'}</DialogTitle>
+            <DialogTitle>{editingSource ? '编辑DSP来源' : '添加PID'}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             {/* DSP来源名称 */}
@@ -2265,10 +2265,10 @@ export default function WaterfallManagementPage() {
               <span className="text-sm text-[#86909C]">流量比例: {abTestConfig.flowRatio}%</span>
             </div>
 
-            {/* 添加DSP来源按钮 */}
+            {/* 添加PID按钮 */}
             <Button className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white" onClick={() => { setAddSourceFromABTest(true); setShowAddSourceDialog(true); }}>
               <Plus className="w-4 h-4 mr-1" />
-              添加DSP来源
+              添加PID
             </Button>
 
             {/* 已启用的DSP来源 */}
