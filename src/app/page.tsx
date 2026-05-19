@@ -135,8 +135,8 @@ const DSP_SOURCE_NAMES: Record<string, string> = {
 
 // DSP来源列表
 const DSP_SOURCE_LIST = [
-  { value: 'dsp_1', label: '穿山甲' },
-  { value: 'dsp_2', label: '快手' },
+  { value: 'dsp_1', label: '穿山甲', isSDK: true },
+  { value: 'dsp_2', label: '快手', isSDK: true },
   { value: 'dsp_3', label: '腾讯广告' },
   { value: 'dsp_4', label: '巨量引擎' },
   { value: 'dsp_5', label: 'Mintegral' },
@@ -144,6 +144,9 @@ const DSP_SOURCE_LIST = [
   { value: 'dsp_7', label: 'AppLovin' },
   { value: 'dsp_8', label: 'AdMob' },
 ];
+
+// SDK类型的DSP来源集合，用于判断是否展示版本配置
+const SDK_SOURCE_VALUES = new Set(DSP_SOURCE_LIST.filter(d => (d as { isSDK?: boolean }).isSDK).map(d => d.value));
 
 // 代码位类型定义
 interface AdSlot {
@@ -354,6 +357,8 @@ export default function WaterfallManagementPage() {
   const [newSourcePrice, setNewSourcePrice] = useState('');
   const [newSourceStatus, setNewSourceStatus] = useState(true);
   const [newSourceSubPositions, setNewSourceSubPositions] = useState<string[]>([]);
+  const [newSourceMinVersion, setNewSourceMinVersion] = useState('');
+  const [newSourceMaxVersion, setNewSourceMaxVersion] = useState('');
   const [showDSPSelectorDrawer, setShowDSPSelectorDrawer] = useState(false);
   const [dspSearchLeft, setDspSearchLeft] = useState('');
   const [dspSearchRight, setDspSearchRight] = useState('');
@@ -411,6 +416,8 @@ export default function WaterfallManagementPage() {
     setNewSourcePrice(source.price.toString());
     setNewSourceStatus(source.status === 'enabled');
     setNewSourceSubPositions(source.subPositions || []);
+    setNewSourceMinVersion(source.minVersion || '');
+    setNewSourceMaxVersion(source.maxVersion || '');
     setShowAddSourceDialog(true);
   };
   
@@ -422,6 +429,8 @@ export default function WaterfallManagementPage() {
     setNewSourcePrice('');
     setNewSourceStatus(true);
     setNewSourceSubPositions([]);
+    setNewSourceMinVersion('');
+    setNewSourceMaxVersion('');
     setEditingSource(null);
   };
 
@@ -740,6 +749,8 @@ export default function WaterfallManagementPage() {
                   platforms: newSourcePlatform as ('Android' | 'iOS')[],
                   codeId: newSourceCodeId,
                   subPositions: newSourceSubPositions,
+                  minVersion: newSourceMinVersion || undefined,
+                  maxVersion: newSourceMaxVersion || undefined,
                   lastUpdated: new Date().toLocaleString('zh-CN'),
                 }
               : s
@@ -767,6 +778,8 @@ export default function WaterfallManagementPage() {
         codeId: newSourceCodeId,
         subPositions: newSourceSubPositions,
         dspSources: newSourceName,
+        minVersion: newSourceMinVersion || undefined,
+        maxVersion: newSourceMaxVersion || undefined,
       };
       
       if (addSourceFromABTest) {
@@ -791,7 +804,7 @@ export default function WaterfallManagementPage() {
     resetSourceForm();
     setAddSourceFromABTest(false);
     setShowAddSourceDialog(false);
-  }, [newSourceName, newSourcePlatform, newSourceCodeId, newSourceStatus, newSourceSubPositions, selectedGroupId, addSourceFromABTest, editingSource, resetSourceForm, setAdGroups, setAbTestConfig, setAddSourceFromABTest, setShowAddSourceDialog]);
+  }, [newSourceName, newSourcePlatform, newSourceCodeId, newSourceStatus, newSourceSubPositions, selectedGroupId, addSourceFromABTest, editingSource, resetSourceForm, setAdGroups, setAbTestConfig, setAddSourceFromABTest, setShowAddSourceDialog, newSourceMinVersion, newSourceMaxVersion]);
 
   // 鼠标悬停显示详情
   const handleMouseEnterSource = useCallback((source: AdSource, e: React.MouseEvent) => {
@@ -1974,6 +1987,30 @@ export default function WaterfallManagementPage() {
                 </label>
               </div>
             </div>
+
+            {/* SDK版本配置 - 仅在选择SDK类型DSP来源时显示 */}
+            {newSourceName.some(n => SDK_SOURCE_VALUES.has(n)) && (
+              <>
+                <div className="flex items-center">
+                  <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0">最小版本</label>
+                  <Input
+                    value={newSourceMinVersion}
+                    onChange={(e) => setNewSourceMinVersion(e.target.value)}
+                    placeholder="请输入最小版本号，如 9.01.0"
+                    className="w-64"
+                  />
+                </div>
+                <div className="flex items-center">
+                  <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0">最大版本</label>
+                  <Input
+                    value={newSourceMaxVersion}
+                    onChange={(e) => setNewSourceMaxVersion(e.target.value)}
+                    placeholder="请输入最大版本号，如 9.01.0"
+                    className="w-64"
+                  />
+                </div>
+              </>
+            )}
 
             {/* 状态 */}
             <div className="flex items-center">

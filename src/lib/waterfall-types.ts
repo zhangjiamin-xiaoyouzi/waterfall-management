@@ -102,6 +102,8 @@ export interface AdSource {
   codeId?: string;
   subPositions?: string[]; // 子位
   dspSources?: string[]; // 关联的多个DSP来源
+  minVersion?: string; // SDK最小版本
+  maxVersion?: string; // SDK最大版本
 }
 
 export interface AdGroup {
