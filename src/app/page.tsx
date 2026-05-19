@@ -339,7 +339,9 @@ export default function WaterfallManagementPage() {
     if (editingGroup) {
       setNewGroupName(editingGroup.name);
       setNewGroupPriority(editingGroup.priority);
-      setNewGroupSlots(editingGroup.adSlots || []);
+      // 仅加载当前场景匹配的广告位
+      const sceneSlots = SCENE_SLOT_IDS[activeScene];
+      setNewGroupSlots((editingGroup.adSlots || []).filter(slot => sceneSlots.includes(slot)));
       setNewGroupRules(editingGroup.rules || []);
     } else {
       setNewGroupName('');
