@@ -193,6 +193,13 @@ const SLOT_NAME_MAP: Record<string, string> = {
   '1602': '美柚-她她圈-帖子详情信息流',
 };
 
+// 广告场景 - 广告位ID映射
+const SCENE_SLOT_IDS: Record<AdScene, string[]> = {
+  splash: ['1000'],
+  interstitial: ['2101', '2514'],
+  feed: ['1120', '1601', '1602'],
+};
+
 // 按场景获取广告位选项
 const getSlotOptionsByScene = (scene: string) => {
   const options: { value: string; label: string }[] = [];
@@ -225,6 +232,7 @@ export default function WaterfallManagementPage() {
   
   // 状态管理
   const [activeScene, setActiveScene] = useState<AdScene>('splash');
+  const [selectedPlatform, setSelectedPlatform] = useState<'all' | 'Android' | 'iOS'>('all');
   const [dateRange, setDateRange] = useState({
     start: new Date().toISOString().split('T')[0],
     end: new Date().toISOString().split('T')[0],
@@ -550,8 +558,31 @@ export default function WaterfallManagementPage() {
     setShowAddCodeDialog(false);
   }, [newCodeForm, editingCodePosition]);
 
-  // 获取当前选中的分组
-  const currentGroup = adGroups.find((g) => g.id === selectedGroupId) || adGroups[0];
+  // 根据广告场景+平台筛选分组
+  const filteredAdGroups = adGroups.filter((group) => {
+    // 按广告场景过滤：分组的广告位必须与当前场景的广告位有交集
+    const sceneSlots = SCENE_SLOT_IDS[activeScene];
+    const matchesScene = group.adSlots.some((slot) => sceneSlots.includes(slot));
+    // 按平台过滤
+    const matchesPlatform = selectedPlatform === 'all' || group.platforms.includes(selectedPlatform);
+    return matchesScene && matchesPlatform;
+  });
+
+  // 当广告场景或平台切换时，自动选中筛选后第一个分组
+  useEffect(() => {
+    if (filteredAdGroups.length > 0) {
+      const stillExists = filteredAdGroups.some((g) => g.id === selectedGroupId);
+      if (!stillExists) {
+        const firstGroup = filteredAdGroups
+          .filter((g) => g.priority !== Infinity)
+          .sort((a, b) => a.priority - b.priority)[0];
+        setSelectedGroupId(firstGroup?.id || filteredAdGroups[0]?.id || '');
+      }
+    }
+  }, [activeScene, selectedPlatform, filteredAdGroups, selectedGroupId]);
+
+  // 获取当前选中的分组（从筛选后的分组中选）
+  const currentGroup = filteredAdGroups.find((g) => g.id === selectedGroupId) || filteredAdGroups[0] || adGroups[0];
   const enabledSources = currentGroup?.adSources.filter((s) => s.status === 'enabled') || [];
   const disabledSources = currentGroup?.adSources.filter((s) => s.status === 'disabled') || [];
 
@@ -865,7 +896,7 @@ export default function WaterfallManagementPage() {
           </div>
         </header>
 
-        {/* 广告场景切换 */}
+        {/* 广告场景与平台筛选 */}
         <div className="bg-white border-b border-[#E5E6EB] px-6 py-3">
           <div className="flex items-center gap-4">
             {/* 广告场景 */}
@@ -879,6 +910,30 @@ export default function WaterfallManagementPage() {
                   <SelectItem value="splash">开屏</SelectItem>
                   <SelectItem value="interstitial">插屏</SelectItem>
                   <SelectItem value="feed">信息流</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            {/* 平台筛选 */}
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-[#86909C]">平台：</span>
+              <Select value={selectedPlatform} onValueChange={(value) => setSelectedPlatform(value as 'all' | 'Android' | 'iOS')}>
+                <SelectTrigger className="w-28 h-8 border-[#E5E6EB]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">全部平台</SelectItem>
+                  <SelectItem value="Android">
+                    <div className="flex items-center gap-2">
+                      <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#2563EB]" />
+                      安卓
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="iOS">
+                    <div className="flex items-center gap-2">
+                      <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#7C3AED]" />
+                      iOS
+                    </div>
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -907,7 +962,7 @@ export default function WaterfallManagementPage() {
 
             {/* 分组标签 - 按优先级排序，默认分组固定在最右 */}
             <div className="flex items-center gap-1 px-4 py-2 overflow-x-auto">
-              {adGroups
+              {filteredAdGroups
                 .sort((a, b) => {
                   // 默认分组（Infinity）固定在最右
                   if (a.priority === Infinity) return 1;
