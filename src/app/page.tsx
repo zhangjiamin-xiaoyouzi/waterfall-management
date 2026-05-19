@@ -2171,7 +2171,7 @@ export default function WaterfallManagementPage() {
                     onClick={() => handleToggleDSPSource(dsp.value)}
                   >
                     <Checkbox checked={tempSelectedDSPSources.includes(dsp.value)} />
-                    <span className="text-sm">{dsp.label}</span>
+                    <span className="text-sm">{dsp.label}{SDK_SOURCE_VALUES.has(dsp.value) && <span className="text-[#86909C] text-xs ml-1">SDK</span>}</span>
                   </div>
                 ))}
                 {filteredAvailableDSPSources.length === 0 && (
@@ -2224,7 +2224,7 @@ export default function WaterfallManagementPage() {
                     onClick={() => handleToggleDSPSource(dsp.value)}
                   >
                     <Checkbox checked={true} />
-                    <span className="text-sm">{dsp.label}</span>
+                    <span className="text-sm">{dsp.label}{SDK_SOURCE_VALUES.has(dsp.value) && <span className="text-[#86909C] text-xs ml-1">SDK</span>}</span>
                   </div>
                 ))}
                 {tempSelectedDSPSources.length === 0 && (
