@@ -748,7 +748,6 @@ export default function WaterfallManagementPage() {
                   ...s,
                   dspSources: newSourceName,
                   status: newSourceStatus ? 'enabled' : 'disabled',
-                  price: newSourcePrice ? parseFloat(newSourcePrice) : 0,
                   platforms: newSourcePlatform as ('Android' | 'iOS')[],
                   codeId: newSourceCodeId,
                   subPositions: newSourceSubPositions,
@@ -767,7 +766,7 @@ export default function WaterfallManagementPage() {
         name: newSourceName.length > 0 ? newSourceName.map(d => DSP_SOURCE_NAMES[d] || d).join(', ') : '',
         status: newSourceStatus ? 'enabled' : 'disabled',
         pricingType: 'bidding' as const,
-        price: newSourcePrice ? parseFloat(newSourcePrice) : 0,
+        price: 0,
         estimatedRevenue: 0,
         ecpm: 0,
         thousandRequestValue: 0,
@@ -807,7 +806,7 @@ export default function WaterfallManagementPage() {
     resetSourceForm();
     setAddSourceFromABTest(false);
     setShowAddSourceDialog(false);
-  }, [newSourceName, newSourcePlatform, newSourceCodeId, newSourceStatus, newSourceSubPositions, selectedGroupId, addSourceFromABTest, editingSource, resetSourceForm, setAdGroups, setAbTestConfig, setAddSourceFromABTest, setShowAddSourceDialog, newSourceMinVersion, newSourceMaxVersion, newSourcePrice]);
+  }, [newSourceName, newSourcePlatform, newSourceCodeId, newSourceStatus, newSourceSubPositions, selectedGroupId, addSourceFromABTest, editingSource, resetSourceForm, setAdGroups, setAbTestConfig, setAddSourceFromABTest, setShowAddSourceDialog, newSourceMinVersion, newSourceMaxVersion]);
 
   // 鼠标悬停显示详情
   const handleMouseEnterSource = useCallback((source: AdSource, e: React.MouseEvent) => {
@@ -2102,29 +2101,6 @@ export default function WaterfallManagementPage() {
                 onChange={(e) => setNewSourceCodeId(e.target.value)}
                 placeholder="请输入广告代码位ID"
                 className="w-64"
-              />
-            </div>
-
-            {/* 价格 */}
-            <div className="flex items-center">
-              <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0 flex items-center gap-1">
-                <span className="text-red-500">*</span> 价格
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Info className="w-3 h-3 text-[#86909C]" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>图片和视频价格相同</p>
-                  </TooltipContent>
-                </Tooltip>
-              </label>
-              <Input
-                value={newSourcePrice}
-                onChange={(e) => setNewSourcePrice(e.target.value)}
-                placeholder="请输入价格"
-                className="w-64"
-                type="number"
-                step="0.01"
               />
             </div>
 
