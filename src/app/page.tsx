@@ -232,7 +232,7 @@ export default function WaterfallManagementPage() {
   
   // 状态管理
   const [activeScene, setActiveScene] = useState<AdScene>('splash');
-  const [selectedPlatform, setSelectedPlatform] = useState<'all' | 'Android' | 'iOS'>('iOS');
+  const [selectedPlatform, setSelectedPlatform] = useState<'Android' | 'iOS'>('iOS');
   const [dateRange, setDateRange] = useState({
     start: new Date().toISOString().split('T')[0],
     end: new Date().toISOString().split('T')[0],
@@ -564,7 +564,7 @@ export default function WaterfallManagementPage() {
     const sceneSlots = SCENE_SLOT_IDS[activeScene];
     const matchesScene = group.adSlots.some((slot) => sceneSlots.includes(slot));
     // 按平台过滤
-    const matchesPlatform = selectedPlatform === 'all' || group.platforms.includes(selectedPlatform);
+    const matchesPlatform = group.platforms.includes(selectedPlatform);
     return matchesScene && matchesPlatform;
   });
 
@@ -916,12 +916,11 @@ export default function WaterfallManagementPage() {
             {/* 平台筛选 */}
             <div className="flex items-center gap-3">
               <span className="text-sm text-[#86909C]">平台：</span>
-              <Select value={selectedPlatform} onValueChange={(value) => setSelectedPlatform(value as 'all' | 'Android' | 'iOS')}>
+              <Select value={selectedPlatform} onValueChange={(value) => setSelectedPlatform(value as 'Android' | 'iOS')}>
                 <SelectTrigger className="w-28 h-8 border-[#E5E6EB]">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">全部平台</SelectItem>
                   <SelectItem value="Android">
                     <div className="flex items-center gap-2">
                       <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#2563EB]" />
