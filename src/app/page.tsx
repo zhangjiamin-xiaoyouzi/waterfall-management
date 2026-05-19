@@ -232,7 +232,7 @@ export default function WaterfallManagementPage() {
   
   // 状态管理
   const [activeScene, setActiveScene] = useState<AdScene>('splash');
-  const [selectedPlatform, setSelectedPlatform] = useState<'all' | 'Android' | 'iOS'>('all');
+  const [selectedPlatform, setSelectedPlatform] = useState<'all' | 'Android' | 'iOS'>('iOS');
   const [dateRange, setDateRange] = useState({
     start: new Date().toISOString().split('T')[0],
     end: new Date().toISOString().split('T')[0],
@@ -2043,39 +2043,6 @@ export default function WaterfallManagementPage() {
               </div>
             </div>
 
-            {/* 平台范围 - 必填，支持多选 */}
-            <div className="flex items-center">
-              <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0"><span className="text-red-500">*</span> 平台范围</label>
-              <div className="flex gap-6">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <Checkbox
-                    checked={newSourcePlatform.includes('Android')}
-                    onCheckedChange={(checked) => {
-                      if (checked) {
-                        setNewSourcePlatform([...newSourcePlatform.filter(p => p !== 'Android'), 'Android']);
-                      } else {
-                        setNewSourcePlatform(newSourcePlatform.filter(p => p !== 'Android'));
-                      }
-                    }}
-                  />
-                  <span className="text-sm text-[#1D2129]">安卓</span>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <Checkbox
-                    checked={newSourcePlatform.includes('iOS')}
-                    onCheckedChange={(checked) => {
-                      if (checked) {
-                        setNewSourcePlatform([...newSourcePlatform.filter(p => p !== 'iOS'), 'iOS']);
-                      } else {
-                        setNewSourcePlatform(newSourcePlatform.filter(p => p !== 'iOS'));
-                      }
-                    }}
-                  />
-                  <span className="text-sm text-[#1D2129]">iOS</span>
-                </label>
-              </div>
-            </div>
-
             {/* 广告场景 */}
             <div className="flex items-center">
               <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0">广告场景</label>
@@ -2616,7 +2583,6 @@ function SourceTable({
               </Tooltip>
             </div>
           </TableHead>
-          <TableHead className="w-20">平台</TableHead>
           <TableHead className="w-20">价格</TableHead>
           <TableHead className="w-20">
             <div className="flex items-center gap-1">
@@ -2748,7 +2714,6 @@ function SourceTable({
           <TableCell className="text-[#1D2129]">{sources.length}个DSP来源已启用</TableCell>
           <TableCell></TableCell> {/* 状态 */}
           <TableCell></TableCell> {/* 定价方式 */}
-          <TableCell></TableCell> {/* 平台 */}
           <TableCell></TableCell> {/* 价格 */}
           <TableCell className="text-[#1D2129]">¥{summaryData?.revenuePerThousand?.toFixed(2) || '-'}</TableCell> {/* 千人均收益 */}
           <TableCell className="text-[#1D2129]">{summaryData?.estimatedRevenue.toLocaleString('zh-CN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</TableCell> {/* 预估收入 */}
@@ -2818,24 +2783,6 @@ function SourceTable({
                   }`}>
                     {source.pricingType === 'bidding' ? '竞价' : '定价'}
                   </span>
-                </div>
-              </TableCell>
-              
-              {/* 平台 */}
-              <TableCell>
-                <div className="flex items-center gap-1">
-                  {source.platforms && source.platforms.map((p, idx) => (
-                    <span
-                      key={idx}
-                      className={`inline-flex px-1.5 py-0.5 rounded text-xs font-medium ${
-                        p === 'Android'
-                          ? 'bg-[#EFF6FF] text-[#2563EB]'
-                          : 'bg-[#F5F3FF] text-[#7C3AED]'
-                      }`}
-                    >
-                      {p === 'Android' ? '安卓' : 'iOS'}
-                    </span>
-                  ))}
                 </div>
               </TableCell>
               
