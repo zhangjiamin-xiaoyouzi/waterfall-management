@@ -2630,7 +2630,19 @@ function SourceTable({
               </Tooltip>
             </div>
           </TableHead>
-          <TableHead className="w-20">价格</TableHead>
+          <TableHead className="w-20">
+            <div className="flex items-center gap-1">
+              价格
+              <Tooltip>
+                <TooltipTrigger>
+                  <Info className="w-3 h-3 text-[#86909C]" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>图片和视频价格相同</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+          </TableHead>
           <TableHead className="w-20">
             <div className="flex items-center gap-1">
               千人均收益
