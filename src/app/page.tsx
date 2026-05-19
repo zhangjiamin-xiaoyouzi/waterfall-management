@@ -1988,30 +1988,6 @@ export default function WaterfallManagementPage() {
               </div>
             </div>
 
-            {/* SDK版本配置 - 仅在选择SDK类型DSP来源时显示 */}
-            {newSourceName.some(n => SDK_SOURCE_VALUES.has(n)) && (
-              <>
-                <div className="flex items-center">
-                  <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0">最小版本</label>
-                  <Input
-                    value={newSourceMinVersion}
-                    onChange={(e) => setNewSourceMinVersion(e.target.value)}
-                    placeholder="请输入最小版本号，如 9.01.0"
-                    className="w-64"
-                  />
-                </div>
-                <div className="flex items-center">
-                  <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0">最大版本</label>
-                  <Input
-                    value={newSourceMaxVersion}
-                    onChange={(e) => setNewSourceMaxVersion(e.target.value)}
-                    placeholder="请输入最大版本号，如 9.01.0"
-                    className="w-64"
-                  />
-                </div>
-              </>
-            )}
-
             {/* 状态 */}
             <div className="flex items-center">
               <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0">
@@ -2117,6 +2093,31 @@ export default function WaterfallManagementPage() {
                 className="w-64"
               />
             </div>
+
+            {/* SDK版本配置 - 仅在选择SDK类型DSP来源时显示 */}
+            {newSourceName.some(n => SDK_SOURCE_VALUES.has(n)) && (
+              <div className="border border-[#E5E6EB] rounded-lg p-4 space-y-3">
+                <div className="text-xs text-[#86909C] font-medium">SDK版本配置</div>
+                <div className="flex items-center gap-4">
+                  <div className="flex-1">
+                    <label className="text-xs text-[#4E5969] mb-1 block">最小版本</label>
+                    <Input
+                      value={newSourceMinVersion}
+                      onChange={(e) => setNewSourceMinVersion(e.target.value)}
+                      placeholder="如 9.01.0"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label className="text-xs text-[#4E5969] mb-1 block">最大版本</label>
+                    <Input
+                      value={newSourceMaxVersion}
+                      onChange={(e) => setNewSourceMaxVersion(e.target.value)}
+                      placeholder="如 9.01.0"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* 状态 */}
             <div className="flex items-center">
