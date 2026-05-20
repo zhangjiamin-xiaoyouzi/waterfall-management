@@ -2330,7 +2330,7 @@ export default function WaterfallManagementPage() {
               <Table>
                 <TableHeader>
                   <TableRow className="bg-[#F7F8FA]">
-                    <TableHead className="w-16">优先级</TableHead>
+                    <TableHead className="w-16">操作</TableHead>
                     <TableHead>DSP来源</TableHead>
                     <TableHead className="w-20">状态</TableHead>
                     <TableHead className="w-24">定价方式</TableHead>
@@ -2353,7 +2353,16 @@ export default function WaterfallManagementPage() {
                 <TableBody>
                   {abTestConfig.enabledSources.map((source, index) => (
                     <TableRow key={source.id}>
-                      <TableCell className="font-medium text-xs">{index + 1}</TableCell>
+                      <TableCell onClick={(e) => e.stopPropagation()}>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-7 px-2 text-[#2563EB] hover:text-[#2563EB] hover:bg-[#2563EB]/10"
+                          onClick={() => handleEditSource(source)}
+                        >
+                          编辑
+                        </Button>
+                      </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: ['#FF4D88', '#165DFF', '#00B42A', '#FA8C16', '#722ED1', '#13C2C2', '#F5222D', '#2F54EB'][index % 8] }} />
@@ -2429,7 +2438,7 @@ export default function WaterfallManagementPage() {
               <Table>
                 <TableHeader>
                   <TableRow className="bg-[#F7F8FA]">
-                    <TableHead className="w-16">优先级</TableHead>
+                    <TableHead className="w-16">操作</TableHead>
                     <TableHead>DSP来源</TableHead>
                     <TableHead className="w-20">状态</TableHead>
                     <TableHead className="w-24">定价方式</TableHead>
@@ -2452,7 +2461,16 @@ export default function WaterfallManagementPage() {
                 <TableBody>
                   {abTestConfig.disabledSources.map((source) => (
                     <TableRow key={source.id}>
-                      <TableCell className="text-[#86909C] text-xs">-</TableCell>
+                      <TableCell onClick={(e) => e.stopPropagation()}>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-7 px-2 text-[#2563EB] hover:text-[#2563EB] hover:bg-[#2563EB]/10"
+                          onClick={() => handleEditSource(source)}
+                        >
+                          编辑
+                        </Button>
+                      </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: '#C9CDD4' }} />

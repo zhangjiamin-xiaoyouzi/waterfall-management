@@ -3,14 +3,13 @@
     {
       "id": "group-default",
       "name": "默认分组",
-      "priority": null,
+      "priority": 1,
       "platforms": [
         "Android",
         "iOS"
       ],
       "adSlots": [
-        "1000",
-        "2101"
+        "1000"
       ],
       "rules": [],
       "status": "enabled",
