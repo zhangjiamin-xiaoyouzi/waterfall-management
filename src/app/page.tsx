@@ -2322,7 +2322,7 @@ export default function WaterfallManagementPage() {
         </DrawerContent>
       </Drawer>
 
-      {/* 配置测试组瀑布流弹窗 */}
+      {/* 配置A/B测试弹窗 */}
       <Dialog open={abTestStep === 2} onOpenChange={(open) => { if (!open) setAbTestStep(0); }}>
         <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-hidden flex flex-col">
           <DialogHeader>
