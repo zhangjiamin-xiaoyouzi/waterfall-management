@@ -8,8 +8,9 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Switch } from '@/components/ui/switch';
-import { ChevronDown, ChevronRight, Plus, X, ArrowRightIcon, ArrowLeftIcon, Search } from 'lucide-react';
+import { ChevronDown, ChevronRight, Plus, X, ArrowRightIcon, ArrowLeftIcon, Search, Info } from 'lucide-react';
 import { TimeSlotPicker } from '@/components/time-slot-picker';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Drawer, DrawerContent } from '@/components/ui/drawer';
 
@@ -376,69 +377,49 @@ export default function CreateABTestPage() {
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
-                    <TableRow className="bg-[#F7F8FA]">
-                      <TableHead className="w-12 text-xs text-[#86909C] font-medium">操作</TableHead>
-                      <TableHead className="text-xs text-[#86909C] font-medium">DSP来源名称</TableHead>
-                      <TableHead className="text-xs text-[#86909C] font-medium">状态</TableHead>
-                      <TableHead className="text-xs text-[#86909C] font-medium">定价方式</TableHead>
-                      <TableHead className="text-xs text-[#86909C] font-medium">价格(元)</TableHead>
-                      <TableHead className="text-xs text-[#86909C] font-medium">预估收入(元)</TableHead>
-                      <TableHead className="text-xs text-[#86909C] font-medium">eCPM(元)</TableHead>
-                      <TableHead className="text-xs text-[#86909C] font-medium">千次请求价值</TableHead>
-                      <TableHead className="text-xs text-[#86909C] font-medium">请求量</TableHead>
-                      <TableHead className="text-xs text-[#86909C] font-medium">返回量</TableHead>
-                      <TableHead className="text-xs text-[#86909C] font-medium">返回率</TableHead>
-                      <TableHead className="text-xs text-[#86909C] font-medium">竞价成功数</TableHead>
-                      <TableHead className="text-xs text-[#86909C] font-medium">竞胜率</TableHead>
-                      <TableHead className="text-xs text-[#86909C] font-medium">千人均收益</TableHead>
-                      <TableHead className="text-xs text-[#86909C] font-medium">展示量</TableHead>
-                      <TableHead className="text-xs text-[#86909C] font-medium">竞胜展示率</TableHead>
-                      <TableHead className="text-xs text-[#86909C] font-medium">点击率</TableHead>
-                      <TableHead className="text-xs text-[#86909C] font-medium">CPC(元)</TableHead>
+                    <TableRow className="bg-[#F7F8FA] hover:bg-[#F7F8FA]">
+                      <TableHead className="w-20">操作</TableHead>
+                      <TableHead className="w-32">DSP来源</TableHead>
+                      <TableHead className="w-20">状态</TableHead>
+                      <TableHead className="w-24"><div className="flex items-center gap-1">定价方式<Tooltip><TooltipTrigger><Info className="w-3 h-3 text-[#86909C]" /></TooltipTrigger><TooltipContent><p>DSP来源的计费模式</p></TooltipContent></Tooltip></div></TableHead>
+                      <TableHead className="w-20"><div className="flex items-center gap-1">价格<Tooltip><TooltipTrigger><Info className="w-3 h-3 text-[#86909C]" /></TooltipTrigger><TooltipContent><p>图片和视频价格相同</p></TooltipContent></Tooltip></div></TableHead>
+                      <TableHead className="w-20"><div className="flex items-center gap-1">千人均收益<Tooltip><TooltipTrigger><Info className="w-3 h-3 text-[#86909C]" /></TooltipTrigger><TooltipContent><p>每千人产生的收益</p></TooltipContent></Tooltip></div></TableHead>
+                      <TableHead className="w-24"><div className="flex items-center gap-1">预估收入<Tooltip><TooltipTrigger><Info className="w-3 h-3 text-[#86909C]" /></TooltipTrigger><TooltipContent><p>预计收入金额</p></TooltipContent></Tooltip></div></TableHead>
+                      <TableHead className="w-20"><div className="flex items-center gap-1">eCPM<Tooltip><TooltipTrigger><Info className="w-3 h-3 text-[#86909C]" /></TooltipTrigger><TooltipContent><p>千次展示收益</p></TooltipContent></Tooltip></div></TableHead>
+                      <TableHead className="w-24"><div className="flex items-center gap-1">千次请求价值<Tooltip><TooltipTrigger><Info className="w-3 h-3 text-[#86909C]" /></TooltipTrigger><TooltipContent><p>每千次请求的价值</p></TooltipContent></Tooltip></div></TableHead>
+                      <TableHead className="w-20">请求量</TableHead>
+                      <TableHead className="w-20"><div className="flex items-center gap-1">返回率<Tooltip><TooltipTrigger><Info className="w-3 h-3 text-[#86909C]" /></TooltipTrigger><TooltipContent><p>返回量/请求量</p></TooltipContent></Tooltip></div></TableHead>
+                      <TableHead className="w-20">竞价成功数</TableHead>
+                      <TableHead className="w-20"><div className="flex items-center gap-1">竞价成功率<Tooltip><TooltipTrigger><Info className="w-3 h-3 text-[#86909C]" /></TooltipTrigger><TooltipContent><p>竞价成功数/请求量</p></TooltipContent></Tooltip></div></TableHead>
+                      <TableHead className="w-20"><div className="flex items-center gap-1">展示量<Tooltip><TooltipTrigger><Info className="w-3 h-3 text-[#86909C]" /></TooltipTrigger><TooltipContent><p>广告展示次数</p></TooltipContent></Tooltip></div></TableHead>
+                      <TableHead className="w-20"><div className="flex items-center gap-1">竞胜展示率<Tooltip><TooltipTrigger><Info className="w-3 h-3 text-[#86909C]" /></TooltipTrigger><TooltipContent><p>竞胜展示次数/总展示次数</p></TooltipContent></Tooltip></div></TableHead>
+                      <TableHead className="w-20"><div className="flex items-center gap-1">点击率<Tooltip><TooltipTrigger><Info className="w-3 h-3 text-[#86909C]" /></TooltipTrigger><TooltipContent><p>点击量/展示量</p></TooltipContent></Tooltip></div></TableHead>
+                      <TableHead className="w-20">cpc</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {enabledSources.map((source) => {
                       const colors = getSourceColor(source.name);
                       return (
-                        <TableRow key={source.id} className="hover:bg-[#FFF7FA] cursor-pointer">
-                          <TableCell className="w-12">
+                        <TableRow key={source.id} className="hover:bg-[#FFF7FA] cursor-pointer"><TableCell className="w-20">
                             <Button variant="ghost" size="icon" className="w-6 h-6" onClick={() => setEditingSource({ source, group: testGroup, type: 'enabled' })}>
                               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#86909C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
                             </Button>
-                          </TableCell>
-                          <TableCell>
+                          </TableCell><TableCell>
                             <div className="flex items-center gap-2">
                               <div className="w-2 h-2 rounded-full" style={{ backgroundColor: colors.dot }} />
-                              <span className="text-xs text-[#1D2129]">{source.name}</span>
+                              <span className="text-sm text-[#1D2129]">{source.name}</span>
                             </div>
-                          </TableCell>
-                          <TableCell><Switch checked={source.status === 'enabled'} className="data-[state=checked]:bg-[#FF4D88]" /></TableCell>
-                          <TableCell>
+                          </TableCell><TableCell><Switch checked={source.status === 'enabled'} className="data-[state=checked]:bg-[#FF4D88]" /></TableCell><TableCell>
                             <span className={`px-2 py-0.5 rounded text-xs font-medium ${source.pricingType === 'bidding' ? 'bg-blue-50 text-blue-600' : 'bg-green-50 text-green-600'}`}>
                               {source.pricingType === 'bidding' ? '竞价' : '定价'}
                             </span>
-                          </TableCell>
-                          <TableCell className="text-xs">¥{(testGroup === 'A' ? (source.priceA ?? source.price) : (source.priceB ?? source.price)).toFixed(2)}</TableCell>
-                          <TableCell className="text-xs">¥{source.estimatedRevenue.toFixed(2)}</TableCell>
-                          <TableCell className="text-xs">{source.ecpm.toFixed(2)}</TableCell>
-                          <TableCell className="text-xs">¥{source.thousandRequestValue.toFixed(2)}</TableCell>
-                          <TableCell className="text-xs">{formatNum(source.requests)}</TableCell>
-                          <TableCell className="text-xs">{formatNum(source.responses)}</TableCell>
-                          <TableCell className="text-xs">{source.responseRate}%</TableCell>
-                          <TableCell className="text-xs">{formatNum(source.bidWins)}</TableCell>
-                          <TableCell className="text-xs">{source.bidWinRate}%</TableCell>
-                          <TableCell className="text-xs">¥{source.revenuePerThousand.toFixed(2)}</TableCell>
-                          <TableCell className="text-xs">{formatNum(source.impressions)}</TableCell>
-                          <TableCell className="text-xs">{source.winImpressionRate}%</TableCell>
-                          <TableCell className="text-xs">{source.ctr}%</TableCell>
-                          <TableCell className="text-xs">¥{source.cpc.toFixed(2)}</TableCell>
-                        </TableRow>
+                          </TableCell><TableCell className="text-xs">¥{(testGroup === 'A' ? (source.priceA ?? source.price) : (source.priceB ?? source.price)).toFixed(2)}</TableCell><TableCell className="text-xs">¥{source.revenuePerThousand.toFixed(2)}</TableCell><TableCell className="text-xs">{source.estimatedRevenue.toLocaleString('zh-CN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</TableCell><TableCell className="text-xs">¥{source.ecpm.toFixed(2)}</TableCell><TableCell className="text-xs">¥{source.thousandRequestValue.toFixed(2)}</TableCell><TableCell className="text-xs">{formatNum(source.requests)}</TableCell><TableCell className="text-xs">{source.responseRate}%</TableCell><TableCell className="text-xs">{formatNum(source.bidWins)}</TableCell><TableCell className="text-xs">{source.bidWinRate}%</TableCell><TableCell className="text-xs">{formatNum(source.impressions)}</TableCell><TableCell className="text-xs">{source.winImpressionRate}%</TableCell><TableCell className="text-xs">{source.ctr}%</TableCell><TableCell className="text-xs">¥{source.cpc.toFixed(2)}</TableCell></TableRow>
                       );
                     })}
                     {enabledSources.length === 0 && (
                       <TableRow>
-                        <TableCell colSpan={18} className="text-center text-[#86909C] py-4 text-xs">暂无已启用DSP来源</TableCell>
+                        <TableCell colSpan={17} className="text-center text-[#86909C] py-4 text-xs">暂无已启用DSP来源</TableCell>
                       </TableRow>
                     )}
                   </TableBody>
