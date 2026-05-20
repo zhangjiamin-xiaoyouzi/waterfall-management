@@ -145,6 +145,7 @@ export default function CreateABTestPage() {
   const [pidPriceB, setPidPriceB] = useState('0');
   const [isSdkSource, setIsSdkSource] = useState(false);
   const [abTestConfig, setAbTestConfig] = useState<{ enabledSources: AdSource[] }>({ enabledSources: [] });
+  const [collapsedDisabled, setCollapsedDisabled] = useState(true);
 
   // Fetch groups on mount
   useEffect(() => {
@@ -453,6 +454,66 @@ export default function CreateABTestPage() {
                 </Table>
               </div>
             </div>
+
+            {/* 未启用DSP来源折叠区 */}
+            {disabledSources.length > 0 && (
+              <div className="border border-[#E5E6EB] rounded-lg bg-white">
+                <button
+                  onClick={() => setCollapsedDisabled(!collapsedDisabled)}
+                  className="flex items-center gap-2 px-4 py-3 w-full hover:bg-[#F7F8FA] transition-colors rounded-lg"
+                >
+                  {collapsedDisabled ? (
+                    <ChevronRight className="w-4 h-4 text-[#86909C]" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-[#86909C]" />
+                  )}
+                  <span className="text-sm text-[#86909C]">
+                    {disabledSources.length} 个DSP来源未启用
+                  </span>
+                </button>
+                {!collapsedDisabled && (
+                  <div className="overflow-x-auto border-t border-[#E5E6EB]">
+                    <Table>
+                      <TableHeader>
+                        <TableRow className="bg-[#F7F8FA] hover:bg-[#F7F8FA]">
+                          <TableHead className="w-20">操作</TableHead>
+                          <TableHead className="w-32">DSP来源</TableHead>
+                          <TableHead className="w-20">状态</TableHead>
+                          <TableHead className="w-24"><div className="flex items-center gap-1">定价方式<Tooltip><TooltipTrigger><Info className="w-3 h-3 text-[#86909C]" /></TooltipTrigger><TooltipContent><p>DSP来源的计费模式</p></TooltipContent></Tooltip></div></TableHead>
+                          <TableHead className="w-20"><div className="flex items-center gap-1">价格<Tooltip><TooltipTrigger><Info className="w-3 h-3 text-[#86909C]" /></TooltipTrigger><TooltipContent><p>图片和视频价格相同</p></TooltipContent></Tooltip></div></TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {disabledSources.map((source) => {
+                          const colors = getSourceColor(source.name);
+                          return (
+                            <TableRow key={source.id} className="hover:bg-[#FFF7FA] cursor-pointer opacity-60"><TableCell className="w-20">
+                                <Button variant="ghost" size="icon" className="w-6 h-6" onClick={() => setEditingSource({ source, group: testGroup, type: 'disabled' })}>
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#86909C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                                </Button>
+                              </TableCell><TableCell>
+                                <div className="flex items-center gap-2">
+                                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: colors.dot }} />
+                                  <span className="text-sm text-[#1D2129]">{source.name}</span>
+                                </div>
+                              </TableCell><TableCell><Switch checked={false} className="data-[state=unchecked]:bg-[#C9CDD4]" disabled /></TableCell><TableCell>
+                                <span className={`px-2 py-0.5 rounded text-xs font-medium ${source.pricingType === 'bidding' ? 'bg-blue-50 text-blue-600' : 'bg-green-50 text-green-600'}`}>
+                                  {source.pricingType === 'bidding' ? '竞价' : '定价'}
+                                </span>
+                              </TableCell><TableCell className="text-xs text-[#C9CDD4]">¥{(source.price || 0).toFixed(2)}</TableCell></TableRow>
+                          );
+                        })}
+                        {disabledSources.length === 0 && (
+                          <TableRow>
+                            <TableCell colSpan={17} className="text-center text-[#86909C] py-4 text-xs">暂无未启用DSP来源</TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* 底部操作按钮 - 悬浮 */}
             <div className="sticky bottom-0 bg-white border-t border-[#E5E6EB] -mx-4 -mb-4 px-4 py-3 flex justify-end gap-2 z-10 shadow-[0_-2px_8px_rgba(0,0,0,0.06)]">
