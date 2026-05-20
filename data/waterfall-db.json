@@ -323,7 +323,9 @@
             "applovin"
           ]
         }
-      ]
+      ],
+      "hasABTest": false,
+      "abTestStarted": false
     },
     {
       "id": "group-2",

@@ -288,12 +288,16 @@ export default function CreateABTestPage() {
     setTempSelectedDSPSources([]);
   };
 
-  const handleLaunch = () => {
-    fetch('/api/groups', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: selectedGroupId, hasABTest: true, abTestStarted: true }),
-    }).catch(console.error);
+  const handleLaunch = async () => {
+    try {
+      await fetch('/api/groups', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: selectedGroupId, hasABTest: true, abTestStarted: true }),
+      });
+    } catch (e) {
+      console.error('启动A/B测试失败', e);
+    }
     router.push(`/?groupId=${selectedGroupId}`);
   };
 
