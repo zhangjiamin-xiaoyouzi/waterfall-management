@@ -2326,6 +2326,7 @@ export default function WaterfallManagementPage() {
             {/* 已启用的DSP来源 */}
             <div>
               <div className="text-sm font-medium text-[#86909C] mb-2">已启用DSP来源</div>
+              <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow className="bg-[#F7F8FA]">
@@ -2333,16 +2334,16 @@ export default function WaterfallManagementPage() {
                     <TableHead>DSP来源</TableHead>
                     <TableHead className="w-20">状态</TableHead>
                     <TableHead className="w-24">定价方式</TableHead>
-                    <TableHead>价格</TableHead>
-                    <TableHead className="w-24">千人均收益</TableHead>
-                    <TableHead className="w-28">预估收入</TableHead>
+                    <TableHead className="w-20">价格</TableHead>
+                    <TableHead className="w-20">千人均收益</TableHead>
+                    <TableHead className="w-24">预估收入</TableHead>
                     <TableHead className="w-20">eCPM</TableHead>
-                    <TableHead className="w-28">千次请求价值</TableHead>
-                    <TableHead className="w-24">请求量</TableHead>
+                    <TableHead className="w-24">千次请求价值</TableHead>
+                    <TableHead className="w-20">请求量</TableHead>
                     <TableHead className="w-20">返回率</TableHead>
-                    <TableHead className="w-24">竞价成功数</TableHead>
+                    <TableHead className="w-20">竞价成功数</TableHead>
                     <TableHead className="w-24">竞价成功率</TableHead>
-                    <TableHead className="w-24">展示量</TableHead>
+                    <TableHead className="w-20">展示量</TableHead>
                     <TableHead className="w-24">竞胜展示率</TableHead>
                     <TableHead className="w-20">点击数</TableHead>
                     <TableHead className="w-20">点击率</TableHead>
@@ -2352,51 +2353,79 @@ export default function WaterfallManagementPage() {
                 <TableBody>
                   {abTestConfig.enabledSources.map((source, index) => (
                     <TableRow key={source.id}>
-                      <TableCell className="font-medium">{index + 1}</TableCell>
+                      <TableCell className="font-medium text-xs">{index + 1}</TableCell>
                       <TableCell>
-                        <span className="text-[#1D2129]">{source.name}</span>
-                        <span className="ml-2 text-xs px-2 py-0.5 bg-[#F2F3F5] text-[#86909C] rounded">原生</span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: ['#FF4D88', '#165DFF', '#00B42A', '#FA8C16', '#722ED1', '#13C2C2', '#F5222D', '#2F54EB'][index % 8] }} />
+                          <span className="text-xs text-[#1D2129]">{source.name}</span>
+                          {source.isFallback && <span className="text-xs px-1 py-0.5 bg-[#FFF7E6] text-[#FA8C16] rounded">兜底</span>}
+                        </div>
                       </TableCell>
                       <TableCell>
                         <Switch checked={source.status === 'enabled'} onCheckedChange={(checked) => {
                           const newSources = [...abTestConfig.enabledSources];
                           newSources[index].status = checked ? 'enabled' : 'disabled';
                           setAbTestConfig(prev => ({ ...prev, enabledSources: newSources }));
-                        }} />
+                        }} className="data-[state=checked]:bg-[#00B42A]" />
+                      </TableCell>
+                      <TableCell>
+                        {source.pricingType === 'bidding' ? (
+                          <span className="text-xs px-2 py-0.5 bg-[#E8F3FF] text-[#165DFF] rounded">竞价</span>
+                        ) : (
+                          <span className="text-xs px-2 py-0.5 bg-[#E8FFEB] text-[#00B42A] rounded">{source.pricingType}</span>
+                        )}
                       </TableCell>
                       <TableCell>
                         {source.pricingType === 'bidding' ? (
                           <span className="text-[#86909C]">-</span>
                         ) : (
-                          <Input
-                            type="number"
-                            value={source.price || ''}
-                            onChange={(e) => {
-                              const newSources = [...abTestConfig.enabledSources];
-                              newSources[index].price = parseFloat(e.target.value) || 0;
-                              setAbTestConfig(prev => ({ ...prev, enabledSources: newSources }));
-                            }}
-                            className="w-24 h-8 text-sm"
-                            placeholder="输入价格"
-                          />
+                          <div className="flex items-center gap-1">
+                            <span className="text-xs">¥</span>
+                            <Input
+                              type="number"
+                              value={source.price || ''}
+                              onChange={(e) => {
+                                const newSources = [...abTestConfig.enabledSources];
+                                newSources[index].price = parseFloat(e.target.value) || 0;
+                                setAbTestConfig(prev => ({ ...prev, enabledSources: newSources }));
+                              }}
+                              className="w-16 h-7 text-xs"
+                              placeholder="0.00"
+                            />
+                          </div>
                         )}
                       </TableCell>
+                      <TableCell className="text-xs text-right">¥{(source.revenuePerThousand || 0).toFixed(2)}</TableCell>
+                      <TableCell className="text-xs text-right">¥{(source.estimatedRevenue || 0).toLocaleString()}</TableCell>
+                      <TableCell className="text-xs text-right">¥{(source.ecpm || 0).toFixed(2)}</TableCell>
+                      <TableCell className="text-xs text-right">¥{(source.thousandRequestValue || 0).toFixed(2)}</TableCell>
+                      <TableCell className="text-xs text-right">{(source.requests || 0) >= 10000 ? `${(source.requests / 10000).toFixed(1)}万` : source.requests || 0}</TableCell>
+                      <TableCell className="text-xs text-right">{(source.responseRate || 0).toFixed(1)}%</TableCell>
+                      <TableCell className="text-xs text-right">{(source.bidWins || 0) >= 10000 ? `${(source.bidWins / 10000).toFixed(1)}万` : source.bidWins || 0}</TableCell>
+                      <TableCell className="text-xs text-right">{(source.bidWinRate || 0).toFixed(1)}%</TableCell>
+                      <TableCell className="text-xs text-right">{(source.impressions ?? 0) >= 10000 ? `${((source.impressions ?? 0) / 10000).toFixed(1)}万` : source.impressions ?? 0}</TableCell>
+                      <TableCell className="text-xs text-right">{(source.winImpressionRate ?? 0).toFixed(1)}%</TableCell>
+                      <TableCell className="text-xs text-right">{(source.clicks ?? 0) >= 10000 ? `${((source.clicks ?? 0) / 10000).toFixed(1)}万` : source.clicks ?? 0}</TableCell>
+                      <TableCell className="text-xs text-right">{(source.ctr || 0).toFixed(1)}%</TableCell>
+                      <TableCell className="text-xs text-right">¥{(source.cpc || 0).toFixed(2)}</TableCell>
                     </TableRow>
                   ))}
                   {abTestConfig.enabledSources.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={5} className="text-center text-[#86909C] py-4">
-                        暂无已启用DSP来源
+                      <TableCell colSpan={18} className="text-center text-[#86909C] py-4 text-xs">
+                        暂无已启用DSP来源，请点击上方「添加PID」按钮添加
                       </TableCell>
                     </TableRow>
                   )}
                 </TableBody>
               </Table>
+              </div>
             </div>
 
             {/* 未启用的DSP来源 */}
             <div>
               <div className="text-sm font-medium text-[#86909C] mb-2">未启用DSP来源</div>
+              <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow className="bg-[#F7F8FA]">
@@ -2404,16 +2433,32 @@ export default function WaterfallManagementPage() {
                     <TableHead>DSP来源</TableHead>
                     <TableHead className="w-20">状态</TableHead>
                     <TableHead className="w-24">定价方式</TableHead>
-                    <TableHead>价格</TableHead>
+                    <TableHead className="w-20">价格</TableHead>
+                    <TableHead className="w-20">千人均收益</TableHead>
+                    <TableHead className="w-24">预估收入</TableHead>
+                    <TableHead className="w-20">eCPM</TableHead>
+                    <TableHead className="w-24">千次请求价值</TableHead>
+                    <TableHead className="w-20">请求量</TableHead>
+                    <TableHead className="w-20">返回率</TableHead>
+                    <TableHead className="w-20">竞价成功数</TableHead>
+                    <TableHead className="w-24">竞价成功率</TableHead>
+                    <TableHead className="w-20">展示量</TableHead>
+                    <TableHead className="w-24">竞胜展示率</TableHead>
+                    <TableHead className="w-20">点击数</TableHead>
+                    <TableHead className="w-20">点击率</TableHead>
+                    <TableHead className="w-20">cpc</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {abTestConfig.disabledSources.map((source) => (
                     <TableRow key={source.id}>
-                      <TableCell className="text-[#86909C]">-</TableCell>
+                      <TableCell className="text-[#86909C] text-xs">-</TableCell>
                       <TableCell>
-                        <span className="text-[#1D2129]">{source.name}</span>
-                        <span className="ml-2 text-xs px-2 py-0.5 bg-[#F2F3F5] text-[#86909C] rounded">原生</span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: '#C9CDD4' }} />
+                          <span className="text-xs text-[#1D2129]">{source.name}</span>
+                          {source.isFallback && <span className="text-xs px-1 py-0.5 bg-[#FFF7E6] text-[#FA8C16] rounded">兜底</span>}
+                        </div>
                       </TableCell>
                       <TableCell>
                         <Switch checked={source.status === 'enabled'} onCheckedChange={(checked) => {
@@ -2429,37 +2474,60 @@ export default function WaterfallManagementPage() {
                           } else {
                             setAbTestConfig(prev => ({ ...prev, disabledSources: newSources }));
                           }
-                        }} />
+                        }} className="data-[state=checked]:bg-[#00B42A]" />
                       </TableCell>
                       <TableCell>
                         {source.pricingType === 'bidding' ? (
-                          <span className="text-[#86909C]">-</span>
+                          <span className="text-xs px-2 py-0.5 bg-[#E8F3FF] text-[#165DFF] rounded">竞价</span>
                         ) : (
-                          <Input
-                            type="number"
-                            value={source.price || ''}
-                            onChange={(e) => {
-                              const newSources = [...abTestConfig.disabledSources];
-                              const idx = newSources.findIndex(s => s.id === source.id);
-                              newSources[idx].price = parseFloat(e.target.value) || 0;
-                              setAbTestConfig(prev => ({ ...prev, disabledSources: newSources }));
-                            }}
-                            className="w-24 h-8 text-sm"
-                            placeholder="输入价格"
-                          />
+                          <span className="text-xs px-2 py-0.5 bg-[#E8FFEB] text-[#00B42A] rounded">{source.pricingType}</span>
                         )}
                       </TableCell>
+                      <TableCell>
+                        {source.pricingType === 'bidding' ? (
+                          <span className="text-[#86909C] text-xs">-</span>
+                        ) : (
+                          <div className="flex items-center gap-1">
+                            <span className="text-xs">¥</span>
+                            <Input
+                              type="number"
+                              value={source.price || ''}
+                              onChange={(e) => {
+                                const newSources = [...abTestConfig.disabledSources];
+                                const idx = newSources.findIndex(s => s.id === source.id);
+                                newSources[idx].price = parseFloat(e.target.value) || 0;
+                                setAbTestConfig(prev => ({ ...prev, disabledSources: newSources }));
+                              }}
+                              className="w-16 h-7 text-xs"
+                              placeholder="0.00"
+                            />
+                          </div>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-xs text-right text-[#C9CDD4]">-</TableCell>
+                      <TableCell className="text-xs text-right text-[#C9CDD4]">-</TableCell>
+                      <TableCell className="text-xs text-right text-[#C9CDD4]">-</TableCell>
+                      <TableCell className="text-xs text-right text-[#C9CDD4]">-</TableCell>
+                      <TableCell className="text-xs text-right text-[#C9CDD4]">-</TableCell>
+                      <TableCell className="text-xs text-right text-[#C9CDD4]">-</TableCell>
+                      <TableCell className="text-xs text-right text-[#C9CDD4]">-</TableCell>
+                      <TableCell className="text-xs text-right text-[#C9CDD4]">-</TableCell>
+                      <TableCell className="text-xs text-right text-[#C9CDD4]">-</TableCell>
+                      <TableCell className="text-xs text-right text-[#C9CDD4]">-</TableCell>
+                      <TableCell className="text-xs text-right text-[#C9CDD4]">-</TableCell>
+                      <TableCell className="text-xs text-right text-[#C9CDD4]">-</TableCell>
                     </TableRow>
                   ))}
                   {abTestConfig.disabledSources.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={5} className="text-center text-[#86909C] py-4">
+                      <TableCell colSpan={18} className="text-center text-[#86909C] py-4 text-xs">
                         暂无未启用DSP来源
                       </TableCell>
                     </TableRow>
                   )}
                 </TableBody>
               </Table>
+              </div>
             </div>
           </div>
 
