@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { TimeSlotPicker } from '@/components/time-slot-picker';
 import {
   Tv,
@@ -297,7 +298,7 @@ export default function WaterfallManagementPage() {
   const [addSourceFromABTest, setAddSourceFromABTest] = useState(false);
   const [showAddGroupDialog, setShowAddGroupDialog] = useState(false);
   const [editingGroup, setEditingGroup] = useState<AdGroup | null>(null);
-  const [showABTestDialog, setShowABTestDialog] = useState(false);
+  const router = useRouter();
   const [hoveredSource, setHoveredSource] = useState<AdSource | null>(null);
   const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
   const [editingPrice, setEditingPrice] = useState<{ id: string; value: string } | null>(null);
@@ -421,6 +422,7 @@ export default function WaterfallManagementPage() {
   const [abTestGroupSources, setAbTestGroupSources] = useState<{ groupA: AdSource[], groupB: AdSource[] }>({ groupA: [], groupB: [] });
   const [abTestSelectedGroup, setAbTestSelectedGroup] = useState<'A' | 'B'>('B');
   const [showAbTestAddSource, setAbTestAddSource] = useState(false);
+  const [showABTestDialog, setShowABTestDialog] = useState(false);
   const [showABTestDataDialog, setShowABTestDataDialog] = useState(false);
   const [abTestDraftData, setAbTestDraftData] = useState<{
     name: string;
@@ -1221,7 +1223,7 @@ export default function WaterfallManagementPage() {
                               setAbTestConfig(draft.config);
                               setAbTestDraftData(draft);
                             }
-                            setShowABTestDialog(true);
+                            router.push('/ab-test/create');
                           }}
                         >
                           编辑A/B测试
@@ -1239,7 +1241,7 @@ export default function WaterfallManagementPage() {
                             const timeStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
                             setAbTestName(`${currentGroup.name}_正式_测试_${timeStr}`);
                           }
-                          setShowABTestDialog(true);
+                          router.push('/ab-test/create');
                         }}
                       >
                         创建A/B测试
