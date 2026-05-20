@@ -2326,7 +2326,7 @@ export default function WaterfallManagementPage() {
       <Dialog open={abTestStep === 2} onOpenChange={(open) => { if (!open) setAbTestStep(0); }}>
         <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-hidden flex flex-col">
           <DialogHeader>
-            <DialogTitle className="text-base font-semibold">配置测试组瀑布流</DialogTitle>
+            <DialogTitle className="text-base font-semibold">创建A/B测试</DialogTitle>
           </DialogHeader>
 
           <div className="flex-1 overflow-y-auto space-y-4">
