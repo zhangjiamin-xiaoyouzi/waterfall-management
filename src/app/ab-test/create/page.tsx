@@ -216,6 +216,40 @@ export default function CreateABTestPage() {
     setPidPriceB('0');
   };
 
+  const handleEditPidSource = () => {
+    if (!editingSource || !pidCodeId || selectedDspSources.length === 0) return;
+
+    setAbTestConfig(prev => ({
+      ...prev,
+      enabledSources: prev.enabledSources.map(s =>
+        s.id === editingSource.source.id
+          ? {
+              ...s,
+              name: pidCodeId,
+              status: pidStatus === 'active' ? 'enabled' : 'disabled',
+              price: parseFloat(pidPriceA) || 0,
+              priceA: parseFloat(pidPriceA) || 0,
+              priceB: parseFloat(pidPriceB) || 0,
+              codeId: pidCodeId,
+              dspSources: selectedDspSources,
+              ...(selectedDspSources.some(n => SDK_SOURCE_VALUES.has(n)) ? {
+                minVersion: pidMinVersion,
+                maxVersion: pidMaxVersion,
+              } : {})
+            }
+          : s
+      )
+    }));
+    setEditingSource(null);
+    setSelectedDspSources([]);
+    setPidCodeId('');
+    setPidMinVersion('');
+    setPidMaxVersion('');
+    setPidStatus('active');
+    setPidPriceA('0');
+    setPidPriceB('0');
+  };
+
   // DSP来源选择器相关函数
   const filteredAvailableDSPSources = DSP_SOURCE_LIST.filter(d =>
     !tempSelectedDSPSources.includes(d.value) &&
@@ -716,6 +750,141 @@ export default function CreateABTestPage() {
           </div>
         </DrawerContent>
       </Drawer>
+
+      {/* 编辑PID弹窗 */}
+      <Dialog open={!!editingSource} onOpenChange={(v) => { if (!v) { setEditingSource(null); setSelectedDspSources([]); setPidCodeId(''); setPidMinVersion(''); setPidMaxVersion(''); setPidStatus('active'); setPidPriceA('0'); setPidPriceB('0'); } }}>
+        <DialogContent className="max-w-[700px] max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>编辑PID</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            {/* DSP来源 - 多选同添加PID */}
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                <span className="text-red-500">*</span> DSP来源
+              </label>
+              <div className="flex flex-wrap gap-2 p-3 border border-[#E5E6EB] rounded-lg bg-white min-h-[42px]">
+                {selectedDspSources.length === 0 ? (
+                  <span className="text-sm text-[#86909C]">请选择DSP来源</span>
+                ) : (
+                  selectedDspSources.map((val) => {
+                    const dsp = DSP_SOURCE_LIST.find(d => d.value === val);
+                    return (
+                      <span key={val} className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#FFF0F5] text-[#FF4D88] text-xs rounded-sm">
+                        {dsp?.label || val}
+                        {SDK_SOURCE_VALUES.has(val) && <span className="text-[#86909C] text-[10px]">SDK</span>}
+                        <button onClick={() => setSelectedDspSources(prev => prev.filter(v => v !== val))} className="ml-0.5 hover:text-[#FF4D88]">×</button>
+                      </span>
+                    );
+                  })
+                )}
+                <button
+                  onClick={() => { setTempSelectedDSPSources([...selectedDspSources]); setShowDSPSelectorDrawer(true); }}
+                  className="text-sm text-[#FF4D88] hover:text-[#FF6A9E] ml-auto"
+                >选择DSP来源</button>
+              </div>
+            </div>
+
+            {/* 广告场景 - 只读 */}
+            <div>
+              <label className="block text-sm font-medium mb-1">广告场景</label>
+              <div className="text-sm text-[#4E5969] bg-[#F7F8FA] px-3 py-2 rounded">
+                {(() => {
+                  if (!currentGroup?.adSlots?.length) return <span className="text-[#86909C]">暂无广告场景</span>;
+                  const has = (ids: string[]) => ids.some(id => currentGroup.adSlots!.includes(id));
+                  if (has(['100005'])) return '开屏';
+                  if (has(['100004'])) return '插屏';
+                  if (has(['100003'])) return 'Banner';
+                  if (has(['100006'])) return '激励视频';
+                  if (has(['100001', '100002'])) return '信息流';
+                  return '原生';
+                })()}
+              </div>
+            </div>
+
+            {/* 广告位 - 只读 */}
+            <div>
+              <label className="block text-sm font-medium mb-1">广告位</label>
+              <div className="flex flex-wrap gap-2">
+                {(currentGroup?.adSlots || []).map((slotId: string) => (
+                  <span key={slotId} className="inline-flex items-center px-2 py-0.5 bg-[#F7F8FA] text-[#4E5969] border border-[#E5E6EB] rounded-sm text-xs">
+                    {SLOT_NAME_MAP[slotId] || `广告位${slotId}`}
+                  </span>
+                ))}
+                {(!currentGroup?.adSlots?.length) && <span className="text-xs text-[#86909C]">暂无广告位</span>}
+              </div>
+            </div>
+
+            {/* PID */}
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                <span className="text-red-500">*</span> PID
+              </label>
+              <Input
+                value={pidCodeId}
+                onChange={(e) => setPidCodeId(e.target.value)}
+                placeholder="请输入代码位Id"
+              />
+            </div>
+
+            {/* SDK版本配置 */}
+            {selectedDspSources.some(n => SDK_SOURCE_VALUES.has(n)) && (
+              <div className="bg-[#FFFBF0] border border-[#FFE58F] rounded-lg p-3">
+                <label className="block text-sm font-medium mb-2">SDK版本配置</label>
+                <div className="flex gap-3">
+                  <div className="flex-1">
+                    <label className="text-xs text-[#4E5969] mb-1 block">最小版本 <span className="text-[#FF4D88]">*</span></label>
+                    <Input value={pidMinVersion} onChange={(e) => setPidMinVersion(e.target.value)} placeholder="如 8.12.0" />
+                  </div>
+                  <div className="flex-1">
+                    <label className="text-xs text-[#4E5969] mb-1 block">最大版本 <span className="text-[#FF4D88]">*</span></label>
+                    <Input value={pidMaxVersion} onChange={(e) => setPidMaxVersion(e.target.value)} placeholder="如 9.01.0" />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* 价格 */}
+            <div className="border-t border-[#E5E6EB] pt-4">
+              <label className="block text-sm font-medium mb-3">
+                <span className="text-red-500">*</span> 价格(元)
+              </label>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-[#F6FFED] border border-[#B7EB8F] rounded-lg p-3">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-4 h-4 rounded-full bg-[#52C41A] flex items-center justify-center text-white text-[10px] font-bold">A</div>
+                    <span className="text-xs font-medium text-[#1D2129]">对照组</span>
+                  </div>
+                  <div className="relative">
+                    <Input type="number" value={pidPriceA} onChange={(e) => setPidPriceA(e.target.value)} className="pl-6 pr-2 h-8 text-sm" step="0.01" min="0" />
+                    <span className="absolute left-2 top-1/2 -translate-y-1/2 text-sm text-[#86909C]">¥</span>
+                  </div>
+                </div>
+                <div className="bg-[#FFF7E6] border border-[#FFE58F] rounded-lg p-3">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-4 h-4 rounded-full bg-[#FA8C16] flex items-center justify-center text-white text-[10px] font-bold">B</div>
+                    <span className="text-xs font-medium text-[#1D2129]">测试组</span>
+                  </div>
+                  <div className="relative">
+                    <Input type="number" value={pidPriceB} onChange={(e) => setPidPriceB(e.target.value)} className="pl-6 pr-2 h-8 text-sm" step="0.01" min="0" />
+                    <span className="absolute left-2 top-1/2 -translate-y-1/2 text-sm text-[#86909C]">¥</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 状态 */}
+            <div className="flex items-center">
+              <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0">状态</label>
+              <Switch checked={pidStatus === 'enabled'} onCheckedChange={(v) => setPidStatus(v ? 'enabled' : 'disabled')} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditingSource(null)} className="border-[#E5E6EB] text-[#1D2129]">取消</Button>
+            <Button className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white" onClick={handleEditPidSource}>保存</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       </div>
     </div>
   );
