@@ -1129,7 +1129,7 @@ export default function WaterfallManagementPage() {
                           };
                           return (
                             <Badge key={index} variant="secondary" className="bg-[#F2F3F5] text-[#1D2129] border border-[#E5E6EB]">
-                              {RULE_VALUES[rule.ruleType]?.label || rule.ruleType} {rule.matchType === 'include' ? '包含' : '不包含'} {getDisplayValues()}
+                              {RULE_VALUES[rule.ruleType]?.label || rule.ruleType}{rule.ruleType !== 'time_period' ? ` ${rule.matchType === 'include' ? '包含' : '不包含'} ` : '：'}{getDisplayValues()}
                             </Badge>
                           );
                         })}
@@ -1674,6 +1674,7 @@ export default function WaterfallManagementPage() {
                           ))}
                         </SelectContent>
                       </Select>
+                      {rule.ruleType !== 'time_period' && (
                       <Select
                         value={rule.matchType}
                         onValueChange={(val: MatchType) => {
@@ -1690,6 +1691,7 @@ export default function WaterfallManagementPage() {
                           <SelectItem value="exclude">不包含</SelectItem>
                         </SelectContent>
                       </Select>
+                      )}
                       {rule.ruleType === 'time_period' ? (
                         <div className="flex-1 min-w-0">
                           <TimeSlotPicker
