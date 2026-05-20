@@ -10,6 +10,29 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Switch } from '@/components/ui/switch';
 import { ChevronDown, ChevronRight, Plus } from 'lucide-react';
 import { TimeSlotPicker } from '@/components/time-slot-picker';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+
+const DSP_SOURCE_LIST = [
+  { value: 'pangle', label: '穿山甲' },
+  { value: 'ylh', label: '优量汇' },
+  { value: 'gdt', label: '广点通' },
+  { value: 'ks', label: '快手' },
+  { value: 'bd', label: '百度' },
+  { value: 'sjyt', label: 'Sigmob' },
+  { value: 'mintegral', label: 'Mintegral' },
+  { value: 'unity', label: 'Unity Ads' },
+  { value: 'vungle', label: 'Vungle' },
+  { value: 'ironsource', label: 'IronSource' },
+  { value: 'applovin', label: 'AppLovin' },
+  { value: 'adcolony', label: 'AdColony' },
+  { value: 'tapjoy', label: 'Tapjoy' },
+  { value: 'chartboost', label: 'Chartboost' },
+  { value: 'inmobi', label: 'InMobi' },
+  { value: 'mobvista', label: 'Mobvista' },
+];
+const DSP_SOURCE_NAMES: Record<string, string> = {};
+DSP_SOURCE_LIST.forEach((d: { value: string; label: string }) => { DSP_SOURCE_NAMES[d.value] = d.label; });
+const SDK_SOURCE_VALUES = new Set(['pangle', 'ylh', 'gdt']);
 
 interface AdSource {
   id: string;
@@ -86,6 +109,15 @@ export default function CreateABTestPage() {
   const [testGroup, setTestGroup] = useState<'A' | 'B'>('B');
   const [editingSource, setEditingSource] = useState<{ source: AdSource; group: 'A' | 'B'; type: 'enabled' | 'disabled' } | null>(null);
 
+  const [showAddPidDialog, setShowAddPidDialog] = useState(false);
+  const [selectedDspSource, setSelectedDspSource] = useState('');
+  const [pidCodeId, setPidCodeId] = useState('');
+  const [pidMinVersion, setPidMinVersion] = useState('');
+  const [pidMaxVersion, setPidMaxVersion] = useState('');
+  const [pidStatus, setPidStatus] = useState('active');
+  const [isSdkSource, setIsSdkSource] = useState(false);
+  const [abTestConfig, setAbTestConfig] = useState<{ enabledSources: AdSource[] }>({ enabledSources: [] });
+
   // Fetch groups on mount
   useEffect(() => {
     fetch('/api/groups')
@@ -105,6 +137,52 @@ export default function CreateABTestPage() {
 
   const enabledSources = currentGroup?.adSources?.filter(s => s.status === 'enabled') || [];
   const disabledSources = currentGroup?.adSources?.filter(s => s.status !== 'enabled') || [];
+
+  const handleAddPidSource = () => {
+    const selectedSource = DSP_SOURCE_LIST.find(s => s.value === selectedDspSource);
+    if (!selectedSource || !pidCodeId || !selectedGroupId) return;
+
+    const newSource: AdSource = {
+      id: `pid-${Date.now()}`,
+      name: pidCodeId,
+      status: pidStatus === 'active' ? 'enabled' : 'disabled',
+      pricingType: 'bidding',
+      price: 0,
+      estimatedRevenue: 0,
+      ecpm: 0,
+      thousandRequestValue: 0,
+      requests: 0,
+      responses: 0,
+      responseRate: 0,
+      bidWins: 0,
+      bidWinRate: 0,
+      revenuePerThousand: 0,
+      impressions: 0,
+      winImpressionRate: 0,
+      clicks: 0,
+      ctr: 0,
+      cpc: 0,
+      lastUpdated: new Date().toISOString().slice(0, 16).replace('T', ' '),
+      platforms: [],
+      codeId: pidCodeId,
+      dspSources: [selectedSource.value],
+      ...(SDK_SOURCE_VALUES.has(selectedSource.value) ? {
+        minVersion: pidMinVersion,
+        maxVersion: pidMaxVersion,
+      } : {})
+    };
+
+    setAbTestConfig(prev => ({
+      ...prev,
+      enabledSources: [...prev.enabledSources, newSource]
+    }));
+    setShowAddPidDialog(false);
+    setSelectedDspSource('');
+    setPidCodeId('');
+    setPidMinVersion('');
+    setPidMaxVersion('');
+    setPidStatus('active');
+  };
 
   const handleLaunch = () => {
     fetch('/api/groups', {
@@ -230,7 +308,7 @@ export default function CreateABTestPage() {
                   </Select>
                   <span className="text-sm text-[#86909C]">流量比例: {groupA}%</span>
                 </div>
-                <Button className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white" size="sm">
+                <Button className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white" size="sm" onClick={() => setShowAddPidDialog(true)}>
                   <Plus className="w-4 h-4 mr-1" />添加PID
                 </Button>
               </div>
@@ -322,6 +400,68 @@ export default function CreateABTestPage() {
             </div>
           </div>
         )}
+
+      {/* 添加PID弹窗 */}
+      <Dialog open={showAddPidDialog} onOpenChange={setShowAddPidDialog}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle className="text-base font-semibold">添加PID</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                <span className="text-red-500">*</span> 选择DSP来源
+              </label>
+              <Select value={selectedDspSource || ''} onValueChange={(v) => {
+                setSelectedDspSource(v);
+                setIsSdkSource(SDK_SOURCE_VALUES.has(v));
+              }}>
+                <SelectTrigger><SelectValue placeholder="请选择DSP来源" /></SelectTrigger>
+                <SelectContent>
+                  {DSP_SOURCE_LIST.map((item) => (
+                    <SelectItem key={item.value} value={item.value}>
+                      {item.label}{SDK_SOURCE_VALUES.has(item.value) ? ' (SDK)' : ''}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                <span className="text-red-500">*</span> PID
+              </label>
+              <Input value={pidCodeId} onChange={(e) => setPidCodeId(e.target.value)} placeholder="请输入PID" />
+            </div>
+
+            {isSdkSource && (
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    <span className="text-red-500">*</span> 最小版本
+                  </label>
+                  <Input value={pidMinVersion} onChange={(e) => setPidMinVersion(e.target.value)} placeholder="如 9.01.0" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    <span className="text-red-500">*</span> 最大版本
+                  </label>
+                  <Input value={pidMaxVersion} onChange={(e) => setPidMaxVersion(e.target.value)} placeholder="如 9.01.0" />
+                </div>
+              </div>
+            )}
+
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium">状态</span>
+              <Switch checked={pidStatus === 'enabled'} onCheckedChange={(v) => setPidStatus(v ? 'enabled' : 'disabled')} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowAddPidDialog(false)}>取消</Button>
+            <Button className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white" onClick={handleAddPidSource}>提交</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       </div>
     </div>
   );
