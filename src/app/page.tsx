@@ -944,7 +944,7 @@ export default function WaterfallManagementPage() {
             <span className="text-[#86909C]">ADX流量工具</span>
             <ChevronRightIcon className="w-4 h-4 text-[#C9CDD4]" />
             <span className={`font-medium ${currentPage === 'codePosition' ? 'text-[#1D2129]' : 'text-[#1D2129]'}`}>
-              {currentPage === 'waterfall' ? '瀑布流管理' : '代码位ID管理'}
+              {currentPage === 'waterfall' ? '流量分组管理' : '代码位ID管理'}
             </span>
           </div>
         </header>
