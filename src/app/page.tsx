@@ -2635,6 +2635,7 @@ export default function WaterfallManagementPage() {
               <TableHeader>
                 <TableRow className="bg-[#F7F8FA]">
                   <TableHead className="w-24">组别</TableHead>
+                  <TableHead className="text-right">入组DAU</TableHead>
                   <TableHead className="text-right">千人均收益</TableHead>
                   <TableHead className="text-right">预估收入</TableHead>
                   <TableHead className="text-right">eCPM</TableHead>
@@ -2654,6 +2655,7 @@ export default function WaterfallManagementPage() {
                 {/* A组对照组 */}
                 <TableRow>
                   <TableCell><span className="inline-block px-2 py-1 bg-[#10B981] text-white text-xs rounded">A(对照组)</span></TableCell>
+                  <TableCell className="text-right">45,678</TableCell>
                   <TableCell className="text-right">0.05</TableCell>
                   <TableCell className="text-right">1,014.97</TableCell>
                   <TableCell className="text-right">23.17</TableCell>
@@ -2671,6 +2673,7 @@ export default function WaterfallManagementPage() {
                 {/* B组实验组 */}
                 <TableRow>
                   <TableCell><span className="inline-block px-2 py-1 bg-[#F59E0B] text-white text-xs rounded">B(实验组)</span></TableCell>
+                  <TableCell className="text-right">4,280</TableCell>
                   <TableCell className="text-right">0.01</TableCell>
                   <TableCell className="text-right">23.67</TableCell>
                   <TableCell className="text-right">11.35</TableCell>
@@ -2688,6 +2691,7 @@ export default function WaterfallManagementPage() {
                 {/* 对比涨幅 */}
                 <TableRow className="bg-[#F7F8FA]">
                   <TableCell className="text-[#86909C]">对比涨幅</TableCell>
+                  <TableCell className="text-right text-[#EF4444]">-90.63%</TableCell>
                   <TableCell className="text-right text-[#EF4444]">-80.00%</TableCell>
                   <TableCell className="text-right text-[#EF4444]">-97.67%</TableCell>
                   <TableCell className="text-right text-[#EF4444]">-51.01%</TableCell>
