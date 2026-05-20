@@ -470,6 +470,9 @@ export default function CreateABTestPage() {
               <Button className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white" onClick={handleLaunch}>开始测试</Button>
             </div>
           </div>
+        </div>
+
+      {/* 添加PID弹窗 */}
       <Dialog open={showAddPidDialog} onOpenChange={setShowAddPidDialog}>
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
