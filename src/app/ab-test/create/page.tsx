@@ -124,7 +124,6 @@ export default function CreateABTestPage() {
 
   const [groups, setGroups] = useState<Group[]>([]);
   const [selectedGroupId, setSelectedGroupId] = useState(groupId || '');
-  const [step, setStep] = useState(1); // 1: basic info, 2: waterfall config
   const [testName, setTestName] = useState('');
   const [groupA, setGroupA] = useState('50');
   const [groupB, setGroupB] = useState('50');
@@ -391,7 +390,6 @@ export default function CreateABTestPage() {
                     </SelectContent>
                   </Select>
                   <div className="flex items-center gap-2 text-sm">
-                    <span className="text-[#86909C]">流量比例</span>
                     <Input
                       type="number"
                       value={groupA}
@@ -464,8 +462,8 @@ export default function CreateABTestPage() {
               </div>
             </div>
 
-            {/* 底部操作按钮 */}
-            <div className="flex justify-end gap-2">
+            {/* 底部操作按钮 - 悬浮 */}
+            <div className="sticky bottom-0 bg-white border-t border-[#E5E6EB] -mx-4 -mb-4 px-4 py-3 flex justify-end gap-2 z-10 shadow-[0_-2px_8px_rgba(0,0,0,0.06)]">
               <Button variant="outline" onClick={() => router.back()} className="border-[#E5E6EB] text-[#1D2129]">取消</Button>
               <Button className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white" onClick={handleLaunch}>开始测试</Button>
             </div>
