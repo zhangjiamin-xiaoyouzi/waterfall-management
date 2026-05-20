@@ -1729,7 +1729,7 @@ export default function WaterfallManagementPage() {
                     添加规则
                   </Button>
                 </div>
-              )}
+                  )}
             </div>
           </div>
           <DialogFooter>
@@ -2433,8 +2433,20 @@ export default function WaterfallManagementPage() {
 
             {/* 未启用的DSP来源 */}
             <div>
-              <div className="text-sm font-medium text-[#86909C] mb-2">未启用DSP来源</div>
-              <div className="overflow-x-auto">
+              <div>
+                <button
+                  onClick={() => setCollapsedDisabled(!collapsedDisabled)}
+                  className="flex items-center gap-1.5 text-sm font-medium text-[#86909C] mb-2 hover:text-[#1D2129] transition-colors"
+                >
+                  {collapsedDisabled ? (
+                    <ChevronRight className="w-4 h-4" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4" />
+                  )}
+                  {abTestConfig.disabledSources.length}个DSP来源未启用
+                </button>
+                {!collapsedDisabled && (
+                <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow className="bg-[#F7F8FA]">
@@ -2545,6 +2557,8 @@ export default function WaterfallManagementPage() {
                   )}
                 </TableBody>
               </Table>
+              </div>
+            )}
               </div>
             </div>
           </div>
