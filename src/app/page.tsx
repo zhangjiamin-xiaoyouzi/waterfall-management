@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useEffect } from 'react';
+import { TimeSlotPicker } from '@/components/time-slot-picker';
 import {
   Tv,
   RectangleHorizontal,
@@ -1116,6 +1117,14 @@ export default function WaterfallManagementPage() {
                                 return sp ? `${sp.id} - ${sp.name}` : val;
                               }).join('、');
                             }
+                            if (rule.ruleType === 'time_period') {
+                              // 时段规则：转换为可读描述
+                              const DAY_NAMES: Record<string, string> = { mon: '周一', tue: '周二', wed: '周三', thu: '周四', fri: '周五', sat: '周六', sun: '周日' };
+                              return rule.values.map(val => {
+                                const [day, hour] = val.split('-');
+                                return `${DAY_NAMES[day] || day} ${hour.padStart(2, '0')}:00-${String(Number(hour) + 1).padStart(2, '0')}:00`;
+                              }).join('、');
+                            }
                             return rule.values.join('、');
                           };
                           return (
@@ -1681,34 +1690,47 @@ export default function WaterfallManagementPage() {
                           <SelectItem value="exclude">不包含</SelectItem>
                         </SelectContent>
                       </Select>
-                      <MultipleSelect
-                        value={rule.values}
-                        onChange={(values) => {
-                          const updated = [...newGroupRules];
-                          updated[index].values = values;
-                          setNewGroupRules(updated);
-                        }}
-                        options={
-                          rule.ruleType === 'sub_position'
-                            ? (() => {
-                                // 根据选择的广告位获取子位
-                                const subPositionOptions = newGroupSlots.flatMap(slotId => 
-                                  (SLOT_SUB_POSITIONS[slotId] || []).map(sp => ({
-                                    label: `${sp.id} - ${sp.name}`,
-                                    value: sp.id,
-                                  }))
-                                );
-                                // 如果没有选择广告位或没有子位配置，使用默认值
-                                if (subPositionOptions.length === 0) {
-                                  return RULE_VALUES[rule.ruleType]?.values?.map((val) => ({ label: val, value: val })) || [];
-                                }
-                                return subPositionOptions;
-                              })()
-                            : RULE_VALUES[rule.ruleType]?.values?.map((val) => ({ label: val, value: val })) || []
-                        }
-                        placeholder={`请选择${RULE_VALUES[rule.ruleType]?.label || ''}`}
-                        triggerClassName="flex-1"
-                      />
+                      {rule.ruleType === 'time_period' ? (
+                        <div className="flex-1 min-w-0">
+                          <TimeSlotPicker
+                            value={rule.values}
+                            onChange={(values) => {
+                              const updated = [...newGroupRules];
+                              updated[index].values = values;
+                              setNewGroupRules(updated);
+                            }}
+                          />
+                        </div>
+                      ) : (
+                        <MultipleSelect
+                          value={rule.values}
+                          onChange={(values) => {
+                            const updated = [...newGroupRules];
+                            updated[index].values = values;
+                            setNewGroupRules(updated);
+                          }}
+                          options={
+                            rule.ruleType === 'sub_position'
+                              ? (() => {
+                                  // 根据选择的广告位获取子位
+                                  const subPositionOptions = newGroupSlots.flatMap(slotId => 
+                                    (SLOT_SUB_POSITIONS[slotId] || []).map(sp => ({
+                                      label: `${sp.id} - ${sp.name}`,
+                                      value: sp.id,
+                                    }))
+                                  );
+                                  // 如果没有选择广告位或没有子位配置，使用默认值
+                                  if (subPositionOptions.length === 0) {
+                                    return RULE_VALUES[rule.ruleType]?.values?.map((val) => ({ label: val, value: val })) || [];
+                                  }
+                                  return subPositionOptions;
+                                })()
+                              : RULE_VALUES[rule.ruleType]?.values?.map((val) => ({ label: val, value: val })) || []
+                          }
+                          placeholder={`请选择${RULE_VALUES[rule.ruleType]?.label || ''}`}
+                          triggerClassName="flex-1"
+                        />
+                      )}
                       <Button
                         variant="ghost"
                         size="icon"
