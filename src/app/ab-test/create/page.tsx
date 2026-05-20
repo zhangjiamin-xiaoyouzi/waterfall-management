@@ -389,26 +389,7 @@ export default function CreateABTestPage() {
                       <SelectItem value="B"><div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-[#FA8C16]" />测试组(B)</div></SelectItem>
                     </SelectContent>
                   </Select>
-                  <div className="flex items-center gap-2 text-sm">
-                    <Input
-                      type="number"
-                      value={groupA}
-                      onChange={(e) => {
-                        const val = Math.min(100, Math.max(0, Number(e.target.value) || 0));
-                        setGroupA(String(val));
-                        setGroupB(String(100 - val));
-                      }}
-                      className="w-16 h-7 text-center text-sm px-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                      min={0}
-                      max={100}
-                    />
-                    <span className="text-[#1D2129]">%</span>
-                    <span className="text-[#86909C] mx-1">|</span>
-                    <span className="text-[#52C41A]">A组</span>
-                    <span className="text-[#86909C]">{groupA}%</span>
-                    <span className="text-[#FA8C16] ml-1">B组</span>
-                    <span className="text-[#1D2129]">{groupB}%</span>
-                  </div>
+                  
                 </div>
                 <Button className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white" size="sm" onClick={() => setShowAddPidDialog(true)}>
                   <Plus className="w-4 h-4 mr-1" />添加PID
