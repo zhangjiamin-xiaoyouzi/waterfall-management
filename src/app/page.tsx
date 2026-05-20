@@ -2131,13 +2131,13 @@ export default function WaterfallManagementPage() {
               </div>
             </div>
 
-            {/* 广告代码位ID - 必填，手动输入 */}
+            {/* PID - 必填，手动输入 */}
             <div className="flex items-center">
-              <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0"><span className="text-red-500">*</span> 广告代码位ID</label>
+              <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0"><span className="text-red-500">*</span> PID</label>
               <Input
                 value={newSourceCodeId}
                 onChange={(e) => setNewSourceCodeId(e.target.value)}
-                placeholder="请输入广告代码位ID"
+                placeholder="请输入PID"
                 className="w-64"
               />
             </div>
