@@ -758,6 +758,12 @@ export default function WaterfallManagementPage() {
     if (!newSourceName || newSourceName.length === 0) return;
     if (newSourcePlatform.length === 0) return;
     if (!newSourceCodeId.trim()) return;
+    // SDK类型DSP来源时，版本配置必填
+    if (newSourceName.some(n => SDK_SOURCE_VALUES.has(n))) {
+      if (!newSourceMinVersion.trim() || !newSourceMaxVersion.trim()) {
+        return;
+      }
+    }
     
     if (editingSource) {
       // 编辑模式：更新现有DSP来源
@@ -2148,7 +2154,7 @@ export default function WaterfallManagementPage() {
                 <div className="text-xs text-[#86909C] font-medium">SDK版本配置</div>
                 <div className="flex items-center gap-4">
                   <div className="flex-1">
-                    <label className="text-xs text-[#4E5969] mb-1 block">最小版本</label>
+                    <label className="text-xs text-[#4E5969] mb-1 block">最小版本 <span className="text-[#FF4D88]">*</span></label>
                     <Input
                       value={newSourceMinVersion}
                       onChange={(e) => setNewSourceMinVersion(e.target.value)}
@@ -2156,7 +2162,7 @@ export default function WaterfallManagementPage() {
                     />
                   </div>
                   <div className="flex-1">
-                    <label className="text-xs text-[#4E5969] mb-1 block">最大版本</label>
+                    <label className="text-xs text-[#4E5969] mb-1 block">最大版本 <span className="text-[#FF4D88]">*</span></label>
                     <Input
                       value={newSourceMaxVersion}
                       onChange={(e) => setNewSourceMaxVersion(e.target.value)}
