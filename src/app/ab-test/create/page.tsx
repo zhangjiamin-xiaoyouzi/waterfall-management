@@ -40,6 +40,10 @@ interface AdSource {
   status: string;
   pricingType: string;
   price: number;
+  /** A/B 测试中对照组(A)价格 */
+  priceA?: number;
+  /** A/B 测试中测试组(B)价格 */
+  priceB?: number;
   estimatedRevenue: number;
   ecpm: number;
   thousandRequestValue: number;
@@ -115,6 +119,8 @@ export default function CreateABTestPage() {
   const [pidMinVersion, setPidMinVersion] = useState('');
   const [pidMaxVersion, setPidMaxVersion] = useState('');
   const [pidStatus, setPidStatus] = useState('active');
+  const [pidPriceA, setPidPriceA] = useState('0');
+  const [pidPriceB, setPidPriceB] = useState('0');
   const [isSdkSource, setIsSdkSource] = useState(false);
   const [abTestConfig, setAbTestConfig] = useState<{ enabledSources: AdSource[] }>({ enabledSources: [] });
 
@@ -147,7 +153,9 @@ export default function CreateABTestPage() {
       name: pidCodeId,
       status: pidStatus === 'active' ? 'enabled' : 'disabled',
       pricingType: 'bidding',
-      price: 0,
+      price: parseFloat(pidPriceA) || 0,
+      priceA: parseFloat(pidPriceA) || 0,
+      priceB: parseFloat(pidPriceB) || 0,
       estimatedRevenue: 0,
       ecpm: 0,
       thousandRequestValue: 0,
@@ -182,6 +190,8 @@ export default function CreateABTestPage() {
     setPidMinVersion('');
     setPidMaxVersion('');
     setPidStatus('active');
+    setPidPriceA('0');
+    setPidPriceB('0');
   };
 
   const handleLaunch = () => {
@@ -253,7 +263,49 @@ export default function CreateABTestPage() {
                   <span className="text-red-500">*</span> 流量比例
                 </label>
                 <div className="flex-1 flex items-center gap-6">
-                  <div className="flex items-center gap-2">
+                  <div className="border-t border-[#E5E6EB] pt-4">
+              <label className="block text-sm font-medium mb-3">
+                <span className="text-red-500">*</span> 价格(元)
+              </label>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-[#F6FFED] border border-[#B7EB8F] rounded-lg p-3">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-4 h-4 rounded-full bg-[#52C41A] flex items-center justify-center text-white text-[10px] font-bold">A</div>
+                    <span className="text-xs font-medium text-[#1D2129]">对照组</span>
+                  </div>
+                  <div className="relative">
+                    <Input
+                      type="number"
+                      value={pidPriceA}
+                      onChange={(e) => setPidPriceA(e.target.value)}
+                      className="pl-6 pr-2 h-8 text-sm"
+                      step="0.01"
+                      min="0"
+                    />
+                    <span className="absolute left-2 top-1/2 -translate-y-1/2 text-sm text-[#86909C]">¥</span>
+                  </div>
+                </div>
+                <div className="bg-[#FFF7E6] border border-[#FFE58F] rounded-lg p-3">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-4 h-4 rounded-full bg-[#FA8C16] flex items-center justify-center text-white text-[10px] font-bold">B</div>
+                    <span className="text-xs font-medium text-[#1D2129]">测试组</span>
+                  </div>
+                  <div className="relative">
+                    <Input
+                      type="number"
+                      value={pidPriceB}
+                      onChange={(e) => setPidPriceB(e.target.value)}
+                      className="pl-6 pr-2 h-8 text-sm"
+                      step="0.01"
+                      min="0"
+                    />
+                    <span className="absolute left-2 top-1/2 -translate-y-1/2 text-sm text-[#86909C]">¥</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
                     <div className="w-6 h-6 rounded-full bg-[#52C41A] flex items-center justify-center text-white text-xs font-bold">A</div>
                     <span className="text-sm text-[#1D2129]">对照组</span>
                     <div className="relative w-20">
@@ -365,7 +417,7 @@ export default function CreateABTestPage() {
                               {source.pricingType === 'bidding' ? '竞价' : '定价'}
                             </span>
                           </TableCell>
-                          <TableCell className="text-xs">¥{source.price.toFixed(2)}</TableCell>
+                          <TableCell className="text-xs">¥{(testGroup === 'A' ? (source.priceA ?? source.price) : (source.priceB ?? source.price)).toFixed(2)}</TableCell>
                           <TableCell className="text-xs">¥{source.estimatedRevenue.toFixed(2)}</TableCell>
                           <TableCell className="text-xs">{source.ecpm.toFixed(2)}</TableCell>
                           <TableCell className="text-xs">¥{source.thousandRequestValue.toFixed(2)}</TableCell>
@@ -396,7 +448,7 @@ export default function CreateABTestPage() {
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={() => setStep(1)} className="border-[#E5E6EB] text-[#1D2129]">上一步</Button>
               <Button variant="outline" onClick={() => router.back()} className="border-[#E5E6EB] text-[#1D2129]">取消</Button>
-              <Button className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white" onClick={handleLaunch}>创建并启动</Button>
+              <Button className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white" onClick={handleLaunch}>开始测试</Button>
             </div>
           </div>
         )}
