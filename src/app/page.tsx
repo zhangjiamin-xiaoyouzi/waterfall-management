@@ -1693,16 +1693,14 @@ export default function WaterfallManagementPage() {
                       </Select>
                       )}
                       {rule.ruleType === 'time_period' ? (
-                        <div className="flex-1 min-w-0">
-                          <TimeSlotPicker
-                            value={rule.values}
-                            onChange={(values) => {
-                              const updated = [...newGroupRules];
-                              updated[index].values = values;
-                              setNewGroupRules(updated);
-                            }}
-                          />
-                        </div>
+                        <TimeSlotPicker
+                          value={rule.values}
+                          onChange={(values) => {
+                            const updated = [...newGroupRules];
+                            updated[index].values = values;
+                            setNewGroupRules(updated);
+                          }}
+                        />
                       ) : (
                         <MultipleSelect
                           value={rule.values}
