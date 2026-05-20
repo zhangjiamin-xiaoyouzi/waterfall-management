@@ -365,7 +365,7 @@ export default function CreateABTestPage() {
               <div className="flex items-center pl-24">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <Checkbox checked={copyConfig} onCheckedChange={(c) => setCopyConfig(c === true)} className="border-[#E5E6EB] data-[state=checked]:bg-[#FF4D88] data-[state=checked]:border-[#FF4D88]" />
-                  <span className="text-sm text-[#1D2129]">将 A 组瀑布流配置复制给 B 组</span>
+                  <span className="text-sm text-[#1D2129]">将A组配置复制给B组</span>
                 </label>
               </div>
             </div>
