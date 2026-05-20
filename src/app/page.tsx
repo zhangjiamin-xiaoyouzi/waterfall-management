@@ -2958,7 +2958,6 @@ function SourceTable({
                   </div>
                 </div>
               </TableCell>
-              
               {/* 状态开关 */}
               <TableCell onClick={(e) => e.stopPropagation()}>
                 <div className="flex items-center">
@@ -2969,7 +2968,6 @@ function SourceTable({
                   />
                 </div>
               </TableCell>
-              
               {/* 定价方式 */}
               <TableCell>
                 <div className="flex items-center gap-1">
@@ -2982,7 +2980,6 @@ function SourceTable({
                   </span>
                 </div>
               </TableCell>
-              
               {/* 价格 */}
               <TableCell onClick={(e) => e.stopPropagation()}>
                 <div className="flex items-center gap-1 text-[#1D2129]">
@@ -3031,12 +3028,10 @@ function SourceTable({
                   )}
                 </div>
               </TableCell>
-              
               {/* 千人均收益 */}
               <TableCell className="text-[#1D2129]">
                 ¥{source.revenuePerThousand?.toFixed(2) || '-'}
               </TableCell>
-              
               {/* 预估收入 */}
               <TableCell className="text-[#1D2129]">
                 {source.estimatedRevenue.toLocaleString('zh-CN', {
@@ -3044,53 +3039,42 @@ function SourceTable({
                   maximumFractionDigits: 1,
                 })}
               </TableCell>
-              
               {/* eCPM */}
               <TableCell className="text-[#1D2129]">
                 ¥{source.ecpm.toFixed(2)}
               </TableCell>
-              
               {/* 千次请求价值 */}
               <TableCell className="text-[#1D2129]">
                 ¥{source.thousandRequestValue.toFixed(2)}
               </TableCell>
-              
               {/* 请求量 */}
               <TableCell className="text-[#1D2129]">
                 {formatNumber(source.requests)}
               </TableCell>
-              
               {/* 返回率 */}
               <TableCell className="text-[#1D2129]">
                 {source.responseRate.toFixed(1)}%
               </TableCell>
-              
               {/* 竞价成功数 */}
               <TableCell className="text-[#1D2129]">
                 {formatNumber(source.bidWins)}
               </TableCell>
-              
               {/* 竞价成功率 */}
               <TableCell className="text-[#1D2129]">
                 {`${source.bidWinRate.toFixed(1)}%`}
               </TableCell>
-              
               {/* 展示量 */}
               <TableCell className="text-[#1D2129]">
                 {(source.impressions ?? 0) > 0 ? formatNumber(source.impressions!) : '-'}
               </TableCell>
-              
               {/* 竞胜展示率 */}
               <TableCell className="text-[#1D2129]">
                 {(source.winImpressionRate ?? 0) > 0 ? `${source.winImpressionRate!.toFixed(1)}%` : '-'}
               </TableCell>
-              
-              
               {/* 点击率 */}
               <TableCell className="text-[#1D2129]">
                 {(source.ctr ?? 0) > 0 ? `${source.ctr!.toFixed(1)}%` : '-'}
               </TableCell>
-              
               {/* cpc */}
               <TableCell className="text-[#1D2129]">
                 {(source.cpc ?? 0) > 0 ? `¥${source.cpc!.toFixed(2)}` : '-'}
