@@ -1563,7 +1563,7 @@ export default function WaterfallManagementPage() {
           <div className="space-y-4 py-4">
             {/* 分组名称 */}
             <div className="flex items-center">
-              <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0">分组名称</label>
+              <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0"><span className="text-red-500">*</span> 分组名称</label>
               <div className="flex-1 relative">
                 <Input
                   value={newGroupName}
