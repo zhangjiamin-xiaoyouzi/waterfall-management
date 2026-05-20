@@ -1571,7 +1571,7 @@ export default function WaterfallManagementPage() {
           setNewGroupRules([]);
         }
       }}>
-        <DialogContent className="sm:max-w-[480px]">
+        <DialogContent className="sm:max-w-[700px]">
           <DialogHeader>
             <DialogTitle>{editingGroup ? '编辑分组' : '添加分组'}</DialogTitle>
           </DialogHeader>
