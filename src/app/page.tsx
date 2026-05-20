@@ -1473,8 +1473,7 @@ export default function WaterfallManagementPage() {
                             </button>
                           )}
                         </div>
-                      </TableCell>
-                    </TableRow>
+                      </TableCell></TableRow>
                   ))}
                 </TableBody>
               </Table>
@@ -2446,15 +2445,13 @@ export default function WaterfallManagementPage() {
                       <TableCell className="text-xs text-right">{(source.winImpressionRate ?? 0).toFixed(1)}%</TableCell>
                       <TableCell className="text-xs text-right">{(source.clicks ?? 0) >= 10000 ? `${((source.clicks ?? 0) / 10000).toFixed(1)}万` : source.clicks ?? 0}</TableCell>
                       <TableCell className="text-xs text-right">{(source.ctr || 0).toFixed(1)}%</TableCell>
-                      <TableCell className="text-xs text-right">¥{(source.cpc || 0).toFixed(2)}</TableCell>
-                    </TableRow>
+                      <TableCell className="text-xs text-right">¥{(source.cpc || 0).toFixed(2)}</TableCell></TableRow>
                   ))}
                   {abTestConfig.enabledSources.length === 0 && (
                     <TableRow>
                       <TableCell colSpan={18} className="text-center text-[#86909C] py-4 text-xs">
                         暂无已启用DSP来源，请点击上方「添加PID」按钮添加
-                      </TableCell>
-                    </TableRow>
+                      </TableCell></TableRow>
                   )}
                 </TableBody>
               </Table>
@@ -2575,15 +2572,13 @@ export default function WaterfallManagementPage() {
                       <TableCell className="text-xs text-right text-[#C9CDD4]">-</TableCell>
                       <TableCell className="text-xs text-right text-[#C9CDD4]">-</TableCell>
                       <TableCell className="text-xs text-right text-[#C9CDD4]">-</TableCell>
-                      <TableCell className="text-xs text-right text-[#C9CDD4]">-</TableCell>
-                    </TableRow>
+                      <TableCell className="text-xs text-right text-[#C9CDD4]">-</TableCell></TableRow>
                   ))}
                   {abTestConfig.disabledSources.length === 0 && (
                     <TableRow>
                       <TableCell colSpan={18} className="text-center text-[#86909C] py-4 text-xs">
                         暂无未启用DSP来源
-                      </TableCell>
-                    </TableRow>
+                      </TableCell></TableRow>
                   )}
                 </TableBody>
               </Table>
@@ -2670,8 +2665,7 @@ export default function WaterfallManagementPage() {
                   <TableCell className="text-right">100.00%</TableCell>
                   <TableCell className="text-right">1,058</TableCell>
                   <TableCell className="text-right">4.00%</TableCell>
-                  <TableCell className="text-right">0.96</TableCell>
-                </TableRow>
+                  <TableCell className="text-right">0.96</TableCell></TableRow>
                 {/* B组实验组 */}
                 <TableRow>
                   <TableCell><span className="inline-block px-2 py-1 bg-[#F59E0B] text-white text-xs rounded">B(实验组)</span></TableCell>
@@ -2688,8 +2682,7 @@ export default function WaterfallManagementPage() {
                   <TableCell className="text-right">100.00%</TableCell>
                   <TableCell className="text-right">68</TableCell>
                   <TableCell className="text-right">3.49%</TableCell>
-                  <TableCell className="text-right">0.35</TableCell>
-                </TableRow>
+                  <TableCell className="text-right">0.35</TableCell></TableRow>
                 {/* 对比涨幅 */}
                 <TableRow className="bg-[#F7F8FA]">
                   <TableCell className="text-[#86909C]">对比涨幅</TableCell>
@@ -2706,8 +2699,7 @@ export default function WaterfallManagementPage() {
                   <TableCell className="text-right text-[#86909C]">0.00%</TableCell>
                   <TableCell className="text-right text-[#EF4444]">-93.57%</TableCell>
                   <TableCell className="text-right text-[#EF4444]">-12.75%</TableCell>
-                  <TableCell className="text-right text-[#EF4444]">-63.54%</TableCell>
-                </TableRow>
+                  <TableCell className="text-right text-[#EF4444]">-63.54%</TableCell></TableRow>
               </TableBody>
             </Table>
           </div>
@@ -2939,8 +2931,7 @@ function SourceTable({
       </TableHeader>
       <TableBody>
         {summaryData && (
-        <TableRow className="bg-[#FEF3F7] font-medium"><TableCell></TableCell><TableCell className="text-[#1D2129]">{sources.length}个DSP来源已启用</TableCell><TableCell></TableCell><TableCell></TableCell><TableCell></TableCell><TableCell className="text-[#1D2129]">¥{summaryData?.revenuePerThousand?.toFixed(2) || '-'}</TableCell><TableCell className="text-[#1D2129]">{summaryData?.estimatedRevenue.toLocaleString('zh-CN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</TableCell><TableCell className="text-[#1D2129]">¥{summaryData?.ecpm?.toFixed(2) || '-'}</TableCell><TableCell className="text-[#1D2129]">¥{summaryData?.revenuePerThousandRequests?.toFixed(2) || '-'}</TableCell><TableCell className="text-[#1D2129]">{formatNumber(summaryData?.requests || 0)}</TableCell><TableCell className="text-[#1D2129]">{summaryData?.responseRate?.toFixed(1) || '0.0'}%</TableCell><TableCell className="text-[#1D2129]">{formatNumber(summaryData?.bidWins || 0)}</TableCell><TableCell className="text-[#1D2129]">{`${summaryData?.bidWinRate?.toFixed(1) || '0.0'}%`}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.impressions ?? 0) > 0 ? formatNumber(summaryData?.impressions || 0) : '-'}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.winImpressionRate ?? 0) > 0 ? `${summaryData?.winImpressionRate?.toFixed(1)}%` : '-'}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.ctr ?? 0) > 0 ? `${summaryData?.ctr?.toFixed(1)}%` : '-'}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.cpc ?? 0) > 0 ? `¥${summaryData?.cpc?.toFixed(2)}` : '-'}</TableCell> {/* cpc */}
-        </TableRow>
+        <TableRow className="bg-[#FEF3F7] font-medium"><TableCell></TableCell><TableCell className="text-[#1D2129]">{sources.length}个DSP来源已启用</TableCell><TableCell></TableCell><TableCell></TableCell><TableCell></TableCell><TableCell className="text-[#1D2129]">¥{summaryData?.revenuePerThousand?.toFixed(2) || '-'}</TableCell><TableCell className="text-[#1D2129]">{summaryData?.estimatedRevenue.toLocaleString('zh-CN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</TableCell><TableCell className="text-[#1D2129]">¥{summaryData?.ecpm?.toFixed(2) || '-'}</TableCell><TableCell className="text-[#1D2129]">¥{summaryData?.revenuePerThousandRequests?.toFixed(2) || '-'}</TableCell><TableCell className="text-[#1D2129]">{formatNumber(summaryData?.requests || 0)}</TableCell><TableCell className="text-[#1D2129]">{summaryData?.responseRate?.toFixed(1) || '0.0'}%</TableCell><TableCell className="text-[#1D2129]">{formatNumber(summaryData?.bidWins || 0)}</TableCell><TableCell className="text-[#1D2129]">{`${summaryData?.bidWinRate?.toFixed(1) || '0.0'}%`}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.impressions ?? 0) > 0 ? formatNumber(summaryData?.impressions || 0) : '-'}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.winImpressionRate ?? 0) > 0 ? `${summaryData?.winImpressionRate?.toFixed(1)}%` : '-'}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.ctr ?? 0) > 0 ? `${summaryData?.ctr?.toFixed(1)}%` : '-'}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.cpc ?? 0) > 0 ? `¥${summaryData?.cpc?.toFixed(2)}` : '-'}</TableCell></TableRow>
         )}
         {sources.map((source) => {
           const colors = getSourceColor(source.name);
@@ -3059,9 +3050,7 @@ function SourceTable({
               </TableCell><TableCell className="text-[#1D2129]">
                 {(source.ctr ?? 0) > 0 ? `${source.ctr!.toFixed(1)}%` : '-'}
               </TableCell><TableCell className="text-[#1D2129]">
-                {(source.cpc ?? 0) > 0 ? `¥${source.cpc!.toFixed(2)}` : '-'}
-              </TableCell>
-            </TableRow>
+                {(source.cpc ?? 0) > 0 ? `¥${source.cpc!.toFixed(2)}` : '-'}</TableCell></TableRow>
           );
         })}
       </TableBody>

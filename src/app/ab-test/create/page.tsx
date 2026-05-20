@@ -451,8 +451,7 @@ export default function CreateABTestPage() {
                     })}
                     {enabledSources.length === 0 && (
                       <TableRow>
-                        <TableCell colSpan={17} className="text-center text-[#86909C] py-4 text-xs">暂无已启用DSP来源</TableCell>
-                      </TableRow>
+                        <TableCell colSpan={17} className="text-center text-[#86909C] py-4 text-xs">暂无已启用DSP来源</TableCell></TableRow>
                     )}
                   </TableBody>
                 </Table>
@@ -509,8 +508,7 @@ export default function CreateABTestPage() {
                         })}
                         {disabledSources.length === 0 && (
                           <TableRow>
-                            <TableCell colSpan={17} className="text-center text-[#86909C] py-4 text-xs">暂无未启用DSP来源</TableCell>
-                          </TableRow>
+                            <TableCell colSpan={17} className="text-center text-[#86909C] py-4 text-xs">暂无未启用DSP来源</TableCell></TableRow>
                         )}
                       </TableBody>
                     </Table>
