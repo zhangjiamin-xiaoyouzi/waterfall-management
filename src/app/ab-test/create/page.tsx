@@ -380,15 +380,26 @@ export default function CreateABTestPage() {
           <div className="p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                  <Select value={testGroup} onValueChange={(v) => setTestGroup(v as 'A' | 'B')}>
-                    <SelectTrigger className="w-32">
-                      <SelectValue placeholder="选择组别" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="A"><div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-[#52C41A]" />对照组(A)</div></SelectItem>
-                      <SelectItem value="B"><div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-[#FA8C16]" />测试组(B)</div></SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div className="flex bg-[#F2F2F5] rounded-lg p-0.5">
+                    <button
+                      className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors flex items-center gap-1.5 ${
+                        testGroup === 'A' ? 'bg-white text-[#1D2129] shadow-sm' : 'text-[#86909C] hover:text-[#1D2129]'
+                      }`}
+                      onClick={() => setTestGroup('A')}
+                    >
+                      <div className="w-2 h-2 rounded-full bg-[#52C41A]" />
+                      对照组(A)
+                    </button>
+                    <button
+                      className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors flex items-center gap-1.5 ${
+                        testGroup === 'B' ? 'bg-white text-[#1D2129] shadow-sm' : 'text-[#86909C] hover:text-[#1D2129]'
+                      }`}
+                      onClick={() => setTestGroup('B')}
+                    >
+                      <div className="w-2 h-2 rounded-full bg-[#FA8C16]" />
+                      测试组(B)
+                    </button>
+                  </div>
                   
                 </div>
                 <Button className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white" size="sm" onClick={() => setShowAddPidDialog(true)}>
