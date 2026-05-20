@@ -2938,26 +2938,8 @@ function SourceTable({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {/* 汇总行 - 仅当有 summaryData 时渲染（仅已启用DSP来源表格显示汇总） */}
         {summaryData && (
-        <TableRow className="bg-[#FEF3F7] font-medium">
-          <TableCell></TableCell> {/* 操作 */}
-          <TableCell className="text-[#1D2129]">{sources.length}个DSP来源已启用</TableCell>
-          <TableCell></TableCell> {/* 状态 */}
-          <TableCell></TableCell> {/* 定价方式 */}
-          <TableCell></TableCell> {/* 价格 */}
-          <TableCell className="text-[#1D2129]">¥{summaryData?.revenuePerThousand?.toFixed(2) || '-'}</TableCell> {/* 千人均收益 */}
-          <TableCell className="text-[#1D2129]">{summaryData?.estimatedRevenue.toLocaleString('zh-CN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</TableCell> {/* 预估收入 */}
-          <TableCell className="text-[#1D2129]">¥{summaryData?.ecpm?.toFixed(2) || '-'}</TableCell> {/* eCPM */}
-          <TableCell className="text-[#1D2129]">¥{summaryData?.revenuePerThousandRequests?.toFixed(2) || '-'}</TableCell> {/* 千次请求价值 */}
-          <TableCell className="text-[#1D2129]">{formatNumber(summaryData?.requests || 0)}</TableCell> {/* 请求量 */}
-          <TableCell className="text-[#1D2129]">{summaryData?.responseRate?.toFixed(1) || '0.0'}%</TableCell> {/* 返回率 */}
-          <TableCell className="text-[#1D2129]">{formatNumber(summaryData?.bidWins || 0)}</TableCell> {/* 竞价成功数 */}
-          <TableCell className="text-[#1D2129]">{`${summaryData?.bidWinRate?.toFixed(1) || '0.0'}%`}</TableCell> {/* 竞价成功率 */}
-          <TableCell className="text-[#1D2129]">{(summaryData?.impressions ?? 0) > 0 ? formatNumber(summaryData?.impressions || 0) : '-'}</TableCell> {/* 展示量 */}
-          <TableCell className="text-[#1D2129]">{(summaryData?.winImpressionRate ?? 0) > 0 ? `${summaryData?.winImpressionRate?.toFixed(1)}%` : '-'}</TableCell> {/* 竞胜展示率 */}
-          <TableCell className="text-[#1D2129]">{(summaryData?.ctr ?? 0) > 0 ? `${summaryData?.ctr?.toFixed(1)}%` : '-'}</TableCell> {/* 点击率 */}
-          <TableCell className="text-[#1D2129]">{(summaryData?.cpc ?? 0) > 0 ? `¥${summaryData?.cpc?.toFixed(2)}` : '-'}</TableCell> {/* cpc */}
+        <TableRow className="bg-[#FEF3F7] font-medium"><TableCell></TableCell><TableCell className="text-[#1D2129]">{sources.length}个DSP来源已启用</TableCell><TableCell></TableCell><TableCell></TableCell><TableCell></TableCell><TableCell className="text-[#1D2129]">¥{summaryData?.revenuePerThousand?.toFixed(2) || '-'}</TableCell><TableCell className="text-[#1D2129]">{summaryData?.estimatedRevenue.toLocaleString('zh-CN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</TableCell><TableCell className="text-[#1D2129]">¥{summaryData?.ecpm?.toFixed(2) || '-'}</TableCell><TableCell className="text-[#1D2129]">¥{summaryData?.revenuePerThousandRequests?.toFixed(2) || '-'}</TableCell><TableCell className="text-[#1D2129]">{formatNumber(summaryData?.requests || 0)}</TableCell><TableCell className="text-[#1D2129]">{summaryData?.responseRate?.toFixed(1) || '0.0'}%</TableCell><TableCell className="text-[#1D2129]">{formatNumber(summaryData?.bidWins || 0)}</TableCell><TableCell className="text-[#1D2129]">{`${summaryData?.bidWinRate?.toFixed(1) || '0.0'}%`}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.impressions ?? 0) > 0 ? formatNumber(summaryData?.impressions || 0) : '-'}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.winImpressionRate ?? 0) > 0 ? `${summaryData?.winImpressionRate?.toFixed(1)}%` : '-'}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.ctr ?? 0) > 0 ? `${summaryData?.ctr?.toFixed(1)}%` : '-'}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.cpc ?? 0) > 0 ? `¥${summaryData?.cpc?.toFixed(2)}` : '-'}</TableCell> {/* cpc */}
         </TableRow>
         )}
         {sources.map((source) => {
@@ -2968,9 +2950,7 @@ function SourceTable({
               className="hover:bg-[#FFF7FA] cursor-pointer"
               onMouseEnter={(e) => onMouseEnter(source, e)}
               onMouseLeave={onMouseLeave}
-            >
-              {/* 操作 */}
-              <TableCell onClick={(e) => e.stopPropagation()}>
+            ><TableCell onClick={(e) => e.stopPropagation()}>
                 <Button
                   size="sm"
                   variant="ghost"
@@ -2979,9 +2959,7 @@ function SourceTable({
                 >
                   编辑
                 </Button>
-              </TableCell>
-              {/* DSP来源名称 */}
-              <TableCell>
+              </TableCell><TableCell>
                 <div className="flex items-center gap-2">
                   <span 
                     className="w-2 h-2 rounded-full shrink-0" 
@@ -2991,9 +2969,7 @@ function SourceTable({
                     <span className="font-medium text-[#1D2129] whitespace-nowrap">{source.name}</span>
                   </div>
                 </div>
-              </TableCell>
-              {/* 状态开关 */}
-              <TableCell onClick={(e) => e.stopPropagation()}>
+              </TableCell><TableCell onClick={(e) => e.stopPropagation()}>
                 <div className="flex items-center">
                   <Switch
                     checked={source.status === 'enabled'}
@@ -3001,9 +2977,7 @@ function SourceTable({
                     className="data-[state=checked]:bg-[#2563EB]"
                   />
                 </div>
-              </TableCell>
-              {/* 定价方式 */}
-              <TableCell>
+              </TableCell><TableCell>
                 <div className="flex items-center gap-1">
                   <span className={`inline-flex px-1.5 py-0.5 rounded text-xs font-medium whitespace-nowrap ${
                     source.pricingType === 'bidding'
@@ -3013,9 +2987,7 @@ function SourceTable({
                     {source.pricingType === 'bidding' ? '竞价' : '定价'}
                   </span>
                 </div>
-              </TableCell>
-              {/* 价格 */}
-              <TableCell onClick={(e) => e.stopPropagation()}>
+              </TableCell><TableCell onClick={(e) => e.stopPropagation()}>
                 <div className="flex items-center gap-1 text-[#1D2129]">
                   {editingPrice?.id === source.id ? (
                     <div className="flex items-center gap-1">
@@ -3061,56 +3033,32 @@ function SourceTable({
                     </div>
                   )}
                 </div>
-              </TableCell>
-              {/* 千人均收益 */}
-              <TableCell className="text-[#1D2129]">
+              </TableCell><TableCell className="text-[#1D2129]">
                 ¥{source.revenuePerThousand?.toFixed(2) || '-'}
-              </TableCell>
-              {/* 预估收入 */}
-              <TableCell className="text-[#1D2129]">
+              </TableCell><TableCell className="text-[#1D2129]">
                 {source.estimatedRevenue.toLocaleString('zh-CN', {
                   minimumFractionDigits: 1,
                   maximumFractionDigits: 1,
                 })}
-              </TableCell>
-              {/* eCPM */}
-              <TableCell className="text-[#1D2129]">
+              </TableCell><TableCell className="text-[#1D2129]">
                 ¥{source.ecpm.toFixed(2)}
-              </TableCell>
-              {/* 千次请求价值 */}
-              <TableCell className="text-[#1D2129]">
+              </TableCell><TableCell className="text-[#1D2129]">
                 ¥{source.thousandRequestValue.toFixed(2)}
-              </TableCell>
-              {/* 请求量 */}
-              <TableCell className="text-[#1D2129]">
+              </TableCell><TableCell className="text-[#1D2129]">
                 {formatNumber(source.requests)}
-              </TableCell>
-              {/* 返回率 */}
-              <TableCell className="text-[#1D2129]">
+              </TableCell><TableCell className="text-[#1D2129]">
                 {source.responseRate.toFixed(1)}%
-              </TableCell>
-              {/* 竞价成功数 */}
-              <TableCell className="text-[#1D2129]">
+              </TableCell><TableCell className="text-[#1D2129]">
                 {formatNumber(source.bidWins)}
-              </TableCell>
-              {/* 竞价成功率 */}
-              <TableCell className="text-[#1D2129]">
+              </TableCell><TableCell className="text-[#1D2129]">
                 {`${source.bidWinRate.toFixed(1)}%`}
-              </TableCell>
-              {/* 展示量 */}
-              <TableCell className="text-[#1D2129]">
+              </TableCell><TableCell className="text-[#1D2129]">
                 {(source.impressions ?? 0) > 0 ? formatNumber(source.impressions!) : '-'}
-              </TableCell>
-              {/* 竞胜展示率 */}
-              <TableCell className="text-[#1D2129]">
+              </TableCell><TableCell className="text-[#1D2129]">
                 {(source.winImpressionRate ?? 0) > 0 ? `${source.winImpressionRate!.toFixed(1)}%` : '-'}
-              </TableCell>
-              {/* 点击率 */}
-              <TableCell className="text-[#1D2129]">
+              </TableCell><TableCell className="text-[#1D2129]">
                 {(source.ctr ?? 0) > 0 ? `${source.ctr!.toFixed(1)}%` : '-'}
-              </TableCell>
-              {/* cpc */}
-              <TableCell className="text-[#1D2129]">
+              </TableCell><TableCell className="text-[#1D2129]">
                 {(source.cpc ?? 0) > 0 ? `¥${source.cpc!.toFixed(2)}` : '-'}
               </TableCell>
             </TableRow>
