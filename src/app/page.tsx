@@ -1223,7 +1223,7 @@ export default function WaterfallManagementPage() {
                               setAbTestConfig(draft.config);
                               setAbTestDraftData(draft);
                             }
-                            router.push('/ab-test/create');
+                            router.push(`/ab-test/create?groupId=${currentGroup?.id}`);
                           }}
                         >
                           编辑A/B测试
@@ -1241,7 +1241,7 @@ export default function WaterfallManagementPage() {
                             const timeStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
                             setAbTestName(`${currentGroup.name}_正式_测试_${timeStr}`);
                           }
-                          router.push('/ab-test/create');
+                          router.push(`/ab-test/create?groupId=${currentGroup?.id}`);
                         }}
                       >
                         创建A/B测试

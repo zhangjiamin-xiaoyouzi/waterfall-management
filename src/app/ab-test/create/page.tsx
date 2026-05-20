@@ -221,16 +221,20 @@ export default function CreateABTestPage() {
               {/* 选择分组 */}
               <div className="flex items-center">
                 <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0">选择分组</label>
-                <Select value={selectedGroupId} onValueChange={setSelectedGroupId}>
-                  <SelectTrigger className="flex-1">
-                    <SelectValue placeholder="请选择分组" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {groups.map(g => (
-                      <SelectItem key={g.id} value={g.id}>{g.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                {groupId ? (
+                  <span className="text-sm text-[#1D2129] font-medium">{currentGroup?.name || '-'}</span>
+                ) : (
+                  <Select value={selectedGroupId} onValueChange={setSelectedGroupId}>
+                    <SelectTrigger className="flex-1">
+                      <SelectValue placeholder="请选择分组" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {groups.map(g => (
+                        <SelectItem key={g.id} value={g.id}>{g.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
               </div>
 
               {/* 分组名称 */}
