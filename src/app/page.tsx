@@ -241,39 +241,7 @@ export default function WaterfallManagementPage() {
     end: new Date().toISOString().split('T')[0],
   });
   
-  // 数据版本号 - 当数据结构变更时更新
-  const DATA_VERSION = '4.1';
-
-  // 初始分组数据 - 始终确保有默认分组
-  const getInitialGroups = (): AdGroup[] => {
-    // 优先使用 localStorage 中的有效数据
-    if (typeof window !== 'undefined') {
-      const savedVersion = localStorage.getItem('adGroupsVersion');
-      if (savedVersion !== DATA_VERSION) {
-        // 版本不匹配，清除旧数据
-        localStorage.removeItem('adGroups');
-        localStorage.setItem('adGroupsVersion', DATA_VERSION);
-      } else {
-        const saved = localStorage.getItem('adGroups');
-        if (saved) {
-          try {
-            const parsed = JSON.parse(saved);
-            // 验证数据有效性：必须是数组且至少有一个默认分组
-            if (Array.isArray(parsed) && parsed.length > 0 && parsed.some(g => g.priority === Infinity)) {
-              return parsed;
-            }
-          } catch {
-            // 解析失败，清除无效数据
-            localStorage.removeItem('adGroups');
-          }
-        }
-      }
-    }
-    // 使用默认数据并保存
-    return MOCK_AD_GROUPS;
-  };
-
-  const [adGroups, setAdGroups] = useState<AdGroup[]>(() => getInitialGroups());
+  const [adGroups, setAdGroups] = useState<AdGroup[]>(MOCK_AD_GROUPS);
   const [selectedGroupId, setSelectedGroupId] = useState<string>('');
   const [selectedSources, setSelectedSources] = useState<Set<string>>(new Set());
   const [collapsedDisabled, setCollapsedDisabled] = useState(true);
@@ -299,12 +267,19 @@ export default function WaterfallManagementPage() {
     ],
   };
   
-  // 保存分组数据到 localStorage
+  // 页面加载时从 API 加载分组数据
   useEffect(() => {
-    if (typeof window !== 'undefined' && adGroups.length > 0) {
-      localStorage.setItem('adGroups', JSON.stringify(adGroups));
-    }
-  }, [adGroups]);
+    fetch('/api/groups')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.data && data.data.length > 0) {
+          setAdGroups(data.data);
+        }
+      })
+      .catch(() => {
+        // 加载失败时使用默认数据
+      });
+  }, []);
 
   // 默认选中第一个分组（priority 最小非 Infinity）
   useEffect(() => {
@@ -670,21 +645,30 @@ export default function WaterfallManagementPage() {
   }, []);
 
   // 切换DSP来源开关
-  const toggleSourceStatus = useCallback((sourceId: string) => {
+  const toggleSourceStatus = useCallback(async (sourceId: string) => {
+    const newStatus = adGroups.some(g => g.adSources.some(s => s.id === sourceId && s.status === 'enabled'))
+      ? 'disabled' : 'enabled';
     setAdGroups((prev) =>
       prev.map((g) => ({
         ...g,
         adSources: g.adSources.map((s) =>
           s.id === sourceId
-            ? { ...s, status: s.status === 'enabled' ? 'disabled' : 'enabled' }
+            ? { ...s, status: newStatus }
             : s
         ),
       }))
     );
-  }, []);
+    try {
+      await fetch(`/api/sources/${sourceId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
+    } catch { /* 静默处理 */ }
+  }, [adGroups]);
 
   // 更新DSP来源价格
-  const updateSourcePrice = useCallback((sourceId: string, price: number) => {
+  const updateSourcePrice = useCallback(async (sourceId: string, price: number) => {
     setAdGroups((prev) =>
       prev.map((g) => ({
         ...g,
@@ -693,20 +677,44 @@ export default function WaterfallManagementPage() {
         ),
       }))
     );
+    try {
+      await fetch(`/api/sources/${sourceId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ price }),
+      });
+    } catch { /* 静默处理 */ }
   }, []);
 
 
-  const handleAddGroup = useCallback(() => {
+  const handleAddGroup = useCallback(async () => {
     if (!newGroupName.trim()) return;
     if (newGroupSlots.length === 0) return;
 
     if (editingGroup) {
       // 编辑模式：更新现有分组
-      setAdGroups((prev) =>
-        prev.map((g) =>
-          g.id === editingGroup.id ? { ...g, name: newGroupName, priority: newGroupPriority, adSlots: newGroupSlots, rules: newGroupRules } : g
-        )
-      );
+      const updates: Partial<AdGroup> = { name: newGroupName, priority: newGroupPriority, adSlots: newGroupSlots, rules: newGroupRules };
+      try {
+        const res = await fetch(`/api/groups/${editingGroup.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updates),
+        });
+        if (res.ok) {
+          setAdGroups((prev) =>
+            prev.map((g) =>
+              g.id === editingGroup.id ? { ...g, ...updates } : g
+            )
+          );
+        }
+      } catch {
+        // API 失败时仅本地更新
+        setAdGroups((prev) =>
+          prev.map((g) =>
+            g.id === editingGroup.id ? { ...g, ...updates } : g
+          )
+        );
+      }
       setEditingGroup(null);
     } else {
       // 新建模式
@@ -721,7 +729,21 @@ export default function WaterfallManagementPage() {
         floorPrice: 0,
         adSources: [],
       };
-      setAdGroups((prev) => [...prev, newGroup]);
+      try {
+        const res = await fetch('/api/groups', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ group: newGroup }),
+        });
+        if (res.ok) {
+          const responseData = await res.json();
+          setAdGroups((prev) => [...prev, responseData.data]);
+        } else {
+          setAdGroups((prev) => [...prev, newGroup]);
+        }
+      } catch {
+        setAdGroups((prev) => [...prev, newGroup]);
+      }
       setSelectedGroupId(newGroup.id);
     }
     setNewGroupName('');
@@ -732,30 +754,37 @@ export default function WaterfallManagementPage() {
   }, [newGroupName, newGroupPriority, newGroupSlots, newGroupRules, editingGroup]);
 
   // 添加PID
-  const handleAddSource = useCallback(() => {
+  const handleAddSource = useCallback(async () => {
     if (!newSourceName || newSourceName.length === 0) return;
     if (newSourcePlatform.length === 0) return;
     if (!newSourceCodeId.trim()) return;
     
     if (editingSource) {
       // 编辑模式：更新现有DSP来源
+      const updates = {
+        dspSources: newSourceName,
+        status: newSourceStatus ? 'enabled' : 'disabled',
+        platforms: newSourcePlatform as ('Android' | 'iOS')[],
+        codeId: newSourceCodeId,
+        subPositions: newSourceSubPositions,
+        minVersion: newSourceMinVersion || undefined,
+        maxVersion: newSourceMaxVersion || undefined,
+        lastUpdated: new Date().toLocaleString('zh-CN'),
+      };
+      try {
+        await fetch(`/api/sources/${editingSource.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updates),
+        });
+      } catch {
+        // 静默处理
+      }
       setAdGroups((prev) =>
         prev.map((g) => ({
           ...g,
           adSources: g.adSources.map((s) =>
-            s.id === editingSource.id
-              ? {
-                  ...s,
-                  dspSources: newSourceName,
-                  status: newSourceStatus ? 'enabled' : 'disabled',
-                  platforms: newSourcePlatform as ('Android' | 'iOS')[],
-                  codeId: newSourceCodeId,
-                  subPositions: newSourceSubPositions,
-                  minVersion: newSourceMinVersion || undefined,
-                  maxVersion: newSourceMaxVersion || undefined,
-                  lastUpdated: new Date().toLocaleString('zh-CN'),
-                }
-              : s
+            s.id === editingSource.id ? { ...s, ...updates } as AdSource : s
           ),
         }))
       );
@@ -792,6 +821,15 @@ export default function WaterfallManagementPage() {
         }));
       } else {
         // 添加到分组
+        try {
+          await fetch('/api/sources', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ groupId: selectedGroupId, source: newSource }),
+          });
+        } catch {
+          // 静默处理
+        }
         setAdGroups((prev) =>
           prev.map((g) =>
             g.id === selectedGroupId
