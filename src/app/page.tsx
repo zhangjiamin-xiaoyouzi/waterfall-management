@@ -941,7 +941,7 @@ export default function WaterfallManagementPage() {
         {/* 顶部面包屑 */}
         <header className="bg-white border-b border-[#E5E6EB] px-6 py-4">
           <div className="flex items-center gap-2 text-sm">
-            <span className="text-[#86909C]">流量管理</span>
+            <span className="text-[#86909C]">ADX流量工具</span>
             <ChevronRightIcon className="w-4 h-4 text-[#C9CDD4]" />
             <span className={`font-medium ${currentPage === 'codePosition' ? 'text-[#1D2129]' : 'text-[#1D2129]'}`}>
               {currentPage === 'waterfall' ? '瀑布流管理' : '代码位ID管理'}
