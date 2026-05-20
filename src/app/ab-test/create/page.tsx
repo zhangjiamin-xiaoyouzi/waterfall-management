@@ -385,7 +385,6 @@ export default function CreateABTestPage() {
             <div className="bg-white rounded-lg border border-[#E5E6EB] p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <span className="text-sm font-medium text-[#1D2129]">配置测试组瀑布流</span>
                   <Select value={testGroup} onValueChange={(v) => setTestGroup(v as 'A' | 'B')}>
                     <SelectTrigger className="w-32">
                       <SelectValue placeholder="选择组别" />
@@ -395,7 +394,27 @@ export default function CreateABTestPage() {
                       <SelectItem value="B"><div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-[#FA8C16]" />测试组(B)</div></SelectItem>
                     </SelectContent>
                   </Select>
-                  <span className="text-sm text-[#86909C]">流量比例: {groupA}%</span>
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="text-[#86909C]">流量比例</span>
+                    <Input
+                      type="number"
+                      value={groupA}
+                      onChange={(e) => {
+                        const val = Math.min(100, Math.max(0, Number(e.target.value) || 0));
+                        setGroupA(String(val));
+                        setGroupB(String(100 - val));
+                      }}
+                      className="w-16 h-7 text-center text-sm px-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      min={0}
+                      max={100}
+                    />
+                    <span className="text-[#1D2129]">%</span>
+                    <span className="text-[#86909C] mx-1">|</span>
+                    <span className="text-[#52C41A]">A组</span>
+                    <span className="text-[#86909C]">{groupA}%</span>
+                    <span className="text-[#FA8C16] ml-1">B组</span>
+                    <span className="text-[#1D2129]">{groupB}%</span>
+                  </div>
                 </div>
                 <Button className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white" size="sm" onClick={() => setShowAddPidDialog(true)}>
                   <Plus className="w-4 h-4 mr-1" />添加PID
