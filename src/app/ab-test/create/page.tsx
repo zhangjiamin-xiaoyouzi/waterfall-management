@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -118,6 +118,14 @@ const formatNum = (num: number): string => {
 };
 
 export default function CreateABTestPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#F2F2F5] flex items-center justify-center text-[#86909C]">加载中...</div>}>
+      <CreateABTestContent />
+    </Suspense>
+  );
+}
+
+function CreateABTestContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const groupId = searchParams.get('groupId');
