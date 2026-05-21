@@ -64,6 +64,16 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -463,6 +473,10 @@ export default function WaterfallManagementPage() {
     enabled: true,
   });
 
+  // A/B测试推全确认
+  const [showRolloutConfirm, setShowRolloutConfirm] = useState(false);
+  const [rolloutTargetGroup, setRolloutTargetGroup] = useState<'A' | 'B'>('A');
+
   // 代码位分页状态
   const [currentPageNum, setCurrentPageNum] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -600,6 +614,36 @@ export default function WaterfallManagementPage() {
     cpc: enabledSources.length > 0 
       ? enabledSources.reduce((sum, s) => sum + (s.cpc || 0), 0) / enabledSources.length 
       : 0,
+  };
+
+  // A/B测试推全处理
+  const handleRollout = async () => {
+    if (!currentGroup?.id) return;
+    try {
+      const res = await fetch('/api/groups', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: currentGroup.id,
+          hasABTest: false,
+          abTestStarted: false,
+        }),
+      });
+      if (res.ok) {
+        setShowRolloutConfirm(false);
+        setShowABTestDataDialog(false);
+        // 刷新分组数据
+        fetch('/api/groups')
+          .then(r => r.json())
+          .then(data => {
+            if (data.success) {
+              setAdGroups(data.data);
+            }
+          });
+      }
+    } catch (err) {
+      console.error('推全失败:', err);
+    }
   };
 
   // 当切换分组时，恢复A/B测试草稿数据
@@ -2610,7 +2654,7 @@ export default function WaterfallManagementPage() {
       <Dialog open={showABTestDataDialog} onOpenChange={setShowABTestDataDialog}>
         <DialogContent className="sm:max-w-[1200px] max-h-[90vh] overflow-hidden flex flex-col">
           <DialogHeader>
-            <DialogTitle className="text-base font-semibold">A/B测试数据</DialogTitle>
+            <DialogTitle className="text-base font-semibold">查看A/B测试数据</DialogTitle>
           </DialogHeader>
 
           {/* 测试基础信息栏 */}
@@ -2621,8 +2665,8 @@ export default function WaterfallManagementPage() {
               <span className="text-sm text-[#86909C]">运行时长：0小时</span>
             </div>
             <div className="flex items-center gap-2">
-              <Button size="sm" className="bg-[#10B981] hover:bg-[#059669] text-white">全量A组</Button>
-              <Button size="sm" className="bg-[#F59E0B] hover:bg-[#D97706] text-white">全量B组</Button>
+              <Button size="sm" className="bg-[#10B981] hover:bg-[#059669] text-white" onClick={() => { setRolloutTargetGroup('A'); setShowRolloutConfirm(true); }}>全量A组</Button>
+              <Button size="sm" className="bg-[#F59E0B] hover:bg-[#D97706] text-white" onClick={() => { setRolloutTargetGroup('B'); setShowRolloutConfirm(true); }}>全量B组</Button>
             </div>
           </div>
 
@@ -2714,6 +2758,22 @@ export default function WaterfallManagementPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* 推全确认弹窗 */}
+      <AlertDialog open={showRolloutConfirm} onOpenChange={setShowRolloutConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>确认推全"{rolloutTargetGroup === 'A' ? 'A组流量' : 'B组流量'}"？</AlertDialogTitle>
+            <AlertDialogDescription>
+              成功后实验将关闭；所有当前流量分组用户都使用{rolloutTargetGroup === 'A' ? 'A' : 'B'}组配置的价格
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>取消</AlertDialogCancel>
+            <AlertDialogAction onClick={handleRollout}>确认推全</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

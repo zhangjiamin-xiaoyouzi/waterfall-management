@@ -183,7 +183,9 @@
             "gdt"
           ]
         }
-      ]
+      ],
+      "hasABTest": true,
+      "abTestStarted": true
     },
     {
       "id": "group-1",
