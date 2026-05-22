@@ -806,37 +806,15 @@ export default function WaterfallManagementPage() {
     setShowAddGroupDialog(false);
   }, [newGroupName, newGroupPriority, newGroupSlots, newGroupRules, editingGroup]);
 
-  // 复制分组
-  const handleCopyGroup = useCallback(async (group: AdGroup) => {
-    const copyName = `${group.name} - 副本`;
+  // 复制分组 - 打开添加弹窗并填充配置
+  const handleCopyGroup = useCallback((group: AdGroup) => {
     const maxPriority = Math.max(...adGroups.filter(g => g.priority < 999).map(g => g.priority), 0);
-    const newGroup: AdGroup = {
-      id: 'group-' + Date.now(),
-      name: copyName,
-      priority: maxPriority + 1,
-      platforms: [...group.platforms],
-      adSlots: [...group.adSlots],
-      rules: JSON.parse(JSON.stringify(group.rules)),
-      status: 'enabled',
-      floorPrice: group.floorPrice,
-      adSources: JSON.parse(JSON.stringify(group.adSources)),
-    };
-    try {
-      const res = await fetch('/api/groups', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ group: newGroup }),
-      });
-      if (res.ok) {
-        const responseData = await res.json();
-        setAdGroups((prev) => [...prev, responseData.data]);
-      } else {
-        setAdGroups((prev) => [...prev, newGroup]);
-      }
-    } catch {
-      setAdGroups((prev) => [...prev, newGroup]);
-    }
-    setSelectedGroupId(newGroup.id);
+    setNewGroupName(`${group.name} - 副本`);
+    setNewGroupPriority(maxPriority + 1);
+    setNewGroupSlots([...group.adSlots]);
+    setNewGroupRules(JSON.parse(JSON.stringify(group.rules)));
+    setEditingGroup(null);
+    setShowAddGroupDialog(true);
   }, [adGroups]);
 
   // 添加PID

@@ -492,6 +492,30 @@
       "status": "enabled",
       "floorPrice": 0,
       "adSources": []
+    },
+    {
+      "id": "group-1779445071487",
+      "name": "测试分组2 - 副本",
+      "priority": 3,
+      "platforms": [
+        "Android",
+        "iOS"
+      ],
+      "adSlots": [
+        "1000"
+      ],
+      "rules": [
+        {
+          "ruleType": "identity",
+          "matchType": "include",
+          "values": [
+            "辣妈"
+          ]
+        }
+      ],
+      "status": "enabled",
+      "floorPrice": 0,
+      "adSources": []
     }
   ]
 }
