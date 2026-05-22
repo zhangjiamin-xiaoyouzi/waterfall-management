@@ -806,6 +806,39 @@ export default function WaterfallManagementPage() {
     setShowAddGroupDialog(false);
   }, [newGroupName, newGroupPriority, newGroupSlots, newGroupRules, editingGroup]);
 
+  // 复制分组
+  const handleCopyGroup = useCallback(async (group: AdGroup) => {
+    const copyName = `${group.name} - 副本`;
+    const maxPriority = Math.max(...adGroups.filter(g => g.priority < 999).map(g => g.priority), 0);
+    const newGroup: AdGroup = {
+      id: 'group-' + Date.now(),
+      name: copyName,
+      priority: maxPriority + 1,
+      platforms: [...group.platforms],
+      adSlots: [...group.adSlots],
+      rules: JSON.parse(JSON.stringify(group.rules)),
+      status: 'enabled',
+      floorPrice: group.floorPrice,
+      adSources: JSON.parse(JSON.stringify(group.adSources)),
+    };
+    try {
+      const res = await fetch('/api/groups', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ group: newGroup }),
+      });
+      if (res.ok) {
+        const responseData = await res.json();
+        setAdGroups((prev) => [...prev, responseData.data]);
+      } else {
+        setAdGroups((prev) => [...prev, newGroup]);
+      }
+    } catch {
+      setAdGroups((prev) => [...prev, newGroup]);
+    }
+    setSelectedGroupId(newGroup.id);
+  }, [adGroups]);
+
   // 添加PID
   const handleAddSource = useCallback(async () => {
     if (!newSourceName || newSourceName.length === 0) return;
