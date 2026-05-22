@@ -10,9 +10,14 @@ interface Database {
 }
 
 function getDefaultDb(): Database {
-  return {
-    groups: JSON.parse(JSON.stringify(MOCK_AD_GROUPS)),
-  };
+  const groups: AdGroup[] = JSON.parse(JSON.stringify(MOCK_AD_GROUPS));
+  // JSON.stringify converts Infinity to null, restore sentinel value for default group
+  groups.forEach(g => {
+    if (g.id === 'group-default' || g.priority === null) {
+      g.priority = 999;
+    }
+  });
+  return { groups };
 }
 
 function readDb(): Database {
@@ -26,7 +31,8 @@ function readDb(): Database {
       return defaultDb;
     }
     const raw = fs.readFileSync(DB_FILE, 'utf-8');
-    return JSON.parse(raw);
+    const data = JSON.parse(raw) as Database;
+    return data;
   } catch {
     const defaultDb = getDefaultDb();
     return defaultDb;

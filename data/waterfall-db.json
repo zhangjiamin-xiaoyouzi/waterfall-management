@@ -3,7 +3,7 @@
     {
       "id": "group-default",
       "name": "默认分组",
-      "priority": 1,
+      "priority": 999,
       "platforms": [
         "Android",
         "iOS"

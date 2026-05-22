@@ -297,7 +297,7 @@ export default function WaterfallManagementPage() {
   useEffect(() => {
     if (adGroups.length > 0) {
       const firstGroup = adGroups
-        .filter((g) => g.priority !== Infinity)
+        .filter((g) => g.priority < 999)
         .sort((a, b) => a.priority - b.priority)[0];
       if (firstGroup && !selectedGroupId) {
         setSelectedGroupId(firstGroup.id);
@@ -323,7 +323,7 @@ export default function WaterfallManagementPage() {
 
   // 计算非默认分组的最大优先级，用于新建分组时自动分配
   const maxNonDefaultPriority = useMemo(() =>
-    Math.max(...adGroups.filter(g => g.priority !== Infinity).map(g => g.priority), 0),
+    Math.max(...adGroups.filter(g => g.priority < 999).map(g => g.priority), 0),
     [adGroups]
   );
 
@@ -583,7 +583,7 @@ export default function WaterfallManagementPage() {
       const stillExists = filteredAdGroups.some((g) => g.id === selectedGroupId);
       if (!stillExists) {
         const firstGroup = filteredAdGroups
-          .filter((g) => g.priority !== Infinity)
+          .filter((g) => g.priority < 999)
           .sort((a, b) => a.priority - b.priority)[0];
         setSelectedGroupId(firstGroup?.id || filteredAdGroups[0]?.id || '');
       }
@@ -1075,9 +1075,9 @@ export default function WaterfallManagementPage() {
             <div className="flex items-center gap-1 px-4 py-2 overflow-x-auto">
               {filteredAdGroups
                 .sort((a, b) => {
-                  // 默认分组（Infinity）固定在最右
-                  if (a.priority === Infinity) return 1;
-                  if (b.priority === Infinity) return -1;
+                  // 默认分组固定在最右
+                  if (a.priority >= 999) return 1;
+                  if (b.priority >= 999) return -1;
                   // 其他按优先级升序排列（数值越小优先级越高）
                   return a.priority - b.priority;
                 })
@@ -1091,7 +1091,7 @@ export default function WaterfallManagementPage() {
                         : 'text-[#1D2129] hover:text-[#86909C]'
                     }`}
                   >
-                    {group.priority === Infinity ? '默认-' + group.name : `${group.priority}-${group.name}`}
+                    {group.priority >= 999 ? group.name : `${group.priority}-${group.name}`}
                     {group.abTestStarted && (
                       <span className="px-1 py-0.5 text-[10px] font-bold bg-[#FF4D88] text-white rounded">
                         AB
@@ -1113,7 +1113,7 @@ export default function WaterfallManagementPage() {
                         <DropdownMenuItem onClick={() => {
                           setEditingGroup(group);
                           setNewGroupName(group.name);
-                          setNewGroupPriority(group.priority === Infinity ? 0 : group.priority);
+                          setNewGroupPriority(group.priority >= 999 ? 0 : group.priority);
                           setNewGroupRules([...group.rules]);
                           setShowAddGroupDialog(true);
                         }}>
