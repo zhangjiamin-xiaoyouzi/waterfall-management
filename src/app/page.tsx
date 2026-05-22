@@ -79,8 +79,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
-import { Drawer, DrawerContent, DrawerOverlay } from '@/components/ui/drawer';
-import { ChevronDownIcon, ChevronsRightIcon, ChevronsLeftIcon, InboxIcon, Package, ArrowRightIcon, ArrowLeftIcon } from 'lucide-react';
+import { ChevronDownIcon, ChevronsRightIcon, ChevronsLeftIcon, InboxIcon } from 'lucide-react';
 import {
   SCENE_NAV_ITEMS,
   MOCK_AD_GROUPS,
@@ -334,7 +333,7 @@ export default function WaterfallManagementPage() {
   }, [editingGroup, selectedSlot, maxNonDefaultPriority]);
 
   // 新建DSP来源表单状态
-  const [newSourceName, setNewSourceName] = useState<string[]>([]);
+  const [newSourceName, setNewSourceName] = useState<string>('');
   const [newSourcePlatform, setNewSourcePlatform] = useState<string[]>(['Android']);
   const [newSourcePid, setNewSourcePid] = useState('');
   const [newSourceCodeId, setNewSourceCodeId] = useState('');
@@ -343,36 +342,6 @@ export default function WaterfallManagementPage() {
   const [newSourceSubPositions, setNewSourceSubPositions] = useState<string[]>([]);
   const [newSourceMinVersion, setNewSourceMinVersion] = useState('');
   const [newSourceMaxVersion, setNewSourceMaxVersion] = useState('');
-  const [showDSPSelectorDrawer, setShowDSPSelectorDrawer] = useState(false);
-  const [dspSearchLeft, setDspSearchLeft] = useState('');
-  const [dspSearchRight, setDspSearchRight] = useState('');
-  const [tempSelectedDSPSources, setTempSelectedDSPSources] = useState<string[]>([]);
-  const [dspSearchKeyword, setDspSearchKeyword] = useState('');
-  const [selectedDspSearchKeyword, setSelectedDspSearchKeyword] = useState('');
-  
-  // DSP选择器相关计算
-  const filteredAvailableDSPSources = DSP_SOURCE_LIST.filter(
-    (d: { value: string; label: string }) => !tempSelectedDSPSources.includes(d.value) && d.label.includes(dspSearchKeyword)
-  );
-  const filteredSelectedDSPSources = DSP_SOURCE_LIST.filter(
-    (d: { value: string; label: string }) => tempSelectedDSPSources.includes(d.value) && d.label.includes(selectedDspSearchKeyword)
-  );
-  const handleToggleDSPSource = (value: string) => {
-    setTempSelectedDSPSources((prev) =>
-      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
-    );
-  };
-  const handleAddAllDSPSources = () => {
-    const newValues = filteredAvailableDSPSources.map((d: { value: string }) => d.value);
-    setTempSelectedDSPSources((prev) => [...new Set([...prev, ...newValues])]);
-  };
-  const handleRemoveAllDSPSources = () => {
-    setTempSelectedDSPSources([]);
-  };
-  const handleConfirmDSPSelection = () => {
-    setNewSourceName(tempSelectedDSPSources);
-    setShowDSPSelectorDrawer(false);
-  };
   
   // 编辑DSP来源
   const [editingSource, setEditingSource] = useState<AdSource | null>(null);
@@ -394,7 +363,7 @@ export default function WaterfallManagementPage() {
         dspSources = [matchedSource.value];
       }
     }
-    setNewSourceName(dspSources);
+    setNewSourceName(dspSources.length > 0 ? dspSources[0] : '');
     setNewSourcePlatform(source.platforms && source.platforms.length > 0 ? source.platforms : ['Android']);
     setNewSourceCodeId(source.codeId || '');
     setNewSourcePrice(source.price.toString());
@@ -407,7 +376,7 @@ export default function WaterfallManagementPage() {
   
   // 重置DSP来源表单
   const resetSourceForm = () => {
-    setNewSourceName([]);
+    setNewSourceName('');
     setNewSourcePlatform(['Android']);
     setNewSourceCodeId('');
     setNewSourcePrice('');
@@ -843,11 +812,11 @@ export default function WaterfallManagementPage() {
 
   // 添加PID
   const handleAddSource = useCallback(async () => {
-    if (!newSourceName || newSourceName.length === 0) return;
+    if (!newSourceName) return;
     if (newSourcePlatform.length === 0) return;
     if (!newSourceCodeId.trim()) return;
     // SDK类型DSP来源时，版本配置必填
-    if (newSourceName.some(n => SDK_SOURCE_VALUES.has(n))) {
+    if (SDK_SOURCE_VALUES.has(newSourceName)) {
       if (!newSourceMinVersion.trim() || !newSourceMaxVersion.trim()) {
         return;
       }
@@ -856,7 +825,7 @@ export default function WaterfallManagementPage() {
     if (editingSource) {
       // 编辑模式：更新现有DSP来源
       const updates = {
-        dspSources: newSourceName,
+        dspSources: [newSourceName],
         status: newSourceStatus ? 'enabled' : 'disabled',
         platforms: newSourcePlatform as ('Android' | 'iOS')[],
         codeId: newSourceCodeId,
@@ -886,7 +855,7 @@ export default function WaterfallManagementPage() {
       // 新增模式
       const newSource: AdSource = {
         id: `source-${Date.now()}`,
-        name: newSourceName.length > 0 ? newSourceName.map(d => DSP_SOURCE_NAMES[d] || d).join(', ') : '',
+        name: newSourceName ? (DSP_SOURCE_NAMES[newSourceName] || newSourceName) : '',
         status: newSourceStatus ? 'enabled' : 'disabled',
         pricingType: 'bidding' as const,
         price: 0,
@@ -902,7 +871,7 @@ export default function WaterfallManagementPage() {
         platforms: newSourcePlatform as ('Android' | 'iOS')[],
         codeId: newSourceCodeId,
         subPositions: newSourceSubPositions,
-        dspSources: newSourceName,
+        dspSources: [newSourceName],
         minVersion: newSourceMinVersion || undefined,
         maxVersion: newSourceMaxVersion || undefined,
       };
@@ -1692,11 +1661,10 @@ export default function WaterfallManagementPage() {
               <Input
                 type="number"
                 value={newGroupPriority}
-                disabled
-                className="w-48 bg-[#F5F5F5] text-[#86909C]"
+                onChange={(e) => setNewGroupPriority(Number(e.target.value))}
+                className="w-48"
                 min={0}
               />
-              <span className="ml-2 text-xs text-[#86909C]">自动按照创建顺序分配</span>
             </div>
 
             {/* 广告场景 - 只读 */}
@@ -2186,36 +2154,21 @@ export default function WaterfallManagementPage() {
             <DialogTitle>{editingSource ? '编辑DSP来源' : '添加PID'}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
-            {/* DSP来源名称 */}
-            <div className="flex items-start">
-              <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0 pt-2"><span className="text-red-500">*</span> DSP来源</label>
-              <div className="flex-1">
-                <Button
-                  variant="outline"
-                  onClick={() => setShowDSPSelectorDrawer(true)}
-                  className="min-h-[36px] h-auto flex-wrap justify-start gap-2"
-                >
-                  {newSourceName && newSourceName.length > 0 ? (
-                    <div className="flex flex-wrap gap-1">
-                      {newSourceName.map((name) => (
-                        <span key={name} className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#FEF3F7] text-[#FF4D88] rounded text-xs">
-                          {DSP_SOURCE_NAMES[name] || name}
-                          <X
-                            className="w-3 h-3 cursor-pointer"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setNewSourceName(newSourceName.filter((n) => n !== name));
-                            }}
-                          />
-                        </span>
-                      ))}
-                    </div>
-                  ) : (
-                    <span className="text-[#86909C]">请选择DSP来源</span>
-                  )}
-                </Button>
-                <p className="text-xs text-[#86909C] mt-1">点击选择DSP来源，最多支持选择多个</p>
-              </div>
+            {/* DSP来源名称 - 单选 */}
+            <div className="flex items-center">
+              <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0"><span className="text-red-500">*</span> DSP来源</label>
+              <Select value={newSourceName} onValueChange={setNewSourceName}>
+                <SelectTrigger className="w-64">
+                  <SelectValue placeholder="请选择DSP来源" />
+                </SelectTrigger>
+                <SelectContent>
+                  {DSP_SOURCE_LIST.map((dsp: { value: string; label: string }) => (
+                    <SelectItem key={dsp.value} value={dsp.value}>
+                      <span>{dsp.label}{SDK_SOURCE_VALUES.has(dsp.value) && <span className="text-[#86909C] text-xs ml-1">SDK</span>}</span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             {/* 广告场景 */}
@@ -2262,7 +2215,7 @@ export default function WaterfallManagementPage() {
             </div>
 
             {/* SDK版本配置 - 仅在选择SDK类型DSP来源时显示 */}
-            {newSourceName.some(n => SDK_SOURCE_VALUES.has(n)) && (
+            {SDK_SOURCE_VALUES.has(newSourceName) && (
               <div className="border border-[#E5E6EB] rounded-lg p-4 space-y-3">
                 <div className="text-xs text-[#86909C] font-medium">SDK版本配置</div>
                 <div className="flex items-center gap-4">
@@ -2306,110 +2259,6 @@ export default function WaterfallManagementPage() {
         </DialogContent>
       </Dialog>
 
-      {/* DSP来源选择器抽屉 */}
-      <Drawer open={showDSPSelectorDrawer} onOpenChange={setShowDSPSelectorDrawer}>
-        <DrawerContent className="h-[70vh]">
-          <div className="px-6 py-4 border-b border-[#E5E6EB]">
-            <span className="text-base font-semibold">选择DSP来源</span>
-          </div>
-          <div className="flex h-[calc(100%-120px)]">
-            {/* 左侧可选DSP来源列表 */}
-            <div className="flex-1 border-r border-[#E5E6EB] p-4 flex flex-col">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-sm text-[#1D2129]">待选DSP来源</span>
-                <Button variant="ghost" size="sm" className="text-[#86909C] hover:text-[#FF4D88]" onClick={() => setTempSelectedDSPSources(DSP_SOURCE_LIST.map((d: { value: string }) => d.value))}>
-                  全选
-                </Button>
-              </div>
-              <Input
-                placeholder="搜索DSP来源"
-                value={dspSearchKeyword}
-                onChange={(e) => setDspSearchKeyword(e.target.value)}
-                className="mb-3"
-              />
-              <div className="flex-1 overflow-y-auto space-y-1">
-                {filteredAvailableDSPSources.map((dsp: { value: string; label: string }) => (
-                  <div
-                    key={dsp.value}
-                    className={`flex items-center gap-2 px-3 py-2 rounded cursor-pointer transition-colors ${
-                      tempSelectedDSPSources.includes(dsp.value)
-                        ? 'bg-[#FFF0F3]'
-                        : 'hover:bg-[#F7F8FA]'
-                    }`}
-                    onClick={() => handleToggleDSPSource(dsp.value)}
-                  >
-                    <Checkbox checked={tempSelectedDSPSources.includes(dsp.value)} />
-                    <span className="text-sm">{dsp.label}{SDK_SOURCE_VALUES.has(dsp.value) && <span className="text-[#86909C] text-xs ml-1">SDK</span>}</span>
-                  </div>
-                ))}
-                {filteredAvailableDSPSources.length === 0 && (
-                  <div className="text-center text-[#86909C] text-sm py-8">暂无数据</div>
-                )}
-              </div>
-            </div>
-
-            {/* 中间操作按钮 */}
-            <div className="flex flex-col items-center justify-center gap-2 px-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleAddAllDSPSources}
-                disabled={filteredAvailableDSPSources.length === 0}
-                className="text-[#86909C] hover:text-[#FF4D88]"
-              >
-                <ArrowRightIcon className="w-5 h-5" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleRemoveAllDSPSources}
-                disabled={tempSelectedDSPSources.length === 0}
-                className="text-[#86909C] hover:text-[#FF4D88]"
-              >
-                <ArrowLeftIcon className="w-5 h-5" />
-              </Button>
-            </div>
-
-            {/* 右侧已选DSP来源列表 */}
-            <div className="flex-1 p-4 flex flex-col">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-sm text-[#1D2129]">已选DSP来源（{tempSelectedDSPSources.length}项）</span>
-                <Button variant="ghost" size="sm" className="text-[#86909C] hover:text-[#FF4D88]" onClick={() => setTempSelectedDSPSources([])}>
-                  清空
-                </Button>
-              </div>
-              <Input
-                placeholder="搜索已选DSP来源"
-                value={selectedDspSearchKeyword}
-                onChange={(e) => setSelectedDspSearchKeyword(e.target.value)}
-                className="mb-3"
-              />
-              <div className="flex-1 overflow-y-auto space-y-1">
-                {filteredSelectedDSPSources.map((dsp: { value: string; label: string }) => (
-                  <div
-                    key={dsp.value}
-                    className="flex items-center gap-2 px-3 py-2 rounded cursor-pointer bg-[#FFF0F3] hover:bg-[#FFE5EB]"
-                    onClick={() => handleToggleDSPSource(dsp.value)}
-                  >
-                    <Checkbox checked={true} />
-                    <span className="text-sm">{dsp.label}{SDK_SOURCE_VALUES.has(dsp.value) && <span className="text-[#86909C] text-xs ml-1">SDK</span>}</span>
-                  </div>
-                ))}
-                {tempSelectedDSPSources.length === 0 && (
-                  <div className="flex flex-col items-center justify-center h-full text-[#86909C]">
-                    <Package className="w-10 h-10 mb-2 opacity-50" />
-                    <span className="text-sm">暂无数据</span>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-          <div className="px-6 py-4 border-t border-[#E5E6EB] flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setShowDSPSelectorDrawer(false)}>取消</Button>
-            <Button className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white" onClick={handleConfirmDSPSelection}>确定</Button>
-          </div>
-        </DrawerContent>
-      </Drawer>
 
       {/* 配置A/B测试弹窗 */}
       <Dialog open={abTestStep === 2} onOpenChange={(open) => { if (!open) setAbTestStep(0); }}>
