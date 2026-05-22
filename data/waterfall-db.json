@@ -468,6 +468,30 @@
           ]
         }
       ]
+    },
+    {
+      "id": "group-1779429459834",
+      "name": "测试分组2",
+      "priority": 2,
+      "platforms": [
+        "Android",
+        "iOS"
+      ],
+      "adSlots": [
+        "1000"
+      ],
+      "rules": [
+        {
+          "ruleType": "identity",
+          "matchType": "include",
+          "values": [
+            "辣妈"
+          ]
+        }
+      ],
+      "status": "enabled",
+      "floorPrice": 0,
+      "adSources": []
     }
   ]
 }

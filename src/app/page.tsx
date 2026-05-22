@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { TimeSlotPicker } from '@/components/time-slot-picker';
 import {
@@ -321,6 +321,12 @@ export default function WaterfallManagementPage() {
   const [newGroupSlots, setNewGroupSlots] = useState<string[]>([]);
   const [newGroupRules, setNewGroupRules] = useState<GroupRule[]>([]);
 
+  // 计算非默认分组的最大优先级，用于新建分组时自动分配
+  const maxNonDefaultPriority = useMemo(() =>
+    Math.max(...adGroups.filter(g => g.priority !== Infinity).map(g => g.priority), 0),
+    [adGroups]
+  );
+
   // 同步editingGroup到表单
   useEffect(() => {
     if (editingGroup) {
@@ -332,11 +338,11 @@ export default function WaterfallManagementPage() {
       setNewGroupRules(editingGroup.rules || []);
     } else {
       setNewGroupName('');
-      setNewGroupPriority(0);
+      setNewGroupPriority(maxNonDefaultPriority + 1);
       setNewGroupSlots(selectedSlot ? [selectedSlot] : []);
       setNewGroupRules([]);
     }
-  }, [editingGroup, selectedSlot]);
+  }, [editingGroup, selectedSlot, maxNonDefaultPriority]);
 
   // 新建DSP来源表单状态
   const [newSourceName, setNewSourceName] = useState<string[]>([]);
@@ -1637,7 +1643,7 @@ export default function WaterfallManagementPage() {
               </div>
             </div>
 
-            {/* 优先级 */}
+            {/* 优先级 - 自动计算，不支持修改 */}
             <div className="flex items-center">
               <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0">
                 <span className="text-red-500">*</span> 优先级
@@ -1645,12 +1651,11 @@ export default function WaterfallManagementPage() {
               <Input
                 type="number"
                 value={newGroupPriority}
-                onChange={(e) => setNewGroupPriority(parseInt(e.target.value) || 0)}
-                placeholder="数值越小优先级越高"
-                className="w-48"
+                disabled
+                className="w-48 bg-[#F5F5F5] text-[#86909C]"
                 min={0}
               />
-              <span className="ml-2 text-xs text-[#86909C]">数值越小优先级越高</span>
+              <span className="ml-2 text-xs text-[#86909C]">自动按照创建顺序分配</span>
             </div>
 
             {/* 广告场景 - 只读 */}
