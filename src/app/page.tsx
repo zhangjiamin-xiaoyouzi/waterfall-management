@@ -1152,6 +1152,12 @@ export default function WaterfallManagementPage() {
                         }}>
                           编辑分组
                         </DropdownMenuItem>
+                        <DropdownMenuItem onClick={(e) => {
+                          e.stopPropagation();
+                          handleCopyGroup(group);
+                        }}>
+                          复制
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
