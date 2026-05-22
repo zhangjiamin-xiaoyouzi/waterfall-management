@@ -293,17 +293,6 @@ export default function WaterfallManagementPage() {
       });
   }, []);
 
-  // 默认选中第一个分组（priority 最小非 Infinity）
-  useEffect(() => {
-    if (adGroups.length > 0) {
-      const firstGroup = adGroups
-        .filter((g) => g.priority < 999)
-        .sort((a, b) => a.priority - b.priority)[0];
-      if (firstGroup && !selectedGroupId) {
-        setSelectedGroupId(firstGroup.id);
-      }
-    }
-  }, [adGroups, selectedGroupId]);
   const [showAddSourceDialog, setShowAddSourceDialog] = useState(false);
   const [addSourceFromABTest, setAddSourceFromABTest] = useState(false);
   const [showAddGroupDialog, setShowAddGroupDialog] = useState(false);
@@ -577,6 +566,38 @@ export default function WaterfallManagementPage() {
     return matchesScene && matchesPlatform;
   });
 
+  // 默认选中第一个场景可见的非默认分组（priority 最小），并在数据更新时保持同步
+  useEffect(() => {
+    if (adGroups.length > 0) {
+      // 检查当前选中分组是否仍存在于数据中
+      const existsInData = !!selectedGroupId && adGroups.some((g) => g.id === selectedGroupId);
+      // 检查当前选中分组在当前场景筛选视图中是否可见
+      const existsInView = !!selectedGroupId && filteredAdGroups.some((g) => g.id === selectedGroupId);
+      // 如果当前选中已不存在、不可见、或选中的是默认分组但存在非默认分组，则需要重新选择
+      const selectedGroup = selectedGroupId ? adGroups.find((g) => g.id === selectedGroupId) : undefined;
+      const isDefaultSelected = !!selectedGroup && selectedGroup.priority >= 999;
+      const hasNonDefaultVisible = filteredAdGroups.some((g) => g.priority < 999);
+
+      if (!existsInData || !existsInView || (isDefaultSelected && hasNonDefaultVisible)) {
+        // 优先从当前场景可见的分组中选第一个非默认分组
+        const firstVisible = filteredAdGroups
+          .filter((g) => g.priority < 999)
+          .sort((a, b) => a.priority - b.priority)[0];
+        if (firstVisible) {
+          setSelectedGroupId(firstVisible.id);
+          return;
+        }
+        // 退而求其次，从全部分组中选第一个非默认分组
+        const firstFromAll = adGroups
+          .filter((g) => g.priority < 999)
+          .sort((a, b) => a.priority - b.priority)[0];
+        if (firstFromAll) {
+          setSelectedGroupId(firstFromAll.id);
+        }
+      }
+    }
+  }, [adGroups, activeScene, selectedPlatform]);
+
   // 当广告场景或平台切换时，自动选中筛选后第一个分组
   useEffect(() => {
     if (filteredAdGroups.length > 0) {
@@ -590,8 +611,11 @@ export default function WaterfallManagementPage() {
     }
   }, [activeScene, selectedPlatform, filteredAdGroups, selectedGroupId]);
 
-  // 获取当前选中的分组（从筛选后的分组中选）
-  const currentGroup = filteredAdGroups.find((g) => g.id === selectedGroupId) || filteredAdGroups[0] || adGroups[0];
+  // 获取当前选中的分组（从筛选后的分组中选），优先选非默认分组
+  const currentGroup = filteredAdGroups.find((g) => g.id === selectedGroupId) 
+    || filteredAdGroups.filter(g => g.priority < 999).sort((a, b) => a.priority - b.priority)[0] 
+    || filteredAdGroups[0] 
+    || adGroups[0];
   const enabledSources = currentGroup?.adSources.filter((s) => s.status === 'enabled') || [];
   const disabledSources = currentGroup?.adSources.filter((s) => s.status === 'disabled') || [];
 
