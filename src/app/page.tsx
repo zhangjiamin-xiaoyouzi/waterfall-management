@@ -2221,7 +2221,7 @@ export default function WaterfallManagementPage() {
                 <div className="text-xs text-[#86909C] font-medium">SDK版本配置 <span className="text-[#FF4D88]">*</span></div>
                 <div className="flex items-center gap-4">
                   <div className="flex-1">
-                    <label className="text-xs text-[#4E5969] mb-1 block">最小版本 <span className="text-[#FF4D88]">*</span></label>
+                    <label className="text-xs text-[#4E5969] mb-1 block">最小版本</label>
                     <Input
                       value={newSourceMinVersion}
                       onChange={(e) => setNewSourceMinVersion(e.target.value)}
@@ -2229,7 +2229,7 @@ export default function WaterfallManagementPage() {
                     />
                   </div>
                   <div className="flex-1">
-                    <label className="text-xs text-[#4E5969] mb-1 block">最大版本 <span className="text-[#FF4D88]">*</span></label>
+                    <label className="text-xs text-[#4E5969] mb-1 block">最大版本</label>
                     <Input
                       value={newSourceMaxVersion}
                       onChange={(e) => setNewSourceMaxVersion(e.target.value)}
