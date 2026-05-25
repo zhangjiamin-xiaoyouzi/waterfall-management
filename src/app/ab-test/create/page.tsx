@@ -195,7 +195,7 @@ function CreateABTestContent() {
 
     const newSource: AdSource = {
       id: `pid-${Date.now()}`,
-      name: pidCodeId,
+      name: DSP_SOURCE_NAMES[newSourceName] || newSourceName,
       status: pidStatus === 'enabled' ? 'enabled' : 'disabled',
       pricingType: 'bidding',
       price: parseFloat(pidPriceA) || 0,
@@ -262,8 +262,8 @@ function CreateABTestContent() {
         s.id === editingSource.source.id
           ? {
               ...s,
-              name: pidCodeId,
-              status: pidStatus === 'active' ? 'enabled' : 'disabled',
+              name: DSP_SOURCE_NAMES[newSourceName] || newSourceName,
+              status: pidStatus === 'enabled' ? 'enabled' : 'disabled',
               price: parseFloat(pidPriceA) || 0,
               priceA: parseFloat(pidPriceA) || 0,
               priceB: parseFloat(pidPriceB) || 0,
