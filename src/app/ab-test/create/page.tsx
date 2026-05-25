@@ -301,10 +301,16 @@ function CreateABTestContent() {
 
   const handleLaunch = async () => {
     try {
+      const currentGroup = groups.find(g => g.id === selectedGroupId);
       await fetch('/api/groups', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: selectedGroupId, hasABTest: true, abTestStarted: true }),
+        body: JSON.stringify({
+          id: selectedGroupId,
+          hasABTest: true,
+          abTestStarted: true,
+          adSources: currentGroup?.adSources || [],
+        }),
       });
     } catch (e) {
       console.error('启动A/B测试失败', e);
