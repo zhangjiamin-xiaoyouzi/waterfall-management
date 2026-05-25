@@ -340,6 +340,7 @@ export default function WaterfallManagementPage() {
   const [newSourcePrice, setNewSourcePrice] = useState('');
   const [newSourceStatus, setNewSourceStatus] = useState(true);
   const [newSourceSubPositions, setNewSourceSubPositions] = useState<string[]>([]);
+  const [sourceError, setSourceError] = useState('');
   const [newSourceMinVersion, setNewSourceMinVersion] = useState('');
   const [newSourceMaxVersion, setNewSourceMaxVersion] = useState('');
   
@@ -372,6 +373,7 @@ export default function WaterfallManagementPage() {
     setNewSourceMinVersion(source.minVersion || '');
     setNewSourceMaxVersion(source.maxVersion || '');
     setShowAddSourceDialog(true);
+    setSourceError('');
   };
   
   // 重置DSP来源表单
@@ -384,6 +386,7 @@ export default function WaterfallManagementPage() {
     setNewSourceSubPositions([]);
     setNewSourceMinVersion('');
     setNewSourceMaxVersion('');
+    setSourceError('');
     setEditingSource(null);
   };
 
@@ -812,15 +815,23 @@ export default function WaterfallManagementPage() {
 
   // 添加PID
   const handleAddSource = useCallback(async () => {
-    if (!newSourceName) return;
-    if (newSourcePlatform.length === 0) return;
-    if (!newSourceCodeId.trim()) return;
+    // 验证
+    if (!newSourceName) {
+      setSourceError('请选择DSP来源');
+      return;
+    }
+    if (!newSourceCodeId.trim()) {
+      setSourceError('请输入PID');
+      return;
+    }
     // SDK类型DSP来源时，版本配置必填
     if (SDK_SOURCE_VALUES.has(newSourceName)) {
       if (!newSourceMinVersion.trim() || !newSourceMaxVersion.trim()) {
+        setSourceError('SDK类型DSP来源时，请填写最小版本和最大版本');
         return;
       }
     }
+    setSourceError('');
     
     if (editingSource) {
       // 编辑模式：更新现有DSP来源
@@ -1321,7 +1332,7 @@ export default function WaterfallManagementPage() {
                   variant="outline"
                   size="sm"
                   className="border-[#FF4D88] text-[#FF4D88] hover:bg-[#FFF7FA]"
-                  onClick={() => setShowAddSourceDialog(true)}
+                  onClick={() => { setShowAddSourceDialog(true); setSourceError(''); }}
                 >
                   <Plus className="w-4 h-4 mr-1" />
                   添加PID
@@ -2234,6 +2245,13 @@ export default function WaterfallManagementPage() {
               <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0">状态</label>
               <Switch checked={newSourceStatus} onCheckedChange={setNewSourceStatus} />
             </div>
+
+            {/* 错误提示 */}
+            {sourceError && (
+              <div className="flex items-center">
+                <span className="text-xs text-red-500">{sourceError}</span>
+              </div>
+            )}
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => { setShowAddSourceDialog(false); resetSourceForm(); }}>
@@ -2276,7 +2294,7 @@ export default function WaterfallManagementPage() {
             </div>
 
             {/* 添加PID按钮 */}
-            <Button className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white" onClick={() => { setAddSourceFromABTest(true); setShowAddSourceDialog(true); }}>
+            <Button className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white" onClick={() => { setAddSourceFromABTest(true); setShowAddSourceDialog(true); setSourceError(''); }}>
               <Plus className="w-4 h-4 mr-1" />
               添加PID
             </Button>
