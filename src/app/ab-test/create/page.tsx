@@ -96,6 +96,8 @@ interface Group {
   priority: number;
   platforms: string[];
   adSlots: string[];
+  scene?: string;
+  platform?: string;
   rules: any[];
   status: string;
   floorPrice: number;
@@ -556,19 +558,22 @@ function CreateABTestContent() {
               </Popover>
             </div>
 
-            {/* 广告场景 */}
+            {/* 广告场景 - 自动带入当前分组配置 */}
             <div className="flex items-center">
               <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0">广告场景</label>
               <span className="text-sm text-[#1D2129]">
-                {(() => {
-                  const adSlots = currentGroup?.adSlots || [];
-                  if (adSlots.includes('100005')) return '开屏';
-                  if (adSlots.includes('100004')) return '插屏';
-                  if (adSlots.includes('100003')) return 'Banner';
-                  if (adSlots.includes('100006')) return '激励视频';
-                  if (adSlots.includes('100001') || adSlots.includes('100002')) return '信息流';
-                  return '原生';
-                })()}
+                {currentGroup?.scene === 'splash' ? '开屏' : 
+                  currentGroup?.scene === 'interstitial' ? '插屏' : 
+                  currentGroup?.scene === 'feed' ? '信息流' : 
+                  currentGroup?.scene === 'search' ? '搜索' : 
+                  currentGroup?.scene || <span className="text-[#86909C]">自动带入</span>}
+              </span>
+            </div>
+            {/* 平台 - 自动带入 */}
+            <div className="flex items-center">
+              <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0">平台</label>
+              <span className="text-sm text-[#1D2129]">
+                {currentGroup?.platform || (currentGroup?.platforms?.join(' / ') || <span className="text-[#86909C]">自动带入</span>)}
               </span>
             </div>
 
@@ -608,7 +613,7 @@ function CreateABTestContent() {
             {/* SDK版本配置 - 仅在选择SDK类型DSP来源时显示 */}
             {SDK_SOURCE_VALUES.has(newSourceName) && (
               <div className="border border-[#E5E6EB] rounded-lg p-4 space-y-3">
-                <div className="text-xs text-[#86909C] font-medium">SDK版本配置</div>
+                <div className="text-xs text-[#86909C] font-medium">SDK版本配置 <span className="text-[#FF4D88]">*</span></div>
                 <div className="flex items-center gap-4">
                   <div className="flex-1">
                     <label className="text-xs text-[#4E5969] mb-1 block">最小版本</label>
