@@ -2803,7 +2803,19 @@ function SourceTable({
               </Tooltip>
             </div>
           </TableHead>
-          <TableHead className="w-20">预估收入</TableHead>
+          <TableHead className="w-20">
+            <div className="flex items-center gap-1">
+              预估收入
+              <Tooltip>
+                <TooltipTrigger>
+                  <Info className="w-3 h-3 text-[#86909C]" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>预估产生的总收入</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+          </TableHead>
           <TableHead className="w-20">
             <div className="flex items-center gap-1">
               千人均收益
@@ -2830,7 +2842,19 @@ function SourceTable({
               </Tooltip>
             </div>
           </TableHead>
-          <TableHead className="w-20">千次请求价值</TableHead>
+          <TableHead className="w-20">
+            <div className="flex items-center gap-1">
+              千次请求价值
+              <Tooltip>
+                <TooltipTrigger>
+                  <Info className="w-3 h-3 text-[#86909C]" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>每千次请求产生的价值</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+          </TableHead>
           <TableHead className="w-20">请求量</TableHead>
           <TableHead className="w-20">
             <div className="flex items-center gap-1">
@@ -2898,7 +2922,19 @@ function SourceTable({
               </Tooltip>
             </div>
           </TableHead>
-          <TableHead className="w-20">cpc</TableHead>
+          <TableHead className="w-20">
+            <div className="flex items-center gap-1">
+              cpc
+              <Tooltip>
+                <TooltipTrigger>
+                  <Info className="w-3 h-3 text-[#86909C]" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>每次点击成本</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+          </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>

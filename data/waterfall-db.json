@@ -91,7 +91,9 @@
       "rules": [],
       "status": "enabled",
       "floorPrice": 10,
-      "adSources": []
+      "adSources": [],
+      "hasABTest": true,
+      "abTestStarted": true
     },
     {
       "id": "splash-ios-default",
