@@ -197,11 +197,8 @@ const MOCK_CODE_POSITIONS: CodePosition[] = [
 // 广告场景
 const SCENE_ITEMS = [
   { value: 'splash', label: '开屏' },
-  { value: 'banner', label: 'Banner' },
   { value: 'interstitial', label: '插屏' },
-  { value: 'rewarded', label: '激励视频' },
   { value: 'feed', label: '信息流' },
-  { value: 'native', label: '原生' },
   { value: 'search', label: '搜索' },
 ];
 
@@ -213,20 +210,14 @@ const SLOT_NAME_MAP: Record<string, string> = {
   '1120': '首页大社区feeds流',
   '1601': '美柚-她她圈-帖子详情楼间广告',
   '1602': '美柚-她她圈-帖子详情信息流',
-  '3001': '美柚-Banner广告',
-  '3002': '美柚-激励视频',
-  '3003': '美柚-原生广告',
   '4001': '美柚-搜索广告',
 };
 
 // 广告场景 - 广告位ID映射
 const SCENE_SLOT_IDS: Record<AdScene, string[]> = {
   splash: ['1000'],
-  banner: ['3001'],
   interstitial: ['2101', '2514'],
-  rewarded: ['3002'],
   feed: ['1120', '1601', '1602'],
-  native: ['3003'],
   search: ['4001'],
 };
 
@@ -235,19 +226,13 @@ const getSlotOptionsByScene = (scene: string) => {
   const options: { value: string; label: string }[] = [];
   if (scene === 'splash') {
     options.push({ value: '1000', label: '1000 - 美柚--开屏' });
-  } else if (scene === 'banner') {
-    options.push({ value: '3001', label: '3001 - 美柚-Banner广告' });
   } else if (scene === 'interstitial') {
     options.push({ value: '2101', label: '2101 - 美柚-首页-插屏' });
     options.push({ value: '2514', label: '2514 - 爱爱记录-记录完成插屏' });
-  } else if (scene === 'rewarded') {
-    options.push({ value: '3002', label: '3002 - 美柚-激励视频' });
   } else if (scene === 'feed') {
     options.push({ value: '1120', label: '1120 - 首页大社区feeds流' });
     options.push({ value: '1601', label: '1601 - 美柚-她她圈-帖子详情楼间广告' });
     options.push({ value: '1602', label: '1602 - 美柚-她她圈-帖子详情信息流' });
-  } else if (scene === 'native') {
-    options.push({ value: '3003', label: '3003 - 美柚-原生广告' });
   } else if (scene === 'search') {
     options.push({ value: '4001', label: '4001 - 美柚-搜索广告' });
   }
@@ -262,9 +247,6 @@ const CODE_SLOT_MAP: Record<string, string> = {
   '1120': '首页大社区feeds流',
   '1601': '美柚-她她圈-帖子详情楼间广告',
   '1602': '美柚-她她圈-帖子详情信息流',
-  '3001': '美柚-Banner广告',
-  '3002': '美柚-激励视频',
-  '3003': '美柚-原生广告',
   '4001': '美柚-搜索广告',
 };
 
