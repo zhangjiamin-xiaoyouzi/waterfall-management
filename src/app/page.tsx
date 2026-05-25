@@ -146,18 +146,21 @@ const DSP_SOURCE_NAMES: Record<string, string> = {
 
 // DSP来源列表
 const DSP_SOURCE_LIST = [
-  { value: 'dsp_1', label: '穿山甲', isSDK: true },
-  { value: 'dsp_2', label: '快手', isSDK: true },
-  { value: 'dsp_3', label: '腾讯广告' },
-  { value: 'dsp_4', label: '巨量引擎' },
-  { value: 'dsp_5', label: 'Mintegral' },
-  { value: 'dsp_6', label: 'Unity Ads' },
-  { value: 'dsp_7', label: 'AppLovin' },
-  { value: 'dsp_8', label: 'AdMob' },
+  { value: 'dsp_1', label: '穿山甲', isSDK: true, connectType: '客户端SDK' },
+  { value: 'dsp_2', label: '快手', isSDK: true, connectType: '客户端SDK' },
+  { value: 'dsp_3', label: '腾讯广告', connectType: '接入我方API' },
+  { value: 'dsp_4', label: '巨量引擎', connectType: '接入对方API' },
+  { value: 'dsp_5', label: 'Mintegral', connectType: '接入对方API' },
+  { value: 'dsp_6', label: 'Unity Ads', connectType: '接入对方API' },
+  { value: 'dsp_7', label: 'AppLovin', connectType: '接入对方API' },
+  { value: 'dsp_8', label: 'AdMob', connectType: '接入对方API' },
 ];
 
 // SDK类型的DSP来源集合，用于判断是否展示版本配置
 const SDK_SOURCE_VALUES = new Set(DSP_SOURCE_LIST.filter(d => (d as { isSDK?: boolean }).isSDK).map(d => d.value));
+
+// 对接类型映射
+const DSP_CONNECT_TYPE_MAP = new Map(DSP_SOURCE_LIST.map(d => [d.value, (d as { connectType?: string }).connectType || '接入我方API']));
 
 // 代码位类型定义
 interface AdSlot {
@@ -1613,6 +1616,14 @@ export default function WaterfallManagementPage() {
             <div className="flex justify-between">
               <span className="text-[#86909C]">PID</span>
               <span className="text-[#1D2129]">{hoveredSource.codeId || '未设置'}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-[#86909C]">对接类型</span>
+              <span className="text-[#1D2129]">{hoveredSource.dspSources?.length ? (DSP_CONNECT_TYPE_MAP.get(hoveredSource.dspSources[0]) || '接入我方API') : '-'}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-[#86909C]">定价方式</span>
+              <span className={`text-[#1D2129] ${hoveredSource.pricingType === 'bidding' ? 'text-blue-500' : 'text-green-500'}`}>{hoveredSource.pricingType === 'bidding' ? '竞价' : '定价'}</span>
             </div>
             {hoveredSource.dspSources?.some(dsp => SDK_SOURCE_VALUES.has(dsp)) && (
               <div className="flex justify-between">
