@@ -193,7 +193,9 @@
             "dsp_4"
           ]
         }
-      ]
+      ],
+      "hasABTest": true,
+      "abTestStarted": true
     },
     {
       "id": "interstitial-android-default",

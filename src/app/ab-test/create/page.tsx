@@ -728,7 +728,7 @@ function CreateABTestContent() {
           className="fixed z-50 bg-white rounded-lg shadow-lg border border-[#E5E6EB] p-4 w-64"
           style={{ left: hoverPosition.x, top: hoverPosition.y }}
         >
-          <h4 className="font-medium text-[#1D2129] mb-3">{hoveredSource.name}</h4>
+          <h4 className="font-medium text-[#1D2129] mb-3">{DSP_SOURCE_NAMES[hoveredSource.dspSources?.[0] || ''] || hoveredSource.dspSources?.[0] || hoveredSource.name}</h4>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-[#86909C]">PID</span>
