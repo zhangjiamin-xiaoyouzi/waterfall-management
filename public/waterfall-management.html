@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>美柚广告系统 - 流量管理</title>
+<title>美柚广告系统 - ADX流量工具</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com.cn/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -272,12 +272,10 @@ function render() {
   html += '<div class="sidebar-header"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#FF4D88" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>美柚广告系统</div>';
   html += '<div class="sidebar-menu">';
   html += `<div class="sidebar-item ${state.page === 'waterfall' ? 'active' : ''}" onclick="switchPage('waterfall')">
-    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#4E5969" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>流量管理</div>`;
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#4E5969" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>ADX流量工具</div>`;
   html += `<div style="padding-left:16px">`;
   html += `<div class="sidebar-item ${state.page === 'waterfall' ? 'active' : ''}" onclick="switchPage('waterfall')" style="font-size:13px">
-    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#4E5969" stroke-width="2"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M9 3v18"/></svg>瀑布流管理</div>`;
-  html += `<div class="sidebar-item ${state.page === 'code-slots' ? 'active' : ''}" onclick="switchPage('code-slots')" style="font-size:13px">
-    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#4E5969" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>代码位ID管理</div>`;
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#4E5969" stroke-width="2"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M9 3v18"/></svg>流量分组管理</div>`;
   html += '</div></div></div>';
 
   // === Main Content ===
@@ -286,7 +284,7 @@ function render() {
   if (showWaterfall) {
     // === Top Bar ===
     html += '<div class="top-bar">';
-    html += '<div class="breadcrumb">流量管理 › <span>瀑布流管理</span></div>';
+    html += '<div class="breadcrumb">ADX流量工具 › <span>流量分组管理</span></div>';
     html += '</div>';
     html += '<div class="content">';
 
@@ -343,7 +341,7 @@ function render() {
   } else {
     // === Code Slots Page ===
     html += '<div class="top-bar">';
-    html += '<div class="breadcrumb">流量管理 › <span>代码位ID管理</span></div>';
+    html += '<div class="breadcrumb">ADX流量工具 › <span>代码位ID管理</span></div>';
     html += '</div>';
     html += '<div class="content">';
     html += renderCodeSlotsPage();
