@@ -517,7 +517,34 @@
       ],
       "status": "enabled",
       "floorPrice": 0,
-      "adSources": []
+      "adSources": [
+        {
+          "id": "source-1779674698249",
+          "name": "穿山甲",
+          "status": "enabled",
+          "pricingType": "bidding",
+          "price": 0,
+          "estimatedRevenue": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "requests": 0,
+          "responses": 0,
+          "responseRate": 0,
+          "bidWins": 0,
+          "bidWinRate": 0,
+          "lastUpdated": "2026/5/25 10:04:58",
+          "platforms": [
+            "Android"
+          ],
+          "codeId": "111111",
+          "subPositions": [],
+          "dspSources": [
+            "dsp_1"
+          ],
+          "minVersion": "9.01.0",
+          "maxVersion": "9.02.0"
+        }
+      ]
     },
     {
       "id": "group-1779445071487",

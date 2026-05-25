@@ -829,8 +829,8 @@ export default function WaterfallManagementPage() {
     }
     // SDK类型DSP来源时，版本配置必填
     if (SDK_SOURCE_VALUES.has(newSourceName)) {
-      if (!newSourceMinVersion.trim() || !newSourceMaxVersion.trim()) {
-        setSourceError('SDK类型DSP来源时，请填写最小版本和最大版本');
+      if (!newSourceMinVersion.trim() && !newSourceMaxVersion.trim()) {
+        setSourceError('SDK类型DSP来源时，请填写最小版本或最大版本');
         return;
       }
     }
