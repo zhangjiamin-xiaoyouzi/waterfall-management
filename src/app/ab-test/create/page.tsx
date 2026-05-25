@@ -569,6 +569,14 @@ function CreateABTestContent() {
                   currentGroup?.scene || <span className="text-[#86909C]">自动带入</span>}
               </span>
             </div>
+
+            {/* 平台 - 从当前分组配置带入，不可更改 */}
+            <div className="flex items-center">
+              <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0">平台</label>
+              <span className="text-sm text-[#1D2129]">
+                {currentGroup?.platform || (currentGroup?.platforms?.join(' / ') || <span className="text-[#86909C]">自动带入</span>)}
+              </span>
+            </div>
             {/* 平台 - 自动带入 */}
             <div className="flex items-center">
               <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0">平台</label>

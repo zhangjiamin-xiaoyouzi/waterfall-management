@@ -2209,7 +2209,13 @@ export default function WaterfallManagementPage() {
             {/* 广告场景 */}
             <div className="flex items-center">
               <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0">广告场景</label>
-              <span className="text-sm text-[#1D2129]">{activeScene === 'splash' ? '开屏' : activeScene === 'interstitial' ? '插屏' : '信息流'}</span>
+              <span className="text-sm text-[#1D2129]">{activeScene === 'splash' ? '开屏' : activeScene === 'interstitial' ? '插屏' : activeScene === 'search' ? '搜索' : '信息流'}</span>
+            </div>
+
+            {/* 平台 - 从页面顶部配置带入，不可更改 */}
+            <div className="flex items-center">
+              <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0">平台</label>
+              <span className="text-sm text-[#1D2129]">{selectedPlatform}</span>
             </div>
 
             {/* 广告位 - 根据分组广告位带入，不可编辑 */}
