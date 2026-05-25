@@ -155,7 +155,7 @@ function CreateABTestContent() {
   const [pidCodeId, setPidCodeId] = useState('');
   const [pidMinVersion, setPidMinVersion] = useState('');
   const [pidMaxVersion, setPidMaxVersion] = useState('');
-  const [pidStatus, setPidStatus] = useState('active');
+  const [pidStatus, setPidStatus] = useState('enabled');
   const [pidPriceA, setPidPriceA] = useState('0');
   const [pidPriceB, setPidPriceB] = useState('0');
   const [isSdkSource, setIsSdkSource] = useState(false);
@@ -194,7 +194,7 @@ function CreateABTestContent() {
     const newSource: AdSource = {
       id: `pid-${Date.now()}`,
       name: pidCodeId,
-      status: pidStatus === 'active' ? 'enabled' : 'disabled',
+      status: pidStatus === 'enabled' ? 'enabled' : 'disabled',
       pricingType: 'bidding',
       price: parseFloat(pidPriceA) || 0,
       priceA: parseFloat(pidPriceA) || 0,
@@ -245,7 +245,7 @@ function CreateABTestContent() {
     setPidCodeId('');
     setPidMinVersion('');
     setPidMaxVersion('');
-    setPidStatus('active');
+    setPidStatus('enabled');
     setPidPriceA('0');
     setPidPriceB('0');
     setSourceError('');
@@ -281,7 +281,7 @@ function CreateABTestContent() {
     setPidCodeId('');
     setPidMinVersion('');
     setPidMaxVersion('');
-    setPidStatus('active');
+    setPidStatus('enabled');
     setPidPriceA('0');
     setPidPriceB('0');
   };
@@ -452,7 +452,7 @@ function CreateABTestContent() {
                               onMouseLeave={handleMouseLeaveSource}
                             >
                               <div className="w-2 h-2 rounded-full" style={{ backgroundColor: colors.dot }} />
-                              <span className="text-sm text-[#1D2129]">{source.name}</span>
+                              <span className="text-sm text-[#1D2129]">{DSP_SOURCE_NAMES[source.dspSources?.[0] || ''] || source.dspSources?.[0] || source.name}</span>
                             </div>
                           </TableCell><TableCell><Switch checked={source.status === 'enabled'} className="data-[state=checked]:bg-[#FF4D88]" /></TableCell><TableCell className="text-xs p-1"><div className="flex items-center gap-0.5"><span className="text-[#86909C]">¥</span><input type="number" step="0.01" min="0" value={(testGroup === 'A' ? (source.priceA ?? source.price) : (source.priceB ?? source.price))} onChange={(e) => { const val = parseFloat(e.target.value) || 0; setAbTestConfig(prev => ({ ...prev, enabledSources: prev.enabledSources.map(s => s.id === source.id ? { ...s, [testGroup === 'A' ? 'priceA' : 'priceB']: val } : s) })); }} className="w-16 h-6 text-xs border border-[#E5E6EB] rounded px-1 focus:outline-none focus:border-[#FF4D88] text-right" /></div></TableCell></TableRow>
                       );
@@ -508,7 +508,7 @@ function CreateABTestContent() {
                                   onMouseLeave={handleMouseLeaveSource}
                                 >
                                   <div className="w-2 h-2 rounded-full" style={{ backgroundColor: colors.dot }} />
-                                  <span className="text-sm text-[#1D2129]">{source.name}</span>
+                                  <span className="text-sm text-[#1D2129]">{DSP_SOURCE_NAMES[source.dspSources?.[0] || ''] || source.dspSources?.[0] || source.name}</span>
                                 </div>
                               </TableCell><TableCell><Switch checked={false} className="data-[state=unchecked]:bg-[#C9CDD4]" disabled /></TableCell><TableCell className="text-xs text-[#C9CDD4]">¥{(source.price || 0).toFixed(2)}</TableCell></TableRow>
                           );
@@ -530,7 +530,7 @@ function CreateABTestContent() {
               <Button className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white" onClick={handleLaunch}>开始测试</Button>
             </div>
           </div>
-      <Dialog open={showAddPidDialog} onOpenChange={(v) => { if (!v) { setShowAddPidDialog(false); setNewSourceName(''); setPidCodeId(''); setPidMinVersion(''); setPidMaxVersion(''); setPidStatus('active'); setPidPriceA('0'); setPidPriceB('0'); setSourceError(''); } }}>
+      <Dialog open={showAddPidDialog} onOpenChange={(v) => { if (!v) { setShowAddPidDialog(false); setNewSourceName(''); setPidCodeId(''); setPidMinVersion(''); setPidMaxVersion(''); setPidStatus('enabled'); setPidPriceA('0'); setPidPriceB('0'); setSourceError(''); } }}>
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
             <DialogTitle className="text-base font-semibold">添加PID</DialogTitle>
@@ -741,7 +741,7 @@ function CreateABTestContent() {
       )}
 
       {/* 编辑PID弹窗 */}
-      <Dialog open={!!editingSource} onOpenChange={(v) => { if (!v) { setEditingSource(null); setNewSourceName(''); setPidCodeId(''); setPidMinVersion(''); setPidMaxVersion(''); setPidStatus('active'); setPidPriceA('0'); setPidPriceB('0'); setSourceError(''); } }}>
+      <Dialog open={!!editingSource} onOpenChange={(v) => { if (!v) { setEditingSource(null); setNewSourceName(''); setPidCodeId(''); setPidMinVersion(''); setPidMaxVersion(''); setPidStatus('enabled'); setPidPriceA('0'); setPidPriceB('0'); setSourceError(''); } }}>
         <DialogContent className="max-w-[700px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>编辑PID</DialogTitle>

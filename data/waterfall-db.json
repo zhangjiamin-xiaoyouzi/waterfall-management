@@ -166,6 +166,30 @@
           "dspSources": [
             "kuaishou"
           ]
+        },
+        {
+          "id": "source-1779693076405",
+          "name": "巨量引擎",
+          "status": "enabled",
+          "pricingType": "bidding",
+          "price": 0,
+          "estimatedRevenue": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "requests": 0,
+          "responses": 0,
+          "responseRate": 0,
+          "bidWins": 0,
+          "bidWinRate": 0,
+          "lastUpdated": "2026/5/25 15:11:16",
+          "platforms": [
+            "Android"
+          ],
+          "codeId": "1212121",
+          "subPositions": [],
+          "dspSources": [
+            "dsp_4"
+          ]
         }
       ]
     },
