@@ -1046,9 +1046,7 @@ export default function WaterfallManagementPage() {
                 </PopoverTrigger>
                 <PopoverContent className="w-28 p-0" align="start">
                   <Command>
-                    <CommandInput placeholder="搜索场景..." className="h-8" />
                     <CommandList>
-                      <CommandEmpty>未找到匹配场景</CommandEmpty>
                       {SCENE_ITEMS.map((scene) => (
                         <CommandItem
                           key={scene.value}
