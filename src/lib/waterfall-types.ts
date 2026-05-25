@@ -1,6 +1,6 @@
 // 瀑布流管理页面类型定义
 
-export type AdScene = 'splash' | 'interstitial' | 'feed';
+export type AdScene = 'splash' | 'banner' | 'interstitial' | 'rewarded' | 'feed' | 'native';
 
 export type PricingType = 'CPM' | 'CPC' | 'CPA' | 'CPS' | 'bidding';
 
@@ -138,8 +138,11 @@ export interface SceneNavItem {
 
 export const SCENE_NAV_ITEMS: SceneNavItem[] = [
   { id: 'splash', name: '开屏', icon: 'tv' },
+  { id: 'banner', name: 'Banner', icon: 'rectangle' },
   { id: 'interstitial', name: '插屏', icon: 'square' },
+  { id: 'rewarded', name: '激励视频', icon: 'video' },
   { id: 'feed', name: '信息流', icon: 'layout-list' },
+  { id: 'native', name: '原生', icon: 'smartphone' },
 ];
 
 export const MOCK_AD_GROUPS: AdGroup[] = [
@@ -377,9 +380,93 @@ export const MOCK_AD_GROUPS: AdGroup[] = [
       },
     ],
   },
-  // ===== 信息流 × iOS =====
+  // ===== Banner × Android =====
   {
-    id: 'feed-ios-default',
+    id: 'banner-android-default',
+    name: '默认分组',
+    priority: Infinity,
+    platforms: ['Android'],
+    adSlots: ['3001'],
+    scene: 'banner',
+    platform: 'Android',
+    rules: [],
+    status: 'enabled',
+    floorPrice: 0,
+    adSources: [],
+  },
+  // ===== Banner × iOS =====
+  {
+    id: 'banner-ios-default',
+    name: '默认分组',
+    priority: Infinity,
+    platforms: ['iOS'],
+    adSlots: ['3001'],
+    scene: 'banner',
+    platform: 'iOS',
+    rules: [],
+    status: 'enabled',
+    floorPrice: 0,
+    adSources: [],
+  },
+  // ===== 激励视频 × Android =====
+  {
+    id: 'rewarded-android-default',
+    name: '默认分组',
+    priority: Infinity,
+    platforms: ['Android'],
+    adSlots: ['3002'],
+    scene: 'rewarded',
+    platform: 'Android',
+    rules: [],
+    status: 'enabled',
+    floorPrice: 0,
+    adSources: [],
+  },
+  // ===== 激励视频 × iOS =====
+  {
+    id: 'rewarded-ios-default',
+    name: '默认分组',
+    priority: Infinity,
+    platforms: ['iOS'],
+    adSlots: ['3002'],
+    scene: 'rewarded',
+    platform: 'iOS',
+    rules: [],
+    status: 'enabled',
+    floorPrice: 0,
+    adSources: [],
+  },
+  // ===== 原生 × Android =====
+  {
+    id: 'native-android-default',
+    name: '默认分组',
+    priority: Infinity,
+    platforms: ['Android'],
+    adSlots: ['3003'],
+    scene: 'native',
+    platform: 'Android',
+    rules: [],
+    status: 'enabled',
+    floorPrice: 0,
+    adSources: [],
+  },
+  // ===== 原生 × iOS =====
+  {
+    id: 'native-ios-default',
+    name: '默认分组',
+    priority: Infinity,
+    platforms: ['iOS'],
+    adSlots: ['3003'],
+    scene: 'native',
+    platform: 'iOS',
+    rules: [],
+    status: 'enabled',
+    floorPrice: 0,
+    adSources: [],
+  },
+  // ===== 信息流 × Android =====
+  {
+    id: 'feed-android-default',
     name: '默认分组',
     priority: Infinity,
     platforms: ['iOS'],
