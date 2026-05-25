@@ -79,7 +79,8 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
-import { ChevronDownIcon, ChevronsRightIcon, ChevronsLeftIcon, InboxIcon } from 'lucide-react';
+import { Command, CommandInput, CommandList, CommandEmpty, CommandItem } from '@/components/ui/command';
+import { ChevronDownIcon, ChevronsRightIcon, ChevronsLeftIcon, InboxIcon, SearchIcon } from 'lucide-react';
 import {
   SCENE_NAV_ITEMS,
   MOCK_AD_GROUPS,
