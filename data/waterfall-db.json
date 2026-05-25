@@ -182,6 +182,32 @@
           "dspSources": [
             "gdt"
           ]
+        },
+        {
+          "id": "source-1779673595659",
+          "name": "穿山甲",
+          "status": "enabled",
+          "pricingType": "bidding",
+          "price": 0,
+          "estimatedRevenue": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "requests": 0,
+          "responses": 0,
+          "responseRate": 0,
+          "bidWins": 0,
+          "bidWinRate": 0,
+          "lastUpdated": "2026/5/25 09:46:35",
+          "platforms": [
+            "Android"
+          ],
+          "codeId": "111111",
+          "subPositions": [],
+          "dspSources": [
+            "dsp_1"
+          ],
+          "minVersion": "9.01.0",
+          "maxVersion": "9.01.0"
         }
       ],
       "hasABTest": true,
