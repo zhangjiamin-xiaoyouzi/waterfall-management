@@ -2896,7 +2896,7 @@ function SourceTable({
       </TableHeader>
       <TableBody>
         {summaryData && (
-        <TableRow className="bg-[#FEF3F7] font-medium"><TableCell></TableCell><TableCell className="text-[#1D2129]">{sources.length}个DSP来源已启用</TableCell><TableCell></TableCell><TableCell></TableCell><TableCell></TableCell><TableCell className="text-[#1D2129]">¥{summaryData?.revenuePerThousand?.toFixed(2) || '-'}</TableCell><TableCell className="text-[#1D2129]">{summaryData?.estimatedRevenue.toLocaleString('zh-CN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</TableCell><TableCell className="text-[#1D2129]">¥{summaryData?.ecpm?.toFixed(2) || '-'}</TableCell><TableCell className="text-[#1D2129]">¥{summaryData?.revenuePerThousandRequests?.toFixed(2) || '-'}</TableCell><TableCell className="text-[#1D2129]">{formatNumber(summaryData?.requests || 0)}</TableCell><TableCell className="text-[#1D2129]">{summaryData?.responseRate?.toFixed(1) || '0.0'}%</TableCell><TableCell className="text-[#1D2129]">{formatNumber(summaryData?.bidWins || 0)}</TableCell><TableCell className="text-[#1D2129]">{`${summaryData?.bidWinRate?.toFixed(1) || '0.0'}%`}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.impressions ?? 0) > 0 ? formatNumber(summaryData?.impressions || 0) : '-'}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.winImpressionRate ?? 0) > 0 ? `${summaryData?.winImpressionRate?.toFixed(1)}%` : '-'}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.ctr ?? 0) > 0 ? `${summaryData?.ctr?.toFixed(1)}%` : '-'}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.cpc ?? 0) > 0 ? `¥${summaryData?.cpc?.toFixed(2)}` : '-'}</TableCell></TableRow>
+        <TableRow className="bg-[#FEF3F7] font-medium"><TableCell></TableCell><TableCell className="text-[#1D2129]">{sources.length}个DSP来源已启用</TableCell><TableCell></TableCell><TableCell></TableCell><TableCell className="text-[#1D2129]">{summaryData?.estimatedRevenue.toLocaleString('zh-CN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</TableCell><TableCell className="text-[#1D2129]">¥{summaryData?.revenuePerThousand?.toFixed(2) || '-'}</TableCell><TableCell className="text-[#1D2129]">¥{summaryData?.ecpm?.toFixed(2) || '-'}</TableCell><TableCell className="text-[#1D2129]">¥{summaryData?.revenuePerThousandRequests?.toFixed(2) || '-'}</TableCell><TableCell className="text-[#1D2129]">{formatNumber(summaryData?.requests || 0)}</TableCell><TableCell className="text-[#1D2129]">{summaryData?.responseRate?.toFixed(1) || '0.0'}%</TableCell><TableCell className="text-[#1D2129]">{formatNumber(summaryData?.bidWins || 0)}</TableCell><TableCell className="text-[#1D2129]">{`${summaryData?.bidWinRate?.toFixed(1) || '0.0'}%`}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.impressions ?? 0) > 0 ? formatNumber(summaryData?.impressions || 0) : '-'}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.winImpressionRate ?? 0) > 0 ? `${summaryData?.winImpressionRate?.toFixed(1)}%` : '-'}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.ctr ?? 0) > 0 ? `${summaryData?.ctr?.toFixed(1)}%` : '-'}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.cpc ?? 0) > 0 ? `¥${summaryData?.cpc?.toFixed(2)}` : '-'}</TableCell></TableRow>
         )}
         {sources.map((source) => {
           const colors = getSourceColor(source.name);
@@ -2981,12 +2981,12 @@ function SourceTable({
                   )}
                 </div>
               </TableCell><TableCell className="text-[#1D2129]">
-                ¥{source.revenuePerThousand?.toFixed(2) || '-'}
-              </TableCell><TableCell className="text-[#1D2129]">
                 {source.estimatedRevenue.toLocaleString('zh-CN', {
                   minimumFractionDigits: 1,
                   maximumFractionDigits: 1,
                 })}
+              </TableCell><TableCell className="text-[#1D2129]">
+                ¥{source.revenuePerThousand?.toFixed(2) || '-'}
               </TableCell><TableCell className="text-[#1D2129]">
                 ¥{source.ecpm.toFixed(2)}
               </TableCell><TableCell className="text-[#1D2129]">
