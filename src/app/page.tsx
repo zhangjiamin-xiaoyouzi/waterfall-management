@@ -533,14 +533,9 @@ export default function WaterfallManagementPage() {
     setShowAddCodeDialog(false);
   }, [newCodeForm, editingCodePosition]);
 
-  // 根据广告场景+平台筛选分组
+  // 根据广告场景+平台精确筛选分组（每个scene+platform独立）
   const filteredAdGroups = adGroups.filter((group) => {
-    // 按广告场景过滤：分组的广告位必须与当前场景的广告位有交集
-    const sceneSlots = SCENE_SLOT_IDS[activeScene];
-    const matchesScene = group.adSlots.some((slot) => sceneSlots.includes(slot));
-    // 按平台过滤
-    const matchesPlatform = group.platforms.includes(selectedPlatform);
-    return matchesScene && matchesPlatform;
+    return group.scene === activeScene && group.platform === selectedPlatform;
   });
 
   // 默认选中第一个场景可见的非默认分组（priority 最小），并在数据更新时保持同步
@@ -771,13 +766,15 @@ export default function WaterfallManagementPage() {
       }
       setEditingGroup(null);
     } else {
-      // 新建模式
+      // 新建模式：自动带入当前场景和平台
       const newGroup: AdGroup = {
         id: `group-${Date.now()}`,
         name: newGroupName,
         priority: newGroupPriority,
-        platforms: ['Android', 'iOS'],
+        platforms: [selectedPlatform],
         adSlots: newGroupSlots,
+        scene: activeScene,
+        platform: selectedPlatform,
         rules: newGroupRules,
         status: 'enabled',
         floorPrice: 0,
@@ -805,7 +802,7 @@ export default function WaterfallManagementPage() {
     setNewGroupSlots([]);
     setNewGroupRules([]);
     setShowAddGroupDialog(false);
-  }, [newGroupName, newGroupPriority, newGroupSlots, newGroupRules, editingGroup]);
+  }, [newGroupName, newGroupPriority, newGroupSlots, newGroupRules, editingGroup, activeScene, selectedPlatform]);
 
   // 复制分组 - 打开添加弹窗并填充配置
   const handleCopyGroup = useCallback((group: AdGroup) => {

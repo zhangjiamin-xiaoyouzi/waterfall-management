@@ -586,6 +586,23 @@
       "status": "enabled",
       "floorPrice": 0,
       "adSources": []
+    },
+    {
+      "id": "test-1",
+      "name": "测试分组",
+      "priority": 1,
+      "platforms": [
+        "Android"
+      ],
+      "adSlots": [
+        "1000"
+      ],
+      "scene": "splash",
+      "platform": "Android",
+      "rules": [],
+      "status": "enabled",
+      "floorPrice": 0,
+      "adSources": []
     }
   ]
 }
