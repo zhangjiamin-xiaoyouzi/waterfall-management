@@ -433,7 +433,6 @@ function CreateABTestContent() {
                       <TableHead className="w-20">操作</TableHead>
                       <TableHead className="w-32">DSP来源</TableHead>
                       <TableHead className="w-20">状态</TableHead>
-                      <TableHead className="w-24"><div className="flex items-center gap-1">定价方式<Tooltip><TooltipTrigger><Info className="w-3 h-3 text-[#86909C]" /></TooltipTrigger><TooltipContent><p>DSP来源的计费模式</p></TooltipContent></Tooltip></div></TableHead>
                       <TableHead className="w-20"><div className="flex items-center gap-1">价格<Tooltip><TooltipTrigger><Info className="w-3 h-3 text-[#86909C]" /></TooltipTrigger><TooltipContent><p>图片和视频价格相同</p></TooltipContent></Tooltip></div></TableHead>
                     </TableRow>
                   </TableHeader>
@@ -450,11 +449,7 @@ function CreateABTestContent() {
                               <div className="w-2 h-2 rounded-full" style={{ backgroundColor: colors.dot }} />
                               <span className="text-sm text-[#1D2129]">{source.name}</span>
                             </div>
-                          </TableCell><TableCell><Switch checked={source.status === 'enabled'} className="data-[state=checked]:bg-[#FF4D88]" /></TableCell><TableCell>
-                            <span className={`px-2 py-0.5 rounded text-xs font-medium ${source.pricingType === 'bidding' ? 'bg-blue-50 text-blue-600' : 'bg-green-50 text-green-600'}`}>
-                              {source.pricingType === 'bidding' ? '竞价' : '定价'}
-                            </span>
-                          </TableCell><TableCell className="text-xs p-1"><div className="flex items-center gap-0.5"><span className="text-[#86909C]">¥</span><input type="number" step="0.01" min="0" value={(testGroup === 'A' ? (source.priceA ?? source.price) : (source.priceB ?? source.price))} onChange={(e) => { const val = parseFloat(e.target.value) || 0; setAbTestConfig(prev => ({ ...prev, enabledSources: prev.enabledSources.map(s => s.id === source.id ? { ...s, [testGroup === 'A' ? 'priceA' : 'priceB']: val } : s) })); }} className="w-16 h-6 text-xs border border-[#E5E6EB] rounded px-1 focus:outline-none focus:border-[#FF4D88] text-right" /></div></TableCell></TableRow>
+                          </TableCell><TableCell><Switch checked={source.status === 'enabled'} className="data-[state=checked]:bg-[#FF4D88]" /></TableCell><TableCell className="text-xs p-1"><div className="flex items-center gap-0.5"><span className="text-[#86909C]">¥</span><input type="number" step="0.01" min="0" value={(testGroup === 'A' ? (source.priceA ?? source.price) : (source.priceB ?? source.price))} onChange={(e) => { const val = parseFloat(e.target.value) || 0; setAbTestConfig(prev => ({ ...prev, enabledSources: prev.enabledSources.map(s => s.id === source.id ? { ...s, [testGroup === 'A' ? 'priceA' : 'priceB']: val } : s) })); }} className="w-16 h-6 text-xs border border-[#E5E6EB] rounded px-1 focus:outline-none focus:border-[#FF4D88] text-right" /></div></TableCell></TableRow>
                       );
                     })}
                     {enabledSources.length === 0 && (
@@ -490,7 +485,6 @@ function CreateABTestContent() {
                           <TableHead className="w-20">操作</TableHead>
                           <TableHead className="w-32">DSP来源</TableHead>
                           <TableHead className="w-20">状态</TableHead>
-                          <TableHead className="w-24"><div className="flex items-center gap-1">定价方式<Tooltip><TooltipTrigger><Info className="w-3 h-3 text-[#86909C]" /></TooltipTrigger><TooltipContent><p>DSP来源的计费模式</p></TooltipContent></Tooltip></div></TableHead>
                           <TableHead className="w-20"><div className="flex items-center gap-1">价格<Tooltip><TooltipTrigger><Info className="w-3 h-3 text-[#86909C]" /></TooltipTrigger><TooltipContent><p>图片和视频价格相同</p></TooltipContent></Tooltip></div></TableHead>
                         </TableRow>
                       </TableHeader>
@@ -507,11 +501,7 @@ function CreateABTestContent() {
                                   <div className="w-2 h-2 rounded-full" style={{ backgroundColor: colors.dot }} />
                                   <span className="text-sm text-[#1D2129]">{source.name}</span>
                                 </div>
-                              </TableCell><TableCell><Switch checked={false} className="data-[state=unchecked]:bg-[#C9CDD4]" disabled /></TableCell><TableCell>
-                                <span className={`px-2 py-0.5 rounded text-xs font-medium ${source.pricingType === 'bidding' ? 'bg-blue-50 text-blue-600' : 'bg-green-50 text-green-600'}`}>
-                                  {source.pricingType === 'bidding' ? '竞价' : '定价'}
-                                </span>
-                              </TableCell><TableCell className="text-xs text-[#C9CDD4]">¥{(source.price || 0).toFixed(2)}</TableCell></TableRow>
+                              </TableCell><TableCell><Switch checked={false} className="data-[state=unchecked]:bg-[#C9CDD4]" disabled /></TableCell><TableCell className="text-xs text-[#C9CDD4]">¥{(source.price || 0).toFixed(2)}</TableCell></TableRow>
                           );
                         })}
                         {disabledSources.length === 0 && (
