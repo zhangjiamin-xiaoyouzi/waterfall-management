@@ -167,7 +167,9 @@
             "kuaishou"
           ]
         }
-      ]
+      ],
+      "hasABTest": true,
+      "abTestStarted": true
     },
     {
       "id": "interstitial-android-default",

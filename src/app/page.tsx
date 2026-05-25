@@ -2362,7 +2362,6 @@ export default function WaterfallManagementPage() {
                     <TableHead className="w-16">操作</TableHead>
                     <TableHead>DSP来源</TableHead>
                     <TableHead className="w-20">状态</TableHead>
-                    <TableHead className="w-24">定价方式</TableHead>
                     <TableHead className="w-20">价格</TableHead>
                     <TableHead className="w-20">千人均收益</TableHead>
                     <TableHead className="w-24">预估收入</TableHead>
@@ -2405,26 +2404,6 @@ export default function WaterfallManagementPage() {
                           newSources[index].status = checked ? 'enabled' : 'disabled';
                           setAbTestConfig(prev => ({ ...prev, enabledSources: newSources }));
                         }} className="data-[state=checked]:bg-[#00B42A]" />
-                      </TableCell>
-                      <TableCell>
-                        {source.pricingType === 'bidding' ? (
-                          <span className="text-[#86909C]">-</span>
-                        ) : (
-                          <div className="flex items-center gap-1">
-                            <span className="text-xs">¥</span>
-                            <Input
-                              type="number"
-                              value={source.price || ''}
-                              onChange={(e) => {
-                                const newSources = [...abTestConfig.enabledSources];
-                                newSources[index].price = parseFloat(e.target.value) || 0;
-                                setAbTestConfig(prev => ({ ...prev, enabledSources: newSources }));
-                              }}
-                              className="w-16 h-7 text-xs"
-                              placeholder="0.00"
-                            />
-                          </div>
-                        )}
                       </TableCell>
                       <TableCell className="text-xs text-right">¥{(source.revenuePerThousand || 0).toFixed(2)}</TableCell>
                       <TableCell className="text-xs text-right">¥{(source.estimatedRevenue || 0).toLocaleString()}</TableCell>
@@ -2473,7 +2452,6 @@ export default function WaterfallManagementPage() {
                     <TableHead className="w-16">操作</TableHead>
                     <TableHead>DSP来源</TableHead>
                     <TableHead className="w-20">状态</TableHead>
-                    <TableHead className="w-24">定价方式</TableHead>
                     <TableHead className="w-20">价格</TableHead>
                     <TableHead className="w-20">千人均收益</TableHead>
                     <TableHead className="w-24">预估收入</TableHead>
