@@ -3,100 +3,76 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>美柚广告系统 - 瀑布流管理</title>
+<title>美柚广告系统 - 流量管理</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.cn/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com.cn/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-*{font-family:Inter,'PingFang SC','Microsoft YaHei',sans-serif}
-body{background:#F2F2F5;color:#1D2129;margin:0}
-.sidebar{width:200px;background:#fff;border-right:1px solid #E5E6EB;min-height:100vh;position:fixed;left:0;top:0}
-.sidebar-logo{padding:20px 16px;border-bottom:1px solid #E5E6EB;font-size:16px;font-weight:600;color:#FF4D88}
-.sidebar-item{display:flex;align-items:center;padding:10px 16px;font-size:14px;color:#4E5969;cursor:pointer;border-right:3px solid transparent}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif;background:#F2F2F5;color:#1D2129;overflow:hidden;height:100vh}
+.layout{display:flex;height:100vh}
+.sidebar{width:200px;background:#fff;border-right:1px solid #E5E6EB;display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-header{padding:16px 20px;border-bottom:1px solid #E5E6EB;font-size:14px;font-weight:600;color:#1D2129;display:flex;align-items:center;gap:8px}
+.sidebar-menu{padding:8px 0;flex:1}
+.sidebar-item{display:flex;align-items:center;gap:8px;padding:10px 20px;cursor:pointer;font-size:14px;color:#4E5969;transition:all .15s;border-right:3px solid transparent}
+.sidebar-item:hover{background:#FFF0F5;color:#FF4D88}
 .sidebar-item.active{background:#FFF0F5;color:#FF4D88;border-right-color:#FF4D88;font-weight:500}
-.sidebar-item:hover:not(.active){background:#F7F8FA}
-.main-content{margin-left:200px;padding:0}
-.top-bar{background:#fff;border-bottom:1px solid #E5E6EB;padding:12px 24px;display:flex;align-items:center;gap:12px}
-.top-bar h1{font-size:16px;font-weight:500;color:#1D2129}
-.breadcrumb{font-size:13px;color:#86909C}
-.breadcrumb span{color:#4E5969}
-.scene-tabs{display:flex;gap:4px;background:#F2F3F5;border-radius:6px;padding:2px}
-.scene-tab{padding:4px 14px;border-radius:4px;font-size:13px;color:#4E5969;cursor:pointer;white-space:nowrap}
-.scene-tab.active{background:#fff;color:#1D2129;font-weight:500;box-shadow:0 1px 2px rgba(0,0,0,0.06)}
-.platform-btn{padding:4px 14px;font-size:13px;color:#4E5969;cursor:pointer;border-radius:4px}
-.platform-btn.active{background:#FF4D88;color:#fff}
-.group-bar{background:#fff;padding:12px 24px;border-bottom:1px solid #E5E6EB;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.group-tab{padding:4px 12px;font-size:13px;color:#4E5969;cursor:pointer;border-radius:4px;white-space:nowrap;border:1px solid #E5E6EB}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.top-bar{display:flex;align-items:center;padding:12px 20px;background:#fff;border-bottom:1px solid #E5E6EB;gap:12px;flex-shrink:0}
+.breadcrumb{font-size:14px;color:#86909C}
+.breadcrumb span{color:#1D2129;font-weight:500}
+.content{flex:1;overflow-y:auto;padding:16px 20px}
+.scene-tabs{display:flex;gap:4px;background:#F2F2F5;padding:2px;border-radius:8px}
+.scene-tab{padding:6px 16px;cursor:pointer;border-radius:6px;font-size:13px;color:#4E5969;transition:all .15s}
+.scene-tab.active{background:#fff;color:#1D2129;font-weight:500;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.filter-bar{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.platform-tabs{display:flex;gap:0;background:#F2F2F5;border-radius:4px;overflow:hidden}
+.platform-tab{padding:4px 12px;cursor:pointer;font-size:12px;color:#4E5969;transition:all .15s}
+.platform-tab.active{background:#FF4D88;color:#fff}
+.group-tabs{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.group-tab{padding:6px 14px;cursor:pointer;font-size:13px;border-radius:6px;color:#4E5969;border:1px solid #E5E6EB;transition:all .15s}
 .group-tab.active{background:#FF4D88;color:#fff;border-color:#FF4D88}
-.group-tab.default{border-style:dashed}
-.btn-primary{background:#FF4D88;color:#fff;padding:6px 14px;border-radius:6px;font-size:13px;cursor:pointer;border:none}
-.btn-primary:hover{background:#e64378}
-.btn-outline{border:1px solid #E5E6EB;padding:6px 14px;border-radius:6px;font-size:13px;cursor:pointer;background:#fff;color:#4E5969}
-.btn-outline:hover{background:#F7F8FA}
-.table-wrap{padding:16px 24px;overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:13px;min-width:1200px}
-th{background:#F7F8FA;padding:8px 10px;text-align:left;font-weight:500;color:#86909C;border-bottom:1px solid #E5E6EB;white-space:nowrap}
-td{padding:8px 10px;border-bottom:1px solid #F2F3F5;color:#4E5969;white-space:nowrap}
-tr:hover td{background:#FFF7FA}
-tr.summary td{background:#FEF3F7;font-weight:500;color:#1D2129}
-.badge-bidding{background:#E8F3FF;color:#165DFF;padding:2px 6px;border-radius:4px;font-size:11px}
-.badge-pricing{background:#E8FFEA;color:#00B42A;padding:2px 6px;border-radius:4px;font-size:11px}
-.switch{position:relative;display:inline-block;width:36px;height:20px;cursor:pointer}
-.switch input{opacity:0;width:0;height:0}
-.switch .slider{position:absolute;inset:0;background:#C9CDD4;border-radius:10px;transition:.2s}
-.switch .slider::before{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:2px;left:2px;transition:.2s}
-.switch input:checked+.slider{background:#165DFF}
-.switch input:checked+.slider::before{transform:translateX(16px)}
-.info-icon{display:inline-flex;align-items:center;cursor:help;color:#86909C}
-.info-icon:hover{color:#4E5969}
-.info-icon svg{width:14px;height:14px}
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:1000;align-items:center;justify-content:center}
-.modal-overlay.open{display:flex}
-.modal{background:#fff;border-radius:12px;width:520px;max-height:80vh;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,0.12)}
-.modal-header{padding:16px 20px;border-bottom:1px solid #E5E6EB;display:flex;justify-content:space-between;align-items:center}
-.modal-header h3{font-size:16px;font-weight:500}
-.modal-body{padding:20px}
-.modal-footer{padding:12px 20px;border-top:1px solid #E5E6EB;display:flex;justify-content:flex-end;gap:8px}
+.group-tab .close-btn{margin-left:6px;font-size:12px;opacity:.5;cursor:pointer}
+.group-tab .close-btn:hover{opacity:1}
+.btn-primary{background:#FF4D88;color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:500}
+.btn-primary:hover{background:#E8437A}
+.btn-secondary{background:#fff;color:#1D2129;border:1px solid #E5E6EB;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:13px}
+.btn-secondary:hover{background:#F7F8FA}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead{background:#F7F8FA;position:sticky;top:0;z-index:1}
+th{padding:10px 8px;text-align:left;font-weight:500;color:#4E5969;border-bottom:1px solid #E5E6EB;white-space:nowrap}
+td{padding:10px 8px;border-bottom:1px solid #F2F3F5;vertical-align:middle;color:#4E5969}
+tr:hover{background:#F7F8FA}
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.4);z-index:1000;display:none;align-items:center;justify-content:center}
+.modal{background:#fff;border-radius:12px;padding:24px;width:520px;max-height:80vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.12)}
+.modal h3{font-size:16px;font-weight:600;margin-bottom:20px}
 .form-group{margin-bottom:14px}
 .form-group label{display:block;font-size:13px;font-weight:500;margin-bottom:4px;color:#1D2129}
-.form-group input,.form-group select{width:100%;padding:7px 10px;border:1px solid #E5E6EB;border-radius:6px;font-size:13px;outline:none}
+.form-group input,.form-group select{width:100%;padding:8px 12px;border:1px solid #D9DADE;border-radius:6px;font-size:13px;outline:none}
 .form-group input:focus,.form-group select:focus{border-color:#FF4D88}
-.form-group .readonly-field{padding:7px 10px;background:#F7F8FA;border-radius:6px;font-size:13px;color:#4E5969}
-.color-dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
-.hover-card{display:none;position:fixed;background:#fff;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.12);z-index:500;width:280px;padding:16px}
-.hover-card.open{display:block}
-.hover-card h4{font-size:14px;font-weight:500;margin-bottom:10px}
-.hover-card .row{display:flex;justify-content:space-between;font-size:12px;padding:3px 0;color:#4E5969}
-.hover-card .row .label{color:#86909C}
-.collapse-header{display:flex;align-items:center;gap:6px;cursor:pointer;padding:10px 0;color:#4E5969;font-size:13px}
-.collapse-header:hover{color:#1D2129}
-.nav-icon{width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;margin-right:8px}
-.pagination{display:flex;align-items:center;justify-content:flex-end;gap:4px;padding:12px 0;font-size:13px}
-.pagination button{padding:4px 10px;border:1px solid #E5E6EB;border-radius:4px;background:#fff;cursor:pointer;color:#4E5969}
+.form-group .display-field{padding:8px 12px;background:#F7F8FA;border-radius:6px;font-size:13px;color:#4E5969}
+.info-icon{display:inline-flex;width:14px;height:14px;border-radius:50%;background:#C9CDD4;color:#fff;font-size:10px;align-items:center;justify-content:center;cursor:help;margin-left:4px;vertical-align:middle;position:relative}
+.info-icon:hover .tooltip{display:block}
+.tooltip{display:none;position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);background:#1D2129;color:#fff;padding:4px 8px;border-radius:4px;font-size:11px;white-space:nowrap;z-index:100}
+.badge-bidding{display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px;background:#E8F3FF;color:#165DFF}
+.badge-price{display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px;background:#E8FFE8;color:#00A870}
+.hover-card{position:fixed;z-index:100;background:#fff;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.12);padding:16px;min-width:240px;display:none}
+.pagination{display:flex;align-items:center;justify-content:center;gap:4px;padding:16px 0}
+.pagination button{padding:4px 10px;border:1px solid #E5E6EB;border-radius:4px;background:#fff;cursor:pointer;font-size:13px;color:#4E5969}
 .pagination button.active{background:#FF4D88;color:#fff;border-color:#FF4D88}
-.pagination button:disabled{color:#C9CDD4;cursor:default}
-.pagination select{border:1px solid #E5E6EB;border-radius:4px;padding:4px 6px;font-size:13px}
-.tag{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:4px;font-size:12px}
-.tag-android{background:#E8F3FF;color:#165DFF}
-.tag-ios{background:#F5E8FF;color:#722ED1}
-.tag-scene{background:#FFF7E6;color:#FA8C16}
-.empty-state{padding:40px;text-align:center;color:#86909C;font-size:14px}
-.dialog-content{display:none}
-.dialog-content.active{display:block}
-.step-indicator{display:flex;gap:8px;margin-bottom:20px;align-items:center}
-.step{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500}
-.step.active{background:#FF4D88;color:#fff}
-.step.done{background:#FFF0F5;color:#FF4D88}
-.step.pending{background:#F2F3F5;color:#86909C}
-.step-line{width:40px;height:1px;background:#E5E6EB}
-.section-title{font-size:14px;font-weight:500;color:#1D2129;margin-bottom:12px}
-.traffic-input{display:flex;align-items:center;gap:8px}
-.traffic-input input{width:80px;padding:4px 8px;border:1px solid #E5E6EB;border-radius:4px;text-align:center;font-size:13px}
-.ab-group-card{border:1px solid #E5E6EB;border-radius:8px;padding:12px;margin-bottom:8px}
-.ab-group-card .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.popover-content{display:none;position:absolute;background:#fff;border:1px solid #E5E6EB;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.08);z-index:100;min-width:160px;padding:4px}
-.popover-content.open{display:block}
-.popover-content .item{padding:6px 10px;font-size:13px;cursor:pointer;color:#4E5969;border-radius:4px}
-.popover-content .item:hover{background:#F7F8FA;color:#1D2129}
+.pagination button:disabled{opacity:.4;cursor:default}
+.switch{position:relative;display:inline-block;width:36px;height:20px;cursor:pointer}
+.switch input{display:none}
+.switch .slider{position:absolute;top:0;left:0;right:0;bottom:0;background:#C9CDD4;border-radius:10px;transition:.2s}
+.switch input:checked+.slider{background:#165DFF}
+.switch .slider:before{content:'';position:absolute;width:16px;height:16px;left:2px;bottom:2px;background:#fff;border-radius:50%;transition:.2s}
+.switch input:checked+.slider:before{transform:translateX(16px)}
+.tag{display:inline-block;padding:0 4px;border-radius:3px;font-size:11px;margin-left:4px}
+.tag-default{background:#FFF0F5;color:#FF4D88}
+.tag-ab-testing{background:#E8F3FF;color:#165DFF}
+.tag-top{background:#FFE8BA;color:#B87A00}
+.nav-icon{width:16px;height:16px;flex-shrink:0}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-thumb{background:#C9CDD4;border-radius:3px}
 </style>
 </head>
 <body>
@@ -104,1007 +80,920 @@ tr.summary td{background:#FEF3F7;font-weight:500;color:#1D2129}
 <div id="app"></div>
 
 <script>
-// ============ MOCK DATA ============
-const DSP_SOURCE_NAMES = {pangle:'穿山甲',gromore:'穿山甲(GroMore)',mintegral:'Mintegral',kuaishou:'快手联盟',baidu:'百度联盟',sigmob:'Sigmob',unity:'Unity Ads',vungle:'Vungle',admob:'AdMob',inmobi:'InMobi'};
-const DSP_SOURCE_LIST = ['pangle','gromore','mintegral','kuaishou','baidu','sigmob','unity','vungle','admob','inmobi'];
-const SCENE_ITEMS = {splash:'开屏',interstitial:'插屏',feed:'信息流',search:'搜索'};
-const SCENE_SLOT_IDS = {splash:['1000','1001'],interstitial:['1004'],feed:['1002','1003'],search:['1005']};
-const SLOT_NAME_MAP = {'1000':'美柚--开屏','1001':'美柚--开屏(原生)','1002':'美柚--信息流','1003':'美柚--信息流视频','1004':'美柚--插屏','1005':'美柚--搜索'};
-const PLATFORM_KEYS = ['android','ios'];
-const PLATFORM_NAMES = {all:'全部',android:'Android',ios:'iOS'};
-const PRICING_TYPES = [{id:'bidding',name:'竞价'},{id:'pricing',name:'定价'}];
+// === Mock Data ===
+const SCENE_ITEMS = ['splash','interstitial','feed','search'];
+const SCENE_NAMES = {splash:'开屏',interstitial:'插屏',feed:'信息流',search:'搜索'};
+const PLATFORM_NAMES = {android:'Android',ios:'iOS'};
+const DSP_SOURCE_NAMES = {pangle:'穿山甲',gdt:'优量汇',ks:'快手联盟',baidu:'百度联盟',sigmob:'Sigmob',mintegral:'Mintegral'};
+const DSP_SOURCES = ['pangle','gdt','ks','baidu','sigmob','mintegral'];
 
-function getPlatform(seed) { return seed % 2 === 0 ? 'android' : 'ios'; }
-function rand(min,max){return Math.floor(Math.random()*(max-min+1))+min}
-function randf(min,max){return parseFloat((Math.random()*(max-min)+min).toFixed(2))}
+// Generate mock groups for each scene+platform combination
+const SLOT_IDS = {splash:['1000','1005'],interstitial:['1001','1006'],feed:['1002','1007'],search:['1003','1008']};
+const SLOT_NAMES = {'1000':'美柚--开屏','1005':'美柚--开屏(iOS)','1001':'美柚--插屏','1006':'美柚--插屏(iOS)','1002':'美柚--信息流','1007':'美柚--信息流(iOS)','1003':'美柚--搜索','1008':'美柚--搜索(iOS)'};
 
-let sourceIdCounter = 100;
-function genSources(count, basePrice) {
+let groupIdCounter = 100;
+let sourceIdCounter = 1000;
+
+function createMockSources(count, scene, platform) {
   const sources = [];
-  for(let i=0;i<count;i++){
-    const dspKey = DSP_SOURCE_LIST[i % DSP_SOURCE_LIST.length];
-    const isBidding = i % 3 !== 0;
+  const dspList = [...DSP_SOURCES];
+  for (let i = 0; i < count && dspList.length > 0; i++) {
+    const idx = Math.floor(Math.random() * dspList.length);
+    const dsp = dspList.splice(idx, 1)[0];
     sources.push({
-      id: `pid-${sourceIdCounter++}`,
-      name: DSP_SOURCE_NAMES[dspKey],
-      dspSources: [dspKey],
-      status: i < count-1 ? 'enabled' : 'disabled',
-      pricingType: isBidding ? 'bidding' : 'pricing',
-      price: basePrice + rand(-5,5),
-      priceA: basePrice + rand(-5,5),
-      priceB: basePrice + rand(-3,3),
-      estimatedRevenue: randf(100,5000),
-      revenuePerThousand: randf(10,100),
-      ecpm: randf(15,80),
-      thousandRequestValue: randf(10,60),
-      requests: rand(10000,500000),
-      returns: rand(8000,400000),
-      responseRate: randf(70,99),
-      bidWins: rand(500,50000),
-      bidWinRate: randf(10,60),
-      impressions: rand(5000,300000),
-      winImpressionRate: randf(30,70),
-      ctr: randf(0.5,8),
-      cpc: randf(0.1,5)
+      id: `src-${sourceIdCounter++}`,
+      name: DSP_SOURCE_NAMES[dsp],
+      dspSources: [dsp],
+      pricingType: 'bidding',
+      price: Math.round(Math.random() * 30 + 5),
+      priceA: Math.round(Math.random() * 25 + 8),
+      priceB: Math.round(Math.random() * 35 + 3),
+      status: i < 3 ? 'enabled' : 'disabled',
+      isDefault: i === 0,
+      slotId: SLOT_IDS[scene][platform === 'ios' ? 1 : 0],
+      estimatedRevenue: Math.round(Math.random() * 5000 + 100),
+      revenuePerThousand: Math.round(Math.random() * 20 + 5),
+      ecpm: Math.round(Math.random() * 30 + 10),
+      thousandRequestValue: Math.round(Math.random() * 15 + 3),
+      requests: Math.round(Math.random() * 50000 + 1000),
+      responseRate: Math.round(Math.random() * 30 + 60),
+      bidWins: Math.round(Math.random() * 2000 + 100),
+      bidWinRate: Math.round(Math.random() * 15 + 10),
+      impressions: Math.round(Math.random() * 5000 + 500),
+      winImpressionRate: Math.round(Math.random() * 20 + 40),
+      ctr: Math.round(Math.random() * 8 + 2),
+      cpc: Math.round(Math.random() * 3 + 0.5)
     });
   }
+  if (sources.length > 0) sources[0].isDefault = true;
   return sources;
 }
 
-let groupIdCounter = 50;
-function createGroups() {
+function generateGroups() {
   const groups = [];
-  const scenes = Object.keys(SCENE_ITEMS);
-  const platforms = ['android','ios'];
-  scenes.forEach((scene,si)=>{
-    platforms.forEach((platform,pi)=>{
-      const groupCount = 3 + rand(0,2);
-      for(let g=0;g<groupCount;g++){
-        const isDefault = g === 0;
-        const basePrice = rand(10,40);
-        groups.push({
-          id: `group-${groupIdCounter++}`,
-          name: `${SCENE_ITEMS[scene]}${isDefault?'默认分组':(platform==='android'?'安卓':'iOS')+'分组'+(g)}`,
-          scene: scene,
-          platform: platform,
-          adSlots: SCENE_SLOT_IDS[scene],
-          priority: isDefault ? Infinity : g * 10,
-          status: 'enabled',
-          isDefault: isDefault,
-          hasABTest: false,
-          abTestStarted: false,
-          sourceCount: 3 + rand(0,5),
-          adSources: genSources(3+rand(0,4), basePrice)
-        });
-      }
-    });
+  for (const scene of SCENE_ITEMS) {
+    for (const platform of ['android','ios']) {
+      const groupId = `group-${groupIdCounter++}`;
+      groups.push({
+        id: groupId,
+        name: `${SCENE_NAMES[scene]}-${PLATFORM_NAMES[platform]}-默认分组`,
+        scene, platform,
+        status: 'enabled',
+        priority: 1,
+        isDefault: true,
+        adSlots: SLOT_IDS[scene],
+        slotId: SLOT_IDS[scene][platform === 'ios' ? 1 : 0],
+        adSources: createMockSources(4, scene, platform),
+        hasABTest: false,
+        abTestStarted: false,
+        trafficRatio: 50
+      });
+      // Add a second custom group
+      groups.push({
+        id: `group-${groupIdCounter++}`,
+        name: `${SCENE_NAMES[scene]}-${PLATFORM_NAMES[platform]}-次优分组`,
+        scene, platform,
+        status: 'enabled',
+        priority: 2,
+        isDefault: false,
+        adSlots: SLOT_IDS[scene],
+        slotId: SLOT_IDS[scene][platform === 'ios' ? 1 : 0],
+        adSources: createMockSources(2, scene, platform),
+        hasABTest: false,
+        abTestStarted: false,
+        trafficRatio: 30
+      });
+    }
+  }
+  // Add a custom mixed group
+  groups.push({
+    id: `group-${groupIdCounter++}`,
+    name: '自定义-高价分组',
+    scene: 'feed', platform: 'android',
+    status: 'enabled', priority: 3, isDefault: false,
+    adSlots: ['1002','1007'],
+    slotId: '1002',
+    adSources: createMockSources(3, 'feed', 'android'),
+    hasABTest: false,
+    abTestStarted: false,
+    trafficRatio: 20
   });
   return groups;
 }
-let AD_GROUPS = createGroups();
 
-function getGroupsByScenePlatform(scene, platform) {
-  return AD_GROUPS.filter(g => g.scene === scene && g.platform === platform);
-}
+let groups = generateGroups();
 
-// ============ STATE ============
+// === State ===
 let state = {
-  page: 'waterfall',
+  page: 'waterfall', // 'waterfall' | 'code-slots'
   scene: 'splash',
-  platform: 'all',
-  selectedGroupId: null,
-  abTestGroup: 'B',
-  trafficA: 50,
-  trafficB: 50,
-  collapsedDisabled: false,
-  hoveredSource: null,
-  hoverPos: {x:0,y:0},
-  modal: null,
-  modalData: null,
-  codeSlotsPage: 1,
-  codeSlotsPerPage: 10,
-  addPidDspType: 'sdk',
-  addPidDspSource: 'pangle',
-  addPidCodeId: '',
-  addPidSlotId: '',
-  addPidPriceA: '',
-  addPidPriceB: '',
-  addPidSdkVersion: '5.12.0',
-  addPidStatus: 'enabled',
-  editingSource: null,
-  editPrice: '',
-  editGroup: null,
-  editGroupName: '',
-  showGroups: 'all',
-  abTestStep: 1,
-  abTestGroupA: null,
-  abTestGroupB: null,
+  platform: 'android',
+  groupId: groups[0].id,
+  abGroup: 'B',
+  trafficRatio: 50,
+  collapsedDisabled: true,
+  codeSlotPage: 1,
+  codeSlotPageSize: 10
 };
 
-function getSelectedGroups() {
-  return getGroupsByScenePlatform(state.scene, state.platform);
+// === Code Slot Mock Data ===
+let codeSlots = [];
+function initCodeSlots() {
+  if (codeSlots.length > 0) return;
+  for (let i = 0; i < 30; i++) {
+    const platform = Math.random() > 0.5 ? 'android' : 'ios';
+    const scene = SCENE_ITEMS[Math.floor(Math.random() * SCENE_ITEMS.length)];
+    const slotId = SLOT_IDS[scene][platform === 'ios' ? 1 : 0];
+    const boundGroup = groups.filter(g => g.scene === scene && g.platform === platform);
+    codeSlots.push({
+      id: `CS${String(100000 + i)}`,
+      platform,
+      scene,
+      slotId,
+      slotName: SLOT_NAMES[slotId],
+      boundGroupName: boundGroup.length > 0 ? boundGroup[0].name : '-',
+      boundGroupId: boundGroup.length > 0 ? boundGroup[0].id : '',
+      status: Math.random() > 0.2 ? 'active' : 'closed'
+    });
+  }
 }
+initCodeSlots();
 
-function getSources() {
-  const group = getSelectedGroup();
-  return group ? group.adSources : [];
-}
-
-function getEnabledSources() {
-  return getSources().filter(s => s.status === 'enabled');
-}
-
-function getDisabledSources() {
-  return getSources().filter(s => s.status !== 'enabled');
+// === Helper Functions ===
+function getCurrentGroup() {
+  return groups.find(g => g.id === state.groupId);
 }
 
 function getSelectedGroup() {
-  if (!state.selectedGroupId) {
-    const groups = getSelectedGroups();
-    if (groups.length > 0) {
-      state.selectedGroupId = groups[0].id;
-    }
-    return groups[0] || null;
-  }
-  return AD_GROUPS.find(g => g.id === state.selectedGroupId) || null;
-}
-
-function getSummary(sourceList) {
-  if (!sourceList || sourceList.length === 0) return null;
-  return {
-    estimatedRevenue: sourceList.reduce((s,src)=>s+(src.estimatedRevenue||0),0),
-    revenuePerThousand: parseFloat((sourceList.reduce((s,src)=>s+(src.revenuePerThousand||0),0)/sourceList.length).toFixed(2)),
-    ecpm: parseFloat((sourceList.reduce((s,src)=>s+(src.ecpm||0),0)/sourceList.length).toFixed(2)),
-    revenuePerThousandRequests: parseFloat((sourceList.reduce((s,src)=>s+(src.thousandRequestValue||0),0)/sourceList.length).toFixed(2)),
-    requests: sourceList.reduce((s,src)=>s+(src.requests||0),0),
-    responseRate: parseFloat((sourceList.reduce((s,src)=>s+(src.responseRate||0),0)/sourceList.length).toFixed(1)),
-    bidWins: sourceList.reduce((s,src)=>s+(src.bidWins||0),0),
-    bidWinRate: parseFloat((sourceList.reduce((s,src)=>s+(src.bidWinRate||0),0)/sourceList.length).toFixed(1)),
-    impressions: sourceList.reduce((s,src)=>s+(src.impressions||0),0),
-    winImpressionRate: parseFloat((sourceList.reduce((s,src)=>s+(src.winImpressionRate||0),0)/sourceList.length).toFixed(1)),
-    ctr: parseFloat((sourceList.reduce((s,src)=>s+(src.ctr||0),0)/sourceList.length).toFixed(1)),
-    cpc: parseFloat((sourceList.reduce((s,src)=>s+(src.cpc||0),0)/sourceList.length).toFixed(2))
-  };
-}
-
-function getColorDot(name) {
-  const colors = ['#FF4D88','#165DFF','#00B42A','#FA8C16','#722ED1','#F7BA1E','#3491FA','#F77234','#9FDB1D','#D91AD9'];
-  let hash = 0;
-  for(let i=0;i<name.length;i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  return colors[Math.abs(hash) % colors.length];
+  const g = groups.filter(g => g.scene === state.scene && g.platform === state.platform);
+  return g.find(gg => gg.id === state.groupId) || g[0];
 }
 
 function formatNumber(n) {
-  if (n === undefined || n === null) return '-';
-  if (n >= 10000) return (n/10000).toFixed(1) + '万';
-  return n.toLocaleString('zh-CN');
+  if (!n && n !== 0) return '-';
+  if (n >= 10000) return (n / 10000).toFixed(1) + '万';
+  return n.toLocaleString();
 }
 
-function getSceneKey(label) {
-  return Object.keys(SCENE_ITEMS).find(k => SCENE_ITEMS[k] === label) || 'splash';
+function formatPrice(p) {
+  if (!p && p !== 0) return '-';
+  return '¥' + p.toFixed ? p.toFixed(2) : Number(p).toFixed(2);
+}
+
+function getSourceDisplayName(source) {
+  return DSP_SOURCE_NAMES[source.dspSources?.[0]] || source.dspSources?.[0] || source.name;
 }
 
 function getPrice(source) {
-  if (!source) return 0;
-  if (state.page === 'abtest') {
-    // In A/B test view, use group-specific price
-    return source.price; // default
-  }
-  if (state.abTestGroup === 'A') return source.priceA ?? source.price;
-  if (state.abTestGroup === 'B') return source.priceB ?? source.price;
+  if (state.abGroup === 'A') return source.priceA ?? source.price;
+  if (state.abGroup === 'B') return source.priceB ?? source.price;
   return source.price;
 }
 
-// ============ RENDER ============
+function getSelectedGroup() {
+  return groups.find(g => g.id === state.groupId) || null;
+}
+// === Render Function ===
 function render() {
   const app = document.getElementById('app');
-  app.innerHTML = '';
-  
-  if (state.modal === 'code-slots') {
-    renderCodeSlotsPage(app);
-    return;
+  const filteredGroups = groups.filter(g => g.scene === state.scene && g.platform === state.platform);
+  if (filteredGroups.length > 0 && !filteredGroups.find(g => g.id === state.groupId)) {
+    state.groupId = filteredGroups[0].id;
   }
-  
-  app.innerHTML = `
-    <!-- Sidebar -->
-    <div class="sidebar">
-      <div class="sidebar-logo">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="#FF4D88" style="display:inline;vertical-align:middle;margin-right:8px">
-          <circle cx="12" cy="12" r="10"/>
-        </svg>
-        美柚广告系统
-      </div>
-      <div class="sidebar-item ${state.page==='waterfall'?'active':''}" onclick="switchPage('waterfall')">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M9 3v18"/></svg>
-        流量管理
-      </div>
-      <div style="padding-left:16px">
-        <div class="sidebar-item ${state.page==='waterfall'?'active':''}" onclick="switchPage('waterfall')" style="font-size:13px">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v4H4z"/><path d="M4 10h16v4H4z"/><path d="M4 16h16v4H4z"/></svg>
-          瀑布流管理
-        </div>
-        <div class="sidebar-item ${state.page==='code-slots'?'active':''}" onclick="switchPage('code-slots')" style="font-size:13px">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9l3 3-3 3"/><path d="M15 9l-3 3 3 3"/></svg>
-          代码位ID管理
-        </div>
-      </div>
-    </div>
-    <!-- Main -->
-    <div class="main-content">
-      ${state.page === 'code-slots' ? renderCodeSlotsPage() : renderWaterfallPage()}
-    </div>
-    ${renderHoverCard()}
-    ${renderModal()}
-  `;
+  const group = getSelectedGroup();
+  const enabledSources = group?.adSources.filter(s => s.status === 'enabled') || [];
+  const disabledSources = group?.adSources.filter(s => s.status !== 'enabled') || [];
+
+  const showWaterfall = state.page === 'waterfall';
+  let html = '<div class="layout">';
+
+  // === Sidebar ===
+  html += '<div class="sidebar">';
+  html += '<div class="sidebar-header"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#FF4D88" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>美柚广告系统</div>';
+  html += '<div class="sidebar-menu">';
+  html += `<div class="sidebar-item ${state.page === 'waterfall' ? 'active' : ''}" onclick="switchPage('waterfall')">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#4E5969" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>流量管理</div>`;
+  html += `<div style="padding-left:16px">`;
+  html += `<div class="sidebar-item ${state.page === 'waterfall' ? 'active' : ''}" onclick="switchPage('waterfall')" style="font-size:13px">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#4E5969" stroke-width="2"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M9 3v18"/></svg>瀑布流管理</div>`;
+  html += `<div class="sidebar-item ${state.page === 'code-slots' ? 'active' : ''}" onclick="switchPage('code-slots')" style="font-size:13px">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#4E5969" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>代码位ID管理</div>`;
+  html += '</div></div></div>';
+
+  // === Main Content ===
+  html += '<div class="main">';
+
+  if (showWaterfall) {
+    // === Top Bar ===
+    html += '<div class="top-bar">';
+    html += '<div class="breadcrumb">流量管理 › <span>瀑布流管理</span></div>';
+    html += '</div>';
+    html += '<div class="content">';
+
+    // === Scene Tabs ===
+    html += '<div class="filter-bar">';
+    html += '<div class="scene-tabs">';
+    for (const s of SCENE_ITEMS) {
+      html += `<div class="scene-tab ${state.scene === s ? 'active' : ''}" onclick="setScene('${s}')">${SCENE_NAMES[s]}</div>`;
+    }
+    html += '</div>';
+
+    // === Platform Tabs ===
+    html += '<div class="platform-tabs">';
+    html += `<div class="platform-tab ${state.platform === 'android' ? 'active' : ''}" onclick="setPlatform('android')">全部</div>`;
+    html += `<div class="platform-tab ${state.platform === 'android' ? 'active' : ''}" onclick="setPlatform('android')">Android</div>`;
+    html += `<div class="platform-tab ${state.platform === 'ios' ? 'active' : ''}" onclick="setPlatform('ios')">iOS</div>`;
+    html += '</div>';
+    html += '</div>';
+
+    // === Group Tabs ===
+    if (filteredGroups.length > 0) {
+      html += '<div class="group-tabs">';
+      for (const g of filteredGroups) {
+        const isActive = g.id === state.groupId;
+        html += `<div class="group-tab ${isActive ? 'active' : ''}" onclick="selectGroup('${g.id}')">${g.name}`;
+        if (g.isDefault) html += '<span class="tag tag-default">默认</span>';
+        if (g.hasABTest) html += '<span class="tag tag-ab-testing">A/B测试中</span>';
+        if (!g.isDefault) html += `<span class="close-btn" onclick="event.stopPropagation();deleteGroup('${g.id}')">×</span>`;
+        html += '</div>';
+      }
+      html += '<button class="btn-secondary" style="padding:4px 12px;font-size:12px;margin-left:4px" onclick="showAddGroup()">+ 添加分组</button>';
+      html += '</div>';
+
+      // === A/B Test Bar ===
+      if (group?.hasABTest) {
+        html += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;padding:8px 12px;background:#FFF0F5;border-radius:8px;font-size:13px">';
+        html += '<span style="font-weight:500">A/B实验:</span>';
+        html += `<button class="btn-secondary ${state.abGroup === 'A' ? 'active' : ''}" onclick="setABGroup('A')" style="padding:2px 10px;font-size:12px">对照组A</button>`;
+        html += `<button class="btn-secondary ${state.abGroup === 'B' ? 'active' : ''}" onclick="setABGroup('B')" style="padding:2px 10px;font-size:12px">测试组B</button>`;
+        html += `<span style="color:#86909C">流量分配: A组 ${100 - state.trafficRatio}% / B组 ${state.trafficRatio}%</span>`;
+        html += `<button class="btn-secondary" style="padding:2px 10px;font-size:12px" onclick="showAbTestConfig()">编辑配置</button>`;
+        html += '</div>';
+      } else {
+        html += '<div style="margin-bottom:12px">';
+        html += `<button class="btn-primary" style="padding:6px 14px;font-size:12px" onclick="createABTest()">+ 创建A/B测试</button>`;
+        html += '</div>';
+      }
+
+      // === Source Table ===
+      html += renderSourceTable(enabledSources, disabledSources, group);
+    }
+
+    html += '</div>'; // content
+  } else {
+    // === Code Slots Page ===
+    html += '<div class="top-bar">';
+    html += '<div class="breadcrumb">流量管理 › <span>代码位ID管理</span></div>';
+    html += '</div>';
+    html += '<div class="content">';
+    html += renderCodeSlotsPage();
+    html += '</div>';
+  }
+
+  html += '</div>'; // main
+  html += '</div>'; // layout
+
+  app.innerHTML = html;
 }
 
+// === Render Source Table ===
+function renderSourceTable(enabledSources, disabledSources, group) {
+  let h = '';
+
+  // Summary row calculation
+  function sum(arr, key) { return arr.reduce((s, src) => s + (src[key] || 0), 0); }
+  function avg(arr, key) { return arr.length > 0 ? sum(arr, key) / arr.length : 0; }
+
+  const summary = {
+    estimatedRevenue: sum(enabledSources, 'estimatedRevenue'),
+    revenuePerThousand: avg(enabledSources, 'revenuePerThousand'),
+    ecpm: avg(enabledSources, 'ecpm'),
+    thousandRequestValue: avg(enabledSources, 'thousandRequestValue'),
+    requests: sum(enabledSources, 'requests'),
+    responseRate: enabledSources.length > 0 ? sum(enabledSources, 'responseRate') / enabledSources.length : 0,
+    bidWins: sum(enabledSources, 'bidWins'),
+    bidWinRate: enabledSources.length > 0 ? sum(enabledSources, 'bidWinRate') / enabledSources.length : 0,
+    impressions: sum(enabledSources, 'impressions'),
+    winImpressionRate: enabledSources.length > 0 ? sum(enabledSources, 'winImpressionRate') / enabledSources.length : 0,
+    ctr: enabledSources.length > 0 ? sum(enabledSources, 'ctr') / enabledSources.length : 0,
+    cpc: enabledSources.length > 0 ? sum(enabledSources, 'cpc') / enabledSources.length : 0
+  };
+
+  function renderSourceRow(source, isSummary) {
+    const price = isSummary ? '-' : getPrice(source);
+    return `<tr>
+      <td>${isSummary ? '' : '<input type="checkbox" style="cursor:pointer">'}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px" ${isSummary ? '' : `onmouseenter="showHoverCard(event,'${source.id}')" onmouseleave="hideHoverCard()"`}>
+          <span style="width:8px;height:8px;border-radius:50%;background:${isSummary ? '#FF4D88' : ['#FF4D88','#165DFF','#00A870','#FF8A00','#7B61FF','#FF375F'][Math.floor(Math.random()*6)]};display:inline-block"></span>
+          <span style="color:#1D2129;font-weight:${isSummary?'500':'400'}">${isSummary ? enabledSources.length + '个DSP来源已启用' : getSourceDisplayName(source)}</span>
+          ${!isSummary && source.isDefault ? '<span class="tag tag-default">兜底</span>' : ''}
+        </div>
+      </td>
+      <td>${isSummary ? '' : `<label class="switch"><input type="checkbox" ${source.status === 'enabled' ? 'checked' : ''} onchange="toggleSourceStatus('${source.id}')"><span class="slider"></span></label>`}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="badge-bidding">竞价</span>
+          <span style="color:#1D2129;font-weight:500">${isSummary ? '-' : formatPrice(price)}</span>
+          ${isSummary ? '' : '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#165DFF" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>'}
+        </div>
+      </td>
+      <td style="color:#1D2129">${isSummary ? formatPrice(summary.estimatedRevenue) : formatPrice(source.estimatedRevenue)}</td>
+      <td style="color:#1D2129">${isSummary ? formatPrice(summary.revenuePerThousand) : formatPrice(source.revenuePerThousand)}</td>
+      <td style="color:#1D2129">${isSummary ? formatPrice(summary.ecpm) : formatPrice(source.ecpm)}</td>
+      <td style="color:#1D2129">${isSummary ? formatPrice(summary.thousandRequestValue) : formatPrice(source.thousandRequestValue)}</td>
+      <td style="color:#1D2129">${isSummary ? formatNumber(summary.requests) : formatNumber(source.requests)}</td>
+      <td style="color:#1D2129">${isSummary ? summary.responseRate.toFixed(1) + '%' : (source.responseRate || 0).toFixed(1) + '%'}</td>
+      <td style="color:#1D2129">${isSummary ? formatNumber(summary.bidWins) : formatNumber(source.bidWins)}</td>
+      <td style="color:#1D2129">${isSummary ? summary.bidWinRate.toFixed(1) + '%' : (source.bidWinRate || 0).toFixed(1) + '%'}</td>
+      <td style="color:#1D2129">${isSummary ? (summary.impressions > 0 ? formatNumber(summary.impressions) : '-') : (source.impressions > 0 ? formatNumber(source.impressions) : '-')}</td>
+      <td style="color:#1D2129">${isSummary ? (summary.winImpressionRate > 0 ? summary.winImpressionRate.toFixed(1) + '%' : '-') : (source.winImpressionRate > 0 ? source.winImpressionRate.toFixed(1) + '%' : '-')}</td>
+      <td style="color:#1D2129">${isSummary ? (summary.ctr > 0 ? summary.ctr.toFixed(1) + '%' : '-') : (source.ctr > 0 ? source.ctr.toFixed(1) + '%' : '-')}</td>
+      <td style="color:#1D2129">${isSummary ? (summary.cpc > 0 ? formatPrice(summary.cpc) : '-') : (source.cpc > 0 ? formatPrice(source.cpc) : '-')}</td>
+    </tr>`;
+  }
+
+  // Table
+  h += '<div style="background:#fff;border-radius:8px;overflow:auto">';
+  h += '<table><thead><tr>';
+  h += '<th style="width:32px"><input type="checkbox"></th>';
+  h += '<th style="min-width:160px">DSP来源</th>';
+  h += '<th style="width:64px">状态</th>';
+  h += '<th style="width:100px">价格<span class="info-icon" onmouseenter="showTooltip(event,\'图片和视频价格相同\')" onmouseleave="hideTooltip()">?<span class="tooltip">图片和视频价格相同</span></span></th>';
+  h += '<th style="width:90px">预估收入(元)<span class="info-icon" onmouseenter="showTooltip(event,\'预估产生的总收入\')" onmouseleave="hideTooltip()">?<span class="tooltip">预估产生的总收入</span></span></th>';
+  h += '<th style="width:90px">千人均收益<span class="info-icon" onmouseenter="showTooltip(event,\'每千人产生的收益\')" onmouseleave="hideTooltip()">?<span class="tooltip">每千人产生的收益</span></span></th>';
+  h += '<th style="width:90px">eCPM(元)<span class="info-icon" onmouseenter="showTooltip(event,\'千次展示收益\')" onmouseleave="hideTooltip()">?<span class="tooltip">千次展示收益</span></span></th>';
+  h += '<th style="width:100px">千次请求价值<span class="info-icon" onmouseenter="showTooltip(event,\'每千次请求产生的价值\')" onmouseleave="hideTooltip()">?<span class="tooltip">每千次请求产生的价值</span></span></th>';
+  h += '<th style="width:80px">请求量</th>';
+  h += '<th style="width:80px">返回率<span class="info-icon" onmouseenter="showTooltip(event,\'返回量/请求量\')" onmouseleave="hideTooltip()">?<span class="tooltip">返回量/请求量</span></span></th>';
+  h += '<th style="width:90px">竞价成功数</th>';
+  h += '<th style="width:90px">竞价成功率<span class="info-icon" onmouseenter="showTooltip(event,\'竞价成功数/请求量\')" onmouseleave="hideTooltip()">?<span class="tooltip">竞价成功数/请求量</span></span></th>';
+  h += '<th style="width:80px">展示量</th>';
+  h += '<th style="width:90px">竞胜展示率</th>';
+  h += '<th style="width:80px">点击率</th>';
+  h += '<th style="width:80px">cpc<span class="info-icon" onmouseenter="showTooltip(event,\'每次点击成本\')" onmouseleave="hideTooltip()">?<span class="tooltip">每次点击成本</span></span></th>';
+  h += '</tr></thead><tbody>';
+
+  // Summary row
+  if (enabledSources.length > 0) {
+    h += renderSourceRow({}, true);
+  }
+
+  // Enabled sources
+  for (const src of enabledSources) {
+    h += renderSourceRow(src, false);
+  }
+
+  h += '</tbody></table>';
+  h += '</div>';
+
+  // Disabled sources section
+  if (disabledSources.length > 0) {
+    h += `<div style="margin-top:16px;background:#fff;border-radius:8px;overflow:hidden">`;
+    h += `<div style="padding:12px 16px;display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:#4E5969;border-bottom:1px solid #E5E6EB" onclick="toggleCollapsed()">`;
+    h += `<svg style="transform:rotate(${state.collapsedDisabled ? 0 : 90}deg);transition:.2s" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#4E5969" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>`;
+    h += `已关闭 (${disabledSources.length})`;
+    h += '</div>';
+    if (!state.collapsedDisabled) {
+      h += '<table><thead><tr>';
+      h += '<th style="width:32px"></th><th style="min-width:160px">DSP来源</th><th style="width:64px">状态</th>';
+      for (let i = 0; i < 13; i++) h += '<th></th>';
+      h += '</tr></thead><tbody>';
+      for (const src of disabledSources) {
+        h += renderSourceRow(src, false);
+      }
+      h += '</tbody></table>';
+    }
+    h += '</div>';
+  }
+
+  return h;
+}
+
+// === Render Code Slots Page ===
+function renderCodeSlotsPage() {
+  const total = codeSlots.length;
+  const totalPages = Math.ceil(total / state.codeSlotPageSize);
+  const start = (state.codeSlotPage - 1) * state.codeSlotPageSize;
+  const pageItems = codeSlots.slice(start, start + state.codeSlotPageSize);
+
+  let h = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">';
+  h += '<h2 style="font-size:16px;font-weight:600">代码位ID管理</h2>';
+  h += '<button class="btn-primary" onclick="showAddCodeSlot()">+ 新增代码位</button>';
+  h += '</div>';
+
+  h += '<div style="background:#fff;border-radius:8px;overflow:auto">';
+  h += '<table><thead><tr>';
+  h += '<th>代码位Id</th><th>系统平台</th><th>广告场景</th><th>广告位</th><th>绑定分组信息</th><th style="width:120px">操作</th>';
+  h += '</tr></thead><tbody>';
+  for (const cs of pageItems) {
+    h += '<tr>';
+    h += `<td style="color:#1D2129;font-family:monospace">${cs.id}</td>`;
+    h += `<td><span style="display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px;background:${cs.platform === 'android' ? '#E8F3FF' : '#F0E8FF'};color:${cs.platform === 'android' ? '#165DFF' : '#7B61FF'}">${PLATFORM_NAMES[cs.platform]}</span></td>`;
+    h += `<td>${SCENE_NAMES[cs.scene]}</td>`;
+    h += `<td>${cs.slotName}</td>`;
+    h += `<td>${cs.boundGroupName}</td>`;
+    h += '<td>';
+    if (cs.status === 'active') {
+      h += `<button style="padding:2px 8px;border:1px solid #FF4D88;border-radius:4px;background:#fff;color:#FF4D88;font-size:12px;cursor:pointer" onclick="toggleCodeSlot('${cs.id}')">× 关闭广告代码位Id</button>`;
+    } else {
+      h += '<span style="color:#86909C;font-size:12px">已关闭</span>';
+    }
+    h += '</td></tr>';
+  }
+  h += '</tbody></table></div>';
+
+  // Pagination
+  h += '<div class="pagination">';
+  h += `<button ${state.codeSlotPage === 1 ? 'disabled' : ''} onclick="goCodeSlotPage(1)">首页</button>`;
+  h += `<button ${state.codeSlotPage === 1 ? 'disabled' : ''} onclick="goCodeSlotPage(${state.codeSlotPage - 1})">‹</button>`;
+  for (let i = Math.max(1, state.codeSlotPage - 2); i <= Math.min(totalPages, state.codeSlotPage + 2); i++) {
+    h += `<button class="${i === state.codeSlotPage ? 'active' : ''}" onclick="goCodeSlotPage(${i})">${i}</button>`;
+  }
+  h += `<button ${state.codeSlotPage >= totalPages ? 'disabled' : ''} onclick="goCodeSlotPage(${state.codeSlotPage + 1})">›</button>`;
+  h += `<button ${state.codeSlotPage >= totalPages ? 'disabled' : ''} onclick="goCodeSlotPage(${totalPages})">末页</button>`;
+  h += `<span style="margin-left:12px;font-size:12px;color:#86909C">每页 ${state.codeSlotPageSize} 条，共 ${total} 条</span>`;
+  h += '</div>';
+
+  return h;
+}
+
+
+// === Page Navigation ===
 function switchPage(page) {
   state.page = page;
-  state.modal = null;
   render();
 }
 
-// ============ WATERFALL PAGE ============
-function renderWaterfallPage() {
-  const scene = state.scene;
-  const groups = getSelectedGroups();
-  const group = getSelectedGroup();
-  const sources = getEnabledSources();
-  const disabledSources = getDisabledSources();
-  const summary = getSummary(sources);
-  const hasABTest = group && group.hasABTest;
-  const sceneKeys = Object.keys(SCENE_ITEMS);
-  
-  return `
-    <!-- Top Bar -->
-    <div class="top-bar">
-      <div class="breadcrumb">流量管理 <span>› 瀑布流管理</span></div>
-      <div style="display:flex;align-items:center;gap:12px;margin-left:auto">
-        <div class="scene-tabs">
-          ${sceneKeys.map(k => `<div class="scene-tab ${state.scene===k?'active':''}" onclick="setScene('${k}')">${SCENE_ITEMS[k]}</div>`).join('')}
-        </div>
-      </div>
-    </div>
-    
-    <!-- Platform Bar -->
-    <div style="background:#fff;padding:8px 24px;border-bottom:1px solid #E5E6EB;display:flex;align-items:center;gap:8px">
-      <span style="font-size:13px;color:#86909C">平台：</span>
-      <div class="platform-btn ${state.platform==='all'?'active':''}" onclick="setPlatform('all')">全部</div>
-      <div class="platform-btn ${state.platform==='android'?'active':''}" onclick="setPlatform('android')">Android</div>
-      <div class="platform-btn ${state.platform==='ios'?'active':''}" onclick="setPlatform('ios')">iOS</div>
-    </div>
-    
-    <!-- Group Bar -->
-    <div class="group-bar">
-      <span style="font-size:13px;color:#86909C;margin-right:4px">分组：</span>
-      ${groups.map(g => `
-        <div class="group-tab ${state.selectedGroupId===g.id?'active':''} ${g.isDefault?'default':''}" onclick="setGroup('${g.id}')">
-          ${g.name}${g.isDefault ? ' 🏠' : ''}
-        </div>
-      `).join('')}
-      <button class="btn-outline" style="padding:4px 8px;font-size:12px" onclick="showAddGroup()">+ 添加分组</button>
-    </div>
-    
-    <!-- A/B Test Info -->
-    ${hasABTest ? renderABTestBar(group) : ''}
-    
-    <!-- A/B Test Config Section -->
-    ${hasABTest ? renderABTestConfig(group) : ''}
-    
-    <!-- Source Table -->
-    ${sources.length > 0 ? `
-    <div class="table-wrap">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-        <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-size:14px;font-weight:500">已启用 (${sources.length})</span>
-        </div>
-        <div style="display:flex;gap:6px">
-          <button class="btn-primary" onclick="showAddPid()">+ 添加PID</button>
-          <button class="btn-outline">批量操作</button>
-        </div>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th style="width:40px">操作</th>
-            <th style="width:160px">DSP来源</th>
-            <th style="width:60px">状态</th>
-            <th style="width:100px">
-              <span>价格</span>
-              <span class="info-icon" title="图片和视频价格相同">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-              </span>
-            </th>
-            <th style="width:90px">
-              <span>预估收入</span>
-              <span class="info-icon" title="预估产生的总收入">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-              </span>
-            </th>
-            <th style="width:90px">
-              <span>千人均收益</span>
-              <span class="info-icon" title="每千人产生的收益">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-              </span>
-            </th>
-            <th style="width:80px">
-              <span>eCPM</span>
-              <span class="info-icon" title="千次展示收益">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-              </span>
-            </th>
-            <th style="width:90px">
-              <span>千次请求价值</span>
-              <span class="info-icon" title="每千次请求产生的价值">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-              </span>
-            </th>
-            <th style="width:80px">请求量</th>
-            <th style="width:70px">
-              <span>返回率</span>
-              <span class="info-icon" title="返回量/请求量">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-              </span>
-            </th>
-            <th style="width:80px">竞价成功数</th>
-            <th style="width:80px">
-              <span>竞价成功率</span>
-              <span class="info-icon" title="竞价成功数/请求量">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-              </span>
-            </th>
-            <th style="width:80px">展示量</th>
-            <th style="width:90px">竞胜展示率</th>
-            <th style="width:70px">点击率</th>
-            <th style="width:70px">
-              <span>CPC</span>
-              <span class="info-icon" title="每次点击成本">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-              </span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          ${summary ? `
-          <tr class="summary">
-            <td></td>
-            <td>${sources.length}个DSP来源已启用</td>
-            <td></td>
-            <td></td>
-            <td>${summary.estimatedRevenue.toLocaleString('zh-CN',{minimumFractionDigits:1,maximumFractionDigits:1})}</td>
-            <td>¥${summary.revenuePerThousand.toFixed(2)}</td>
-            <td>¥${summary.ecpm.toFixed(2)}</td>
-            <td>¥${summary.revenuePerThousandRequests.toFixed(2)}</td>
-            <td>${formatNumber(summary.requests)}</td>
-            <td>${summary.responseRate}%</td>
-            <td>${formatNumber(summary.bidWins)}</td>
-            <td>${summary.bidWinRate}%</td>
-            <td>${summary.impressions > 0 ? formatNumber(summary.impressions) : '-'}</td>
-            <td>${summary.winImpressionRate > 0 ? summary.winImpressionRate+'%' : '-'}</td>
-            <td>${summary.ctr > 0 ? summary.ctr+'%' : '-'}</td>
-            <td>${summary.cpc > 0 ? '¥'+summary.cpc.toFixed(2) : '-'}</td>
-          </tr>` : ''}
-          ${sources.map(src => `
-          <tr onmouseenter="showHover(event, '${src.id}')" onmouseleave="hideHover()">
-            <td><button class="btn-outline" style="padding:2px 8px;font-size:12px" onclick="event.stopPropagation();editSource('${src.id}')">编辑</button></td>
-            <td><div style="display:flex;align-items:center;gap:6px"><span class="color-dot" style="background:${getColorDot(src.name)}"></span><span style="font-weight:500;color:#1D2129">${src.name}</span></div></td>
-            <td><label class="switch"><input type="checkbox" ${src.status==='enabled'?'checked':''} onclick="event.stopPropagation();toggleSource('${src.id}')"><span class="slider"></span></label></td>
-            <td>
-              <div style="display:flex;align-items:center;gap:4px">
-                <span class="badge-${src.pricingType}">${src.pricingType==='bidding'?'竞价':'定价'}</span>
-                <span style="color:#1D2129">¥${getPrice(src).toFixed(2)}</span>
-                ${src.pricingType==='bidding' ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="#165DFF"><path d="M3 17l9-14 9 14z"/></svg>' : ''}
-              </div>
-            </td>
-            <td style="color:#1D2129">${(src.estimatedRevenue||0).toLocaleString('zh-CN',{minimumFractionDigits:1,maximumFractionDigits:1})}</td>
-            <td style="color:#1D2129">¥${(src.revenuePerThousand||0).toFixed(2)}</td>
-            <td style="color:#1D2129">¥${(src.ecpm||0).toFixed(2)}</td>
-            <td style="color:#1D2129">¥${(src.thousandRequestValue||0).toFixed(2)}</td>
-            <td style="color:#1D2129">${formatNumber(src.requests||0)}</td>
-            <td style="color:#1D2129">${(src.responseRate||0).toFixed(1)}%</td>
-            <td style="color:#1D2129">${formatNumber(src.bidWins||0)}</td>
-            <td style="color:#1D2129">${(src.bidWinRate||0).toFixed(1)}%</td>
-            <td style="color:#1D2129">${(src.impressions||0) > 0 ? formatNumber(src.impressions) : '-'}</td>
-            <td style="color:#1D2129">${(src.winImpressionRate||0) > 0 ? src.winImpressionRate.toFixed(1)+'%' : '-'}</td>
-            <td style="color:#1D2129">${(src.ctr||0) > 0 ? src.ctr.toFixed(1)+'%' : '-'}</td>
-            <td style="color:#1D2129">${(src.cpc||0) > 0 ? '¥'+src.cpc.toFixed(2) : '-'}</td>
-          </tr>`).join('')}
-        </tbody>
-      </table>
-    </div>` : '<div class="empty-state">暂无广告源，点击"添加PID"添加</div>'}
-    
-    <!-- Disabled Sources -->
-    <div style="padding:0 24px">
-      <div class="collapse-header" onclick="toggleDisabled()">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="transform:rotate(${state.collapsedDisabled?'0':'90'}deg)"><polyline points="9 18 15 12 9 6"/></svg>
-        已启用（${disabledSources.length}）
-        <span style="font-size:12px;color:#86909C">${state.collapsedDisabled?'展开':'收起'}</span>
-      </div>
-      ${state.collapsedDisabled ? '' : (disabledSources.length > 0 ? `
-      <div class="table-wrap" style="padding:0 0 16px 0">
-        <table>
-          <thead>
-            <tr>
-              <th style="width:40px">操作</th>
-              <th style="width:160px">DSP来源</th>
-              <th style="width:60px">状态</th>
-              <th style="width:100px">价格</th>
-              <th style="width:90px">预估收入</th>
-              <th style="width:90px">千人均收益</th>
-              <th style="width:80px">eCPM</th>
-              <th style="width:90px">千次请求价值</th>
-              <th style="width:80px">请求量</th>
-              <th style="width:70px">返回率</th>
-              <th style="width:80px">竞价成功数</th>
-              <th style="width:80px">竞价成功率</th>
-              <th style="width:80px">展示量</th>
-              <th style="width:90px">竞胜展示率</th>
-              <th style="width:70px">点击率</th>
-              <th style="width:70px">CPC</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${disabledSources.map(src => `
-            <tr>
-              <td><button class="btn-outline" style="padding:2px 8px;font-size:12px" onclick="editSource('${src.id}')">编辑</button></td>
-              <td><div style="display:flex;align-items:center;gap:6px"><span class="color-dot" style="background:${getColorDot(src.name)}"></span><span style="color:#1D2129">${src.name}</span></div></td>
-              <td><label class="switch"><input type="checkbox" ${src.status==='enabled'?'checked':''} onchange="toggleSource('${src.id}')"><span class="slider"></span></label></td>
-              <td><div style="display:flex;align-items:center;gap:4px"><span class="badge-${src.pricingType}">${src.pricingType==='bidding'?'竞价':'定价'}</span><span>¥${getPrice(src).toFixed(2)}</span></div></td>
-              <td>${(src.estimatedRevenue||0).toLocaleString('zh-CN',{minimumFractionDigits:1})}</td>
-              <td>¥${(src.revenuePerThousand||0).toFixed(2)}</td>
-              <td>¥${(src.ecpm||0).toFixed(2)}</td>
-              <td>¥${(src.thousandRequestValue||0).toFixed(2)}</td>
-              <td>${formatNumber(src.requests||0)}</td>
-              <td>${(src.responseRate||0).toFixed(1)}%</td>
-              <td>${formatNumber(src.bidWins||0)}</td>
-              <td>${(src.bidWinRate||0).toFixed(1)}%</td>
-              <td>${(src.impressions||0) > 0 ? formatNumber(src.impressions) : '-'}</td>
-              <td>${(src.winImpressionRate||0) > 0 ? src.winImpressionRate.toFixed(1)+'%' : '-'}</td>
-              <td>${(src.ctr||0) > 0 ? src.ctr.toFixed(1)+'%' : '-'}</td>
-              <td>${(src.cpc||0) > 0 ? '¥'+src.cpc.toFixed(2) : '-'}</td>
-            </tr>`).join('')}
-          </tbody>
-        </table>
-      </div>` : '<div style="text-align:center;padding:20px;color:#86909C;font-size:13px">暂无数据</div>')}
-    </div>
-  `;
-}
-
-function renderABTestBar(group) {
-  return `
-  <div style="background:#FFF0F5;padding:10px 24px;display:flex;align-items:center;gap:16px;border-bottom:1px solid #FFD6E4;font-size:13px">
-    <span style="color:#FF4D88;font-weight:500">A/B测试已开启</span>
-    <span style="color:#4E5969">流量分配：A组 ${state.trafficA}% / B组 ${state.trafficB}%</span>
-    <div style="display:flex;align-items:center;gap:6px;margin-left:auto">
-      <span style="color:#86909C">查看测试组：</span>
-      <div class="scene-tab ${state.abTestGroup==='A'?'active':''}" onclick="setABGroup('A')" style="background:transparent;border:1px solid #E5E6EB">A组(对照组)</div>
-      <div class="scene-tab ${state.abTestGroup==='B'?'active':''}" onclick="setABGroup('B')" style="background:transparent;border:1px solid #E5E6EB">B组(测试组)</div>
-    </div>
-  </div>`;
-}
-
-function renderABTestConfig(group) {
-  const allSources = group.adSources || [];
-  return `
-  <div style="padding:0 24px 16px">
-    <div style="background:#fff;border-radius:8px;border:1px solid #E5E6EB;padding:16px;margin-top:12px">
-      <div class="section-title">A/B测试实验配置</div>
-      <table>
-        <thead>
-          <tr>
-            <th style="width:40px"></th>
-            <th style="width:160px">DSP来源</th>
-            <th style="width:60px">状态</th>
-            <th style="width:100px">定价方式</th>
-            <th style="width:100px">价格</th>
-            <th style="width:90px">预估收入</th>
-            <th style="width:90px">千人均收益</th>
-            <th style="width:80px">eCPM</th>
-            <th style="width:80px">请求量</th>
-            <th style="width:70px">返回率</th>
-            <th style="width:80px">竞价成功数</th>
-            <th style="width:80px">竞价成功率</th>
-            <th style="width:80px">展示量</th>
-            <th style="width:70px">点击率</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${allSources.map(src => `
-          <tr>
-            <td></td>
-            <td><div style="display:flex;align-items:center;gap:6px"><span class="color-dot" style="background:${getColorDot(src.name)}"></span><span style="color:#1D2129;font-weight:500">${src.name}</span></div></td>
-            <td><label class="switch"><input type="checkbox" ${src.status==='enabled'?'checked':''}><span class="slider"></span></label></td>
-            <td><span class="badge-${src.pricingType}">${src.pricingType==='bidding'?'竞价':'定价'}</span></td>
-            <td>
-              <div style="display:flex;align-items:center;gap:6px">
-                <input type="number" value="${getPrice(src).toFixed(2)}" style="width:80px;padding:3px 6px;border:1px solid #E5E6EB;border-radius:4px;font-size:13px;text-align:center">
-                <span style="display:flex;gap:2px">
-                  <span style="padding:2px 6px;border-radius:4px;font-size:11px;background:#FFF0F5;color:#FF4D88">A</span>
-                  <span style="padding:2px 6px;border-radius:4px;font-size:11px;background:#E8F3FF;color:#165DFF">B</span>
-                </span>
-              </div>
-            </td>
-            <td>${(src.estimatedRevenue||0).toLocaleString('zh-CN',{minimumFractionDigits:1})}</td>
-            <td>¥${(src.revenuePerThousand||0).toFixed(2)}</td>
-            <td>¥${(src.ecpm||0).toFixed(2)}</td>
-            <td>${formatNumber(src.requests||0)}</td>
-            <td>${(src.responseRate||0).toFixed(1)}%</td>
-            <td>${formatNumber(src.bidWins||0)}</td>
-            <td>${(src.bidWinRate||0).toFixed(1)}%</td>
-            <td>${formatNumber(src.impressions||0)}</td>
-            <td>${(src.ctr||0).toFixed(1)}%</td>
-          </tr>`).join('')}
-        </tbody>
-      </table>
-      <div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid #F2F3F5">
-        <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-size:13px;color:#4E5969">A组流量 ${state.trafficA}%</span>
-          <input type="range" min="0" max="100" value="${state.trafficA}" onchange="updateTraffic(this.value)" style="width:100px">
-          <span style="font-size:13px;color:#4E5969">B组流量 ${state.trafficB}%</span>
-        </div>
-        <button class="btn-primary" style="margin-left:auto" onclick="alert('实验配置已保存')">保存实验配置</button>
-        <button class="btn-outline" onclick="alert('已停止A/B测试')">停止实验</button>
-      </div>
-    </div>
-  </div>`;
-}
-
-// ============ CODE SLOTS PAGE ============
-function renderCodeSlotsPage() {
-  const allSlots = [];
-  AD_GROUPS.forEach(g => {
-    if (g.adSources) {
-      g.adSources.forEach(src => {
-        allSlots.push({
-          id: src.id,
-          platform: g.platform,
-          scene: g.scene,
-          slotName: (g.adSlots||[]).map(s => SLOT_NAME_MAP[s] || s).join(','),
-          groupName: g.name,
-          status: src.status
-        });
-      });
-    }
-  });
-  const start = (state.codeSlotsPage - 1) * state.codeSlotsPerPage;
-  const pageSlots = allSlots.slice(start, start + state.codeSlotsPerPage);
-  const totalPages = Math.ceil(allSlots.length / state.codeSlotsPerPage);
-  
-  return `
-    <div class="top-bar">
-      <div class="breadcrumb">流量管理 <span>› 代码位ID管理</span></div>
-      <button class="btn-primary" style="margin-left:auto" onclick="showAddCodeSlot()">+ 新增代码位</button>
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>代码位Id</th>
-            <th>系统平台</th>
-            <th>广告场景</th>
-            <th>广告位</th>
-            <th>绑定分组信息</th>
-            <th>操作</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${pageSlots.map(s => `
-          <tr>
-            <td style="color:#165DFF;font-weight:500">${s.id}</td>
-            <td><span class="tag tag-${s.platform}">${s.platform==='android'?'Android':'iOS'}</span></td>
-            <td><span class="tag tag-scene">${SCENE_ITEMS[s.scene]||s.scene}</span></td>
-            <td>${s.slotName}</td>
-            <td>${s.groupName}</td>
-            <td>
-              ${s.status === 'enabled' 
-                ? '<button style="background:#FFF0F5;color:#FF4D88;border:none;padding:4px 10px;border-radius:4px;font-size:12px;cursor:pointer">× 关闭广告代码位Id</button>'
-                : '<span style="color:#C9CDD4;font-size:12px">已关闭</span>'}
-            </td>
-          </tr>`).join('')}
-          ${pageSlots.length === 0 ? '<tr><td colspan="6" class="empty-state">暂无数据</td></tr>' : ''}
-        </tbody>
-      </table>
-      <div class="pagination">
-        <button ${state.codeSlotsPage<=1?'disabled':''} onclick="goCodeSlotPage(1)">首页</button>
-        <button ${state.codeSlotsPage<=1?'disabled':''} onclick="goCodeSlotPage(${state.codeSlotsPage-1})">‹</button>
-        ${Array.from({length:Math.min(5,totalPages)},(_,i)=>{
-          const p = i+1;
-          return `<button class="${state.codeSlotsPage===p?'active':''}" onclick="goCodeSlotPage(${p})">${p}</button>`;
-        }).join('')}
-        <button ${state.codeSlotsPage>=totalPages?'disabled':''} onclick="goCodeSlotPage(${state.codeSlotsPage+1})">›</button>
-        <button ${state.codeSlotsPage>=totalPages?'disabled':''} onclick="goCodeSlotPage(${totalPages})">末页</button>
-        <span style="color:#86909C;margin:0 8px">每页</span>
-        <select onchange="changeCodeSlotPerPage(this.value)">
-          <option ${state.codeSlotsPerPage===10?'selected':''}>10</option>
-          <option ${state.codeSlotsPerPage===20?'selected':''}>20</option>
-          <option ${state.codeSlotsPerPage===50?'selected':''}>50</option>
-        </select>
-        <span style="color:#86909C">条，共${allSlots.length}条</span>
-      </div>
-    </div>
-  `;
-}
-
-// ============ HOVER CARD ============
-function renderHoverCard() {
-  if (!state.hoveredSource) return '<div class="hover-card" id="hoverCard"></div>';
-  const src = state.hoveredSource;
-  return `
-  <div class="hover-card open" id="hoverCard" style="left:${state.hoverPos.x}px;top:${state.hoverPos.y}px">
-    <h4><span class="color-dot" style="background:${getColorDot(src.name)};display:inline-block;margin-right:6px"></span>${src.name}</h4>
-    <div class="row"><span class="label">定价方式</span><span>${src.pricingType==='bidding'?'竞价':'定价'}</span></div>
-    <div class="row"><span class="label">价格</span><span>¥${getPrice(src).toFixed(2)}</span></div>
-    <div class="row"><span class="label">eCPM</span><span>¥${(src.ecpm||0).toFixed(2)}</span></div>
-    <div class="row"><span class="label">请求量</span><span>${formatNumber(src.requests||0)}</span></div>
-    <div class="row"><span class="label">返回率</span><span>${(src.responseRate||0).toFixed(1)}%</span></div>
-    <div class="row"><span class="label">竞胜率</span><span>${(src.bidWinRate||0).toFixed(1)}%</span></div>
-  </div>`;
-}
-
-// ============ MODALS ============
-function renderModal() {
-  if (!state.modal) return '<div class="modal-overlay" id="modalOverlay"></div>';
-  
-  const overlayClass = 'modal-overlay open';
-  
-  switch(state.modal) {
-    case 'add-pid': return renderAddPidModal(overlayClass);
-    case 'edit-source': return renderEditSourceModal(overlayClass);
-    case 'add-group': return renderAddGroupModal(overlayClass);
-    case 'edit-group': return renderEditGroupModal(overlayClass);
-    case 'add-code-slot': return renderAddCodeSlotModal(overlayClass);
-    case 'ab-test': return renderABTestCreateModal(overlayClass);
-    default: return `<div class="${overlayClass}" id="modalOverlay"></div>`;
-  }
-}
-
-function renderAddPidModal(overlayClass) {
-  const group = getSelectedGroup();
-  return `
-  <div class="${overlayClass}" id="modalOverlay" onclick="if(event.target===this)closeModal()">
-    <div class="modal">
-      <div class="modal-header">
-        <h3>添加PID</h3>
-        <button onclick="closeModal()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#86909C">×</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label>DSP来源 <span style="color:#FF4D88">*</span></label>
-          <select onchange="state.addPidDspSource=this.value">
-            ${DSP_SOURCE_LIST.map(k => `<option value="${k}" ${state.addPidDspSource===k?'selected':''}>${DSP_SOURCE_NAMES[k]}</option>`).join('')}
-          </select>
-        </div>
-        <div class="form-group">
-          <label>来源接入方式 <span style="color:#FF4D88">*</span></label>
-          <select onchange="state.addPidDspType=this.value;render()">
-            <option value="sdk" ${state.addPidDspType==='sdk'?'selected':''}>SDK</option>
-            <option value="api" ${state.addPidDspType==='api'?'selected':''}>API</option>
-          </select>
-        </div>
-        ${state.addPidDspType === 'sdk' ? `
-        <div class="form-group">
-          <label>SDK版本 <span style="color:#FF4D88">*</span></label>
-          <select onchange="state.addPidSdkVersion=this.value">
-            <option value="5.12.0" ${state.addPidSdkVersion==='5.12.0'?'selected':''}>5.12.0</option>
-            <option value="5.11.0" ${state.addPidSdkVersion==='5.11.0'?'selected':''}>5.11.0</option>
-            <option value="5.10.0" ${state.addPidSdkVersion==='5.10.0'?'selected':''}>5.10.0</option>
-          </select>
-        </div>` : ''}
-        <div class="form-group">
-          <label>代码位ID <span style="color:#FF4D88">*</span></label>
-          <input type="text" placeholder="请输入代码位ID" value="${state.addPidCodeId}" oninput="state.addPidCodeId=this.value">
-        </div>
-        <div class="form-group">
-          <label>广告场景</label>
-          <div class="readonly-field">${SCENE_ITEMS[state.scene]}</div>
-        </div>
-        <div class="form-group">
-          <label>平台</label>
-          <div class="readonly-field">${state.platform === 'all' ? '全部' : PLATFORM_NAMES[state.platform]}</div>
-        </div>
-        <div class="form-group">
-          <label>广告位</label>
-          <div class="readonly-field">${group ? (group.adSlots||[]).map(s => SLOT_NAME_MAP[s]||s).join(', ') : '暂无'}</div>
-        </div>
-        <div class="form-group">
-          <label>状态</label>
-          <label class="switch"><input type="checkbox" checked onchange="state.addPidStatus=this.checked?'enabled':'disabled'"><span class="slider"></span></label>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-outline" onclick="closeModal()">取消</button>
-        <button class="btn-primary" onclick="confirmAddPid()">提交</button>
-      </div>
-    </div>
-  </div>`;
-}
-
-function renderEditSourceModal(overlayClass) {
-  const src = state.editingSource;
-  if (!src) return '';
-  return `
-  <div class="${overlayClass}" id="modalOverlay" onclick="if(event.target===this)closeModal()">
-    <div class="modal">
-      <div class="modal-header">
-        <h3>编辑DSP来源</h3>
-        <button onclick="closeModal()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#86909C">×</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label>DSP来源名称</label>
-          <div class="readonly-field">${src.name}</div>
-        </div>
-        <div class="form-group">
-          <label>定价方式</label>
-          <select onchange="state.editingSource.pricingType=this.value">
-            ${PRICING_TYPES.map(pt => `<option value="${pt.id}" ${src.pricingType===pt.id?'selected':''}>${pt.name}</option>`).join('')}
-          </select>
-        </div>
-        <div class="form-group">
-          <label>价格</label>
-          <input type="number" step="0.01" value="${getPrice(src).toFixed(2)}" oninput="state.editPrice=this.value">
-        </div>
-        <div class="form-group">
-          <label>状态</label>
-          <label class="switch"><input type="checkbox" ${src.status==='enabled'?'checked':''} onchange="state.editingSource.status=this.checked?'enabled':'disabled'"><span class="slider"></span></label>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-outline" onclick="closeModal()">取消</button>
-        <button class="btn-primary" onclick="confirmEditSource()">保存</button>
-      </div>
-    </div>
-  </div>`;
-}
-
-function renderAddGroupModal(overlayClass) {
-  return `
-  <div class="${overlayClass}" id="modalOverlay" onclick="if(event.target===this)closeModal()">
-    <div class="modal">
-      <div class="modal-header">
-        <h3>添加分组</h3>
-        <button onclick="closeModal()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#86909C">×</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label>分组名称 <span style="color:#FF4D88">*</span></label>
-          <input type="text" placeholder="请输入分组名称" id="newGroupName">
-        </div>
-        <div class="form-group">
-          <label>广告场景</label>
-          <div class="readonly-field">${SCENE_ITEMS[state.scene]}</div>
-        </div>
-        <div class="form-group">
-          <label>平台</label>
-          <div class="readonly-field">${state.platform === 'all' ? '全部' : PLATFORM_NAMES[state.platform]}</div>
-        </div>
-        <div class="form-group">
-          <label>广告位</label>
-          <div class="readonly-field">${(SCENE_SLOT_IDS[state.scene]||[]).map(s => SLOT_NAME_MAP[s]||s).join(', ')}</div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-outline" onclick="closeModal()">取消</button>
-        <button class="btn-primary" onclick="confirmAddGroup()">确定</button>
-      </div>
-    </div>
-  </div>`;
-}
-
-function renderEditGroupModal(overlayClass) {
-  const g = state.editGroup;
-  if (!g) return '';
-  return `
-  <div class="${overlayClass}" id="modalOverlay" onclick="if(event.target===this)closeModal()">
-    <div class="modal">
-      <div class="modal-header">
-        <h3>编辑分组</h3>
-        <button onclick="closeModal()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#86909C">×</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label>分组名称 <span style="color:#FF4D88">*</span></label>
-          <input type="text" value="${g.name}" id="editGroupName" oninput="state.editGroupName=this.value">
-        </div>
-        <div class="form-group">
-          <label>广告场景</label>
-          <div class="readonly-field">${SCENE_ITEMS[g.scene]}</div>
-        </div>
-        <div class="form-group">
-          <label>平台</label>
-          <div class="readonly-field">${PLATFORM_NAMES[g.platform]}</div>
-        </div>
-        <div class="form-group">
-          <label>优先级</label>
-          <input type="number" value="${g.priority === Infinity ? 999 : g.priority}" id="editGroupPriority">
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-outline" onclick="closeModal()">取消</button>
-        <button class="btn-primary" onclick="confirmEditGroup()">保存</button>
-      </div>
-    </div>
-  </div>`;
-}
-
-function renderAddCodeSlotModal(overlayClass) {
-  const groups = AD_GROUPS;
-  return `
-  <div class="${overlayClass}" id="modalOverlay" onclick="if(event.target===this)closeModal()">
-    <div class="modal">
-      <div class="modal-header">
-        <h3>新增代码位</h3>
-        <button onclick="closeModal()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#86909C">×</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group"><label>代码位Id <span style="color:#FF4D88">*</span></label><input type="text" placeholder="请输入代码位Id" id="newCodeSlotId"></div>
-        <div class="form-group"><label>系统平台 <span style="color:#FF4D88">*</span></label>
-          <select id="newCodeSlotPlatform"><option value="android">Android</option><option value="ios">iOS</option></select>
-        </div>
-        <div class="form-group"><label>广告场景</label>
-          <select id="newCodeSlotScene">${Object.entries(SCENE_ITEMS).map(([k,v]) => `<option value="${k}">${v}</option>`).join('')}</select>
-        </div>
-        <div class="form-group"><label>广告位Id</label><input type="text" placeholder="请输入广告位Id" id="newCodeSlotAdId"></div>
-        <div class="form-group"><label>绑定分组</label>
-          <select id="newCodeSlotGroup">
-            <option value="">不绑定</option>
-            ${groups.map(g => `<option value="${g.id}">${g.name}</option>`).join('')}
-          </select>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-outline" onclick="closeModal()">取消</button>
-        <button class="btn-primary" onclick="confirmAddCodeSlot()">确定</button>
-      </div>
-    </div>
-  </div>`;
-}
-
-// ============ ACTIONS ============
 function setScene(scene) {
   state.scene = scene;
-  state.selectedGroupId = null;
-  state.hoveredSource = null;
+  state.groupId = '';
   render();
 }
 
 function setPlatform(platform) {
   state.platform = platform;
-  state.selectedGroupId = null;
-  state.hoveredSource = null;
+  state.groupId = '';
   render();
 }
 
-function setGroup(id) {
-  state.selectedGroupId = id;
-  state.hoveredSource = null;
+function selectGroup(id) {
+  state.groupId = id;
   render();
 }
 
-function setABGroup(group) {
-  state.abTestGroup = group;
+function setABGroup(g) {
+  state.abGroup = g;
   render();
 }
 
-function updateTraffic(val) {
-  state.trafficA = parseInt(val);
-  state.trafficB = 100 - state.trafficA;
-  render();
-}
-
-function toggleDisabled() {
+function toggleCollapsed() {
   state.collapsedDisabled = !state.collapsedDisabled;
   render();
 }
 
+// === Group Management ===
 function showAddGroup() {
-  state.modal = 'add-group';
-  render();
+  const group = getSelectedGroup();
+  if (!group) return;
+  showDialog('addGroup', {
+    scene: state.scene,
+    platform: state.platform,
+    sceneName: SCENE_NAMES[state.scene],
+    platformName: PLATFORM_NAMES[state.platform]
+  });
 }
 
 function confirmAddGroup() {
-  const name = document.getElementById('newGroupName')?.value;
+  const name = document.getElementById('newGroupName')?.value?.trim();
   if (!name) { alert('请输入分组名称'); return; }
   const newGroup = {
     id: 'group-' + (groupIdCounter++),
-    name: name,
+    name,
     scene: state.scene,
-    platform: state.platform === 'all' ? 'android' : state.platform,
-    adSlots: SCENE_SLOT_IDS[state.scene] || [],
-    priority: 999,
+    platform: state.platform,
     status: 'enabled',
+    priority: groups.filter(g => g.scene === state.scene && g.platform === state.platform).length + 1,
     isDefault: false,
+    adSlots: SLOT_IDS[state.scene],
+    slotId: SLOT_IDS[state.scene][state.platform === 'ios' ? 1 : 0],
+    adSources: [],
     hasABTest: false,
-    adSources: []
+    abTestStarted: false,
+    trafficRatio: 10
   };
-  AD_GROUPS.push(newGroup);
-  state.selectedGroupId = newGroup.id;
-  closeModal();
+  groups.push(newGroup);
+  state.groupId = newGroup.id;
+  closeDialog();
 }
 
-function showAddPid() {
-  state.modal = 'add-pid';
-  state.addPidCodeId = '';
-  state.addPidDspSource = 'pangle';
-  state.addPidDspType = 'sdk';
-  state.addPidSdkVersion = '5.12.0';
-  state.addPidStatus = 'enabled';
+function editGroup(id) {
+  const group = groups.find(g => g.id === id);
+  if (!group) return;
+  showDialog('editGroup', group);
+}
+
+function confirmEditGroup() {
+  const id = document.getElementById('editGroupId').textContent;
+  const group = groups.find(g => g.id === id);
+  if (!group) return;
+  group.name = document.getElementById('editGroupName').value;
+  group.status = document.getElementById('editGroupStatus').value;
+  saveDb();
+  closeDialog();
+}
+
+function deleteGroup(id) {
+  if (!confirm('确认删除该分组？')) return;
+  groups = groups.filter(g => g.id !== id);
+  if (state.groupId === id) {
+    const filtered = groups.filter(g => g.scene === state.scene && g.platform === state.platform);
+    state.groupId = filtered.length > 0 ? filtered[0].id : '';
+  }
   render();
 }
 
-function confirmAddPid() {
+// === A/B Test ===
+function createABTest() {
+  showDialog('createABTest', { groupId: state.groupId });
+}
+
+function confirmCreateABTest() {
   const group = getSelectedGroup();
-  if (!group) { alert('请选择分组'); return; }
-  const codeId = state.addPidCodeId || ('PID-' + Date.now().toString(36).toUpperCase());
-  const dspKey = state.addPidDspSource;
-  const price = rand(10,40);
+  if (!group) return;
+  group.hasABTest = true;
+  group.abTestStarted = true;
+  group.trafficRatio = parseInt(document.getElementById('abTrafficRatio')?.value) || 50;
+  saveDb();
+  closeDialog();
+}
+
+function showAbTestConfig() {
+  const group = getSelectedGroup();
+  if (!group) return;
+  showDialog('abTestConfig', group);
+}
+
+function confirmAbTestConfig() {
+  const group = getSelectedGroup();
+  if (!group) return;
+  group.trafficRatio = parseInt(document.getElementById('abTrafficRatio')?.value) || state.trafficRatio;
+  state.trafficRatio = group.trafficRatio;
+  saveDb();
+  closeDialog();
+}
+
+// === Source Management ===
+function showAddSource() {
+  const group = getSelectedGroup();
+  if (!group) return;
+  showDialog('addSource', group);
+}
+
+function confirmAddSource() {
+  const group = getSelectedGroup();
+  if (!group) return;
+  const srcName = document.getElementById('newSourceName')?.value;
+  const pidCode = document.getElementById('newPidCode')?.value?.trim();
+  const price = parseFloat(document.getElementById('newSourcePrice')?.value) || 0;
+  if (!srcName || !pidCode) { alert('请填写必填项'); return; }
   const newSource = {
-    id: codeId,
-    name: DSP_SOURCE_NAMES[dspKey] || dspKey,
-    dspSources: [dspKey],
-    status: state.addPidStatus,
+    id: 'src-' + (sourceIdCounter++),
+    name: DSP_SOURCE_NAMES[srcName] || srcName,
+    dspSources: [srcName],
     pricingType: 'bidding',
-    price: price,
-    priceA: price,
-    priceB: price - rand(0,5),
-    estimatedRevenue: randf(100,3000),
-    revenuePerThousand: randf(10,80),
-    ecpm: randf(15,70),
-    thousandRequestValue: randf(10,50),
-    requests: rand(10000,300000),
-    returns: rand(8000,250000),
-    responseRate: randf(70,98),
-    bidWins: rand(500,30000),
-    bidWinRate: randf(10,55),
-    impressions: rand(5000,200000),
-    winImpressionRate: randf(30,65),
-    ctr: randf(0.5,6),
-    cpc: randf(0.1,4)
+    price, priceA: price, priceB: price,
+    status: 'enabled',
+    isDefault: false,
+    slotId: group.slotId,
+    estimatedRevenue: Math.round(Math.random() * 1000),
+    revenuePerThousand: Math.round(Math.random() * 15 + 3),
+    ecpm: Math.round(Math.random() * 20 + 8),
+    thousandRequestValue: Math.round(Math.random() * 10 + 2),
+    requests: Math.round(Math.random() * 10000 + 500),
+    responseRate: Math.round(Math.random() * 20 + 70),
+    bidWins: Math.round(Math.random() * 500 + 50),
+    bidWinRate: Math.round(Math.random() * 15 + 15),
+    impressions: Math.round(Math.random() * 2000 + 200),
+    winImpressionRate: Math.round(Math.random() * 15 + 50),
+    ctr: Math.round(Math.random() * 5 + 3),
+    cpc: Math.round(Math.random() * 2 + 0.5)
   };
   group.adSources.push(newSource);
-  closeModal();
-}
-
-function editSource(id) {
-  const group = getSelectedGroup();
-  const group = getSelectedGroup();
-  const source = group.adSources.find(s => s.id === id);
-  if (!source) return;
-  document.getElementById('editSourceName').textContent = DSP_SOURCE_NAMES[source.dspSources?.[0]] || source.dspSources?.[0] || source.name;
-  document.getElementById('editSourceId').textContent = id;
-  document.getElementById('editSourcePrice').value = source.price;
-  document.getElementById('editSourceStatus').checked = source.status === 'enabled';
-  document.getElementById('modal-overlay-editSource').style.display = 'flex';
-}
-
-function saveEditSource() {
-  const id = document.getElementById('editSourceId').textContent;
-  const group = getSelectedGroup();
-  const source = group.adSources.find(s => s.id === id);
-  if (!source) return;
-  source.price = parseFloat(document.getElementById('editSourcePrice').value) || source.price;
-  source.status = document.getElementById('editSourceStatus').checked ? 'enabled' : 'disabled';
-  closeModal();
+  saveDb();
+  closeDialog();
 }
 
 function toggleSourceStatus(id) {
   const group = getSelectedGroup();
-  const source = group.adSources.find(s => s.id === id);
-  if (!source) return;
-  source.status = source.status === 'enabled' ? 'disabled' : 'enabled';
+  if (!group) return;
+  const src = group.adSources.find(s => s.id === id);
+  if (!src) return;
+  src.status = src.status === 'enabled' ? 'disabled' : 'enabled';
   render();
+}
+
+function editSource(id) {
+  const group = getSelectedGroup();
+  if (!group) return;
+  const src = group.adSources.find(s => s.id === id);
+  if (!src) return;
+  showDialog('editSource', src);
+}
+
+function confirmEditSource() {
+  const id = document.getElementById('editSourceId').textContent;
+  const group = getSelectedGroup();
+  if (!group) return;
+  const src = group.adSources.find(s => s.id === id);
+  if (!src) return;
+  src.price = parseFloat(document.getElementById('editSourcePrice')?.value) || src.price;
+  src.status = document.getElementById('editSourceStatus').checked ? 'enabled' : 'disabled';
+  saveDb();
+  closeDialog();
 }
 
 function deleteSource(id) {
   if (!confirm('确认删除该广告源？')) return;
   const group = getSelectedGroup();
+  if (!group) return;
   group.adSources = group.adSources.filter(s => s.id !== id);
   render();
 }
 
-// === Initial Render ===
-render();
-</script>
+// === Code Slot Management ===
+function showAddCodeSlot() {
+  showDialog('addCodeSlot', null);
+}
 
+function confirmAddCodeSlot() {
+  const csId = document.getElementById('csId')?.value?.trim();
+  const platform = document.getElementById('csPlatform')?.value;
+  const scene = document.getElementById('csScene')?.value;
+  if (!csId) { alert('请输入代码位Id'); return; }
+  const slotIds = SLOT_IDS[scene];
+  const slotId = slotIds[platform === 'ios' ? 1 : 0];
+  const boundGroup = groups.filter(g => g.scene === scene && g.platform === platform);
+  codeSlots.push({
+    id: csId,
+    platform,
+    scene,
+    slotId,
+    slotName: SLOT_NAMES[slotId] || '-',
+    boundGroupName: boundGroup.length > 0 ? boundGroup[0].name : '-',
+    boundGroupId: boundGroup.length > 0 ? boundGroup[0].id : '',
+    status: 'active'
+  });
+  closeDialog();
+}
+
+function toggleCodeSlot(id) {
+  const cs = codeSlots.find(s => s.id === id);
+  if (!cs) return;
+  if (cs.status === 'active') {
+    if (!confirm('确认关闭该代码位？')) return;
+    cs.status = 'closed';
+  } else {
+    cs.status = 'active';
+  }
+  render();
+}
+
+function goCodeSlotPage(page) {
+  state.codeSlotPage = page;
+  render();
+}
+
+// === Dialog System ===
+let currentDialog = null;
+let dialogData = null;
+
+function showDialog(type, data) {
+  currentDialog = type;
+  dialogData = data;
+  renderDialog();
+}
+
+function closeDialog() {
+  currentDialog = null;
+  dialogData = null;
+  render();
+}
+
+function renderDialog() {
+  const overlay = document.getElementById('dialogOverlay');
+  const content = document.getElementById('dialogContent');
+  if (!overlay || !content || !currentDialog) return;
+  overlay.style.display = 'flex';
+  content.innerHTML = getDialogHTML();
+}
+
+function getDialogHTML() {
+  const d = dialogData || {};
+  switch (currentDialog) {
+    case 'addGroup':
+      return `
+        <h3>添加分组</h3>
+        <div class="form-group">
+          <label>分组名称</label>
+          <input id="newGroupName" placeholder="请输入分组名称">
+        </div>
+        <div class="form-group">
+          <label>广告场景</label>
+          <div class="display-field">${d.sceneName}</div>
+        </div>
+        <div class="form-group">
+          <label>平台</label>
+          <div class="display-field">${d.platformName}</div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:20px">
+          <button class="btn-secondary" onclick="closeDialog()">取消</button>
+          <button class="btn-primary" onclick="confirmAddGroup()">确定</button>
+        </div>
+      `;
+    case 'editGroup':
+      return `
+        <h3>编辑分组</h3>
+        <span id="editGroupId" style="display:none">${d.id}</span>
+        <div class="form-group">
+          <label>分组名称</label>
+          <input id="editGroupName" value="${d.name || ''}">
+        </div>
+        <div class="form-group">
+          <label>广告场景</label>
+          <div class="display-field">${SCENE_NAMES[d.scene]}</div>
+        </div>
+        <div class="form-group">
+          <label>平台</label>
+          <div class="display-field">${PLATFORM_NAMES[d.platform]}</div>
+        </div>
+        <div class="form-group">
+          <label>状态</label>
+          <select id="editGroupStatus">
+            <option value="enabled" ${d.status === 'enabled' ? 'selected' : ''}>启用</option>
+            <option value="disabled" ${d.status === 'disabled' ? 'selected' : ''}>关闭</option>
+          </select>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:20px">
+          <button class="btn-secondary" onclick="closeDialog()">取消</button>
+          <button class="btn-primary" onclick="confirmEditGroup()">保存</button>
+        </div>
+      `;
+    case 'addSource':
+      return `
+        <h3>添加PID</h3>
+        <div class="form-group">
+          <label>DSP来源 <span style="color:#FF4D88">*</span></label>
+          <select id="newSourceName">
+            ${Object.entries(DSP_SOURCE_NAMES).map(([k,v]) => '<option value="'+k+'">'+v+'</option>').join('')}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>PID代码 <span style="color:#FF4D88">*</span></label>
+          <input id="newPidCode" placeholder="请输入PID代码">
+        </div>
+        <div class="form-group">
+          <label>广告场景</label>
+          <div class="display-field">${SCENE_NAMES[state.scene]}</div>
+        </div>
+        <div class="form-group">
+          <label>平台</label>
+          <div class="display-field">${PLATFORM_NAMES[state.platform]}</div>
+        </div>
+        <div class="form-group">
+          <label>底价 (元)</label>
+          <input id="newSourcePrice" type="number" step="0.01" value="10">
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:20px">
+          <button class="btn-secondary" onclick="closeDialog()">取消</button>
+          <button class="btn-primary" onclick="confirmAddSource()">提交</button>
+        </div>
+      `;
+    case 'editSource':
+      return `
+        <h3>编辑广告源</h3>
+        <span id="editSourceId" style="display:none">${d.id}</span>
+        <div class="form-group">
+          <label>DSP来源</label>
+          <div class="display-field">${getSourceDisplayName(d)}</div>
+        </div>
+        <div class="form-group">
+          <label>价格 (元)</label>
+          <input id="editSourcePrice" type="number" step="0.01" value="${d.price}">
+        </div>
+        <div class="form-group">
+          <label>状态</label>
+          <label class="switch" style="display:block">
+            <input id="editSourceStatus" type="checkbox" ${d.status === 'enabled' ? 'checked' : ''}>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:20px">
+          <button class="btn-secondary" onclick="closeDialog()">取消</button>
+          <button class="btn-primary" onclick="confirmEditSource()">保存</button>
+        </div>
+      `;
+    case 'createABTest':
+    case 'abTestConfig':
+      const isNew = currentDialog === 'createABTest';
+      const group = getSelectedGroup();
+      return `
+        <h3>${isNew ? '创建' : '编辑'}A/B测试</h3>
+        <div class="form-group">
+          <label>流量分配 (B组占比)</label>
+          <div style="display:flex;align-items:center;gap:12px">
+            <input id="abTrafficRatio" type="range" min="10" max="90" value="${group?.trafficRatio || 50}" oninput="document.getElementById('ratioVal').textContent=this.value+'%'" style="flex:1">
+            <span id="ratioVal" style="font-size:13px;font-weight:500">${group?.trafficRatio || 50}%</span>
+          </div>
+        </div>
+        <div style="font-size:12px;color:#86909C;margin-bottom:16px">
+          A组 (对照组): ${100 - (group?.trafficRatio || 50)}% &nbsp;·&nbsp; B组 (测试组): ${group?.trafficRatio || 50}%
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:20px">
+          <button class="btn-secondary" onclick="closeDialog()">取消</button>
+          <button class="btn-primary" onclick="${isNew ? 'confirmCreateABTest' : 'confirmAbTestConfig'}()">${isNew ? '开始实验' : '保存配置'}</button>
+        </div>
+      `;
+    case 'addCodeSlot':
+      return `
+        <h3>新增代码位</h3>
+        <div class="form-group">
+          <label>代码位Id <span style="color:#FF4D88">*</span></label>
+          <input id="csId" placeholder="如: CS100861">
+        </div>
+        <div class="form-group">
+          <label>系统平台</label>
+          <select id="csPlatform">
+            <option value="android">Android</option>
+            <option value="ios">iOS</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>广告场景</label>
+          <select id="csScene">
+            ${SCENE_ITEMS.map(s => '<option value="'+s+'">'+SCENE_NAMES[s]+'</option>').join('')}
+          </select>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:20px">
+          <button class="btn-secondary" onclick="closeDialog()">取消</button>
+          <button class="btn-primary" onclick="confirmAddCodeSlot()">确定</button>
+        </div>
+      `;
+    default:
+      return '';
+  }
+}
+
+// === Hover Card ===
+function showHoverCard(event, sourceId) {
+  const group = getSelectedGroup();
+  if (!group) return;
+  const src = group.adSources.find(s => s.id === sourceId);
+  if (!src) return;
+  const card = document.getElementById('hoverCard');
+  if (!card) return;
+  card.style.display = 'block';
+  card.style.left = (event.clientX + 15) + 'px';
+  card.style.top = (event.clientY - 10) + 'px';
+  card.innerHTML = `
+    <div style="font-weight:600;font-size:14px;margin-bottom:12px;color:#1D2129">${getSourceDisplayName(src)}</div>
+    <div style="font-size:12px;line-height:1.8;color:#4E5969">
+      <div>价格: ${formatPrice(getPrice(src))}</div>
+      <div>eCPM: ${formatPrice(src.ecpm)}</div>
+      <div>请求量: ${formatNumber(src.requests)}</div>
+      <div>返回率: ${(src.responseRate || 0).toFixed(1)}%</div>
+      <div>竞胜率: ${(src.bidWinRate || 0).toFixed(1)}%</div>
+    </div>
+  `;
+}
+
+function hideHoverCard() {
+  const card = document.getElementById('hoverCard');
+  if (card) card.style.display = 'none';
+}
+
+// === Tooltip ===
+let tooltipTimer;
+
+function showTooltip(event, text) {
+  const el = event.currentTarget.querySelector('.tooltip');
+  if (el) {
+    el.style.display = 'block';
+    el.textContent = text;
+  }
+}
+
+function hideTooltip(event) {
+  const el = event?.currentTarget?.querySelector('.tooltip');
+  if (el) el.style.display = 'none';
+  document.querySelectorAll('.info-icon .tooltip').forEach(t => t.style.display = 'none');
+}
+
+// === Persistence ===
+function saveDb() { /* mock persistence - no-op */ }
+
+// === Init ===
+document.addEventListener('DOMContentLoaded', render);
+</script>
 </body>
 </html>
