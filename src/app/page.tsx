@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { TimeSlotPicker } from '@/components/time-slot-picker';
 import {
   Tv,
@@ -257,6 +257,21 @@ export default function WaterfallManagementPage() {
   // 状态管理
   const [activeScene, setActiveScene] = useState<AdScene>('splash');
   const [selectedPlatform, setSelectedPlatform] = useState<'Android' | 'iOS'>('iOS');
+  
+  const searchParams = useSearchParams();
+  
+  // 从URL参数恢复场景和平台（从A/B测试页返回时）
+  useEffect(() => {
+    const sceneParam = searchParams.get('scene') as AdScene | null;
+    const platformParam = searchParams.get('platform') as 'Android' | 'iOS' | null;
+    if (sceneParam && ['splash', 'interstitial', 'feed', 'search'].includes(sceneParam)) {
+      setActiveScene(sceneParam);
+    }
+    if (platformParam && ['Android', 'iOS'].includes(platformParam)) {
+      setSelectedPlatform(platformParam);
+    }
+  }, [searchParams]);
+
   const [dateRange, setDateRange] = useState({
     start: new Date().toISOString().split('T')[0],
     end: new Date().toISOString().split('T')[0],
@@ -1315,7 +1330,7 @@ export default function WaterfallManagementPage() {
                               setAbTestConfig(draft.config);
                               setAbTestDraftData(draft);
                             }
-                            router.push(`/ab-test/create?groupId=${currentGroup?.id}`);
+                            router.push(`/ab-test/create?groupId=${currentGroup?.id}&scene=${activeScene}&platform=${selectedPlatform}`);
                           }}
                         >
                           编辑A/B测试
@@ -1333,7 +1348,7 @@ export default function WaterfallManagementPage() {
                             const timeStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
                             setAbTestName(`${currentGroup.name}_正式_测试_${timeStr}`);
                           }
-                          router.push(`/ab-test/create?groupId=${currentGroup?.id}`);
+                          router.push(`/ab-test/create?groupId=${currentGroup?.id}&scene=${activeScene}&platform=${selectedPlatform}`);
                         }}
                       >
                         创建A/B测试

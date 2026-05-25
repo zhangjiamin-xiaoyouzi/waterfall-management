@@ -139,6 +139,8 @@ function CreateABTestContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const groupId = searchParams.get('groupId');
+  const scene = searchParams.get('scene');
+  const platform = searchParams.get('platform');
 
   const [groups, setGroups] = useState<Group[]>([]);
   const [selectedGroupId, setSelectedGroupId] = useState(groupId || '');
@@ -307,7 +309,18 @@ function CreateABTestContent() {
     } catch (e) {
       console.error('启动A/B测试失败', e);
     }
-    router.push(`/?groupId=${selectedGroupId}`);
+    const params = new URLSearchParams({ groupId: selectedGroupId });
+    if (scene) params.set('scene', scene);
+    if (platform) params.set('platform', platform);
+    router.push(`/?${params.toString()}`);
+  };
+
+  const goBack = () => {
+    const params = new URLSearchParams();
+    if (groupId) params.set('groupId', groupId);
+    if (scene) params.set('scene', scene);
+    if (platform) params.set('platform', platform);
+    router.push(`/?${params.toString()}`);
   };
 
   return (
@@ -315,7 +328,7 @@ function CreateABTestContent() {
       {/* Header */}
       <div className="bg-white border-b border-[#E5E6EB] px-6 py-4">
         <div className="max-w-5xl mx-auto flex items-center gap-4">
-          <button onClick={() => router.back()} className="text-[#86909C] hover:text-[#1D2129] text-sm">← 返回</button>
+          <button onClick={goBack} className="text-[#86909C] hover:text-[#1D2129] text-sm">← 返回</button>
           <h1 className="text-lg font-semibold text-[#1D2129]">创建 A/B 测试</h1>
         </div>
       </div>
@@ -526,7 +539,7 @@ function CreateABTestContent() {
 
             {/* 底部操作按钮 - 悬浮 */}
             <div className="sticky bottom-0 bg-white border-t border-[#E5E6EB] -mx-4 -mb-4 px-4 py-3 flex justify-end gap-2 z-10 shadow-[0_-2px_8px_rgba(0,0,0,0.06)]">
-              <Button variant="outline" onClick={() => router.back()} className="border-[#E5E6EB] text-[#1D2129]">取消</Button>
+              <Button variant="outline" onClick={goBack} className="border-[#E5E6EB] text-[#1D2129]">取消</Button>
               <Button className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white" onClick={handleLaunch}>开始测试</Button>
             </div>
           </div>
