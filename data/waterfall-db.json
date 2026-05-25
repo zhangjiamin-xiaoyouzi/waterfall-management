@@ -569,6 +569,23 @@
       "status": "enabled",
       "floorPrice": 0,
       "adSources": []
+    },
+    {
+      "id": "group-1779680294486",
+      "name": "1111",
+      "priority": 4,
+      "platforms": [
+        "Android",
+        "iOS"
+      ],
+      "adSlots": [
+        "1601",
+        "1602"
+      ],
+      "rules": [],
+      "status": "enabled",
+      "floorPrice": 0,
+      "adSources": []
     }
   ]
 }

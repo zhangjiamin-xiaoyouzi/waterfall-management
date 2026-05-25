@@ -8,33 +8,37 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Switch } from '@/components/ui/switch';
-import { ChevronDown, ChevronRight, Plus, X, ArrowRightIcon, ArrowLeftIcon, Search, Info } from 'lucide-react';
+import { ChevronDown, ChevronRight, Plus, X, Info } from 'lucide-react';
 import { TimeSlotPicker } from '@/components/time-slot-picker';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+import { Command, CommandInput, CommandList, CommandEmpty, CommandItem } from '@/components/ui/command';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Drawer, DrawerContent } from '@/components/ui/drawer';
+
 
 const DSP_SOURCE_LIST = [
-  { value: 'pangle', label: '穿山甲' },
-  { value: 'ylh', label: '优量汇' },
-  { value: 'gdt', label: '广点通' },
-  { value: 'ks', label: '快手' },
-  { value: 'bd', label: '百度' },
-  { value: 'sjyt', label: 'Sigmob' },
-  { value: 'mintegral', label: 'Mintegral' },
-  { value: 'unity', label: 'Unity Ads' },
-  { value: 'vungle', label: 'Vungle' },
-  { value: 'ironsource', label: 'IronSource' },
-  { value: 'applovin', label: 'AppLovin' },
-  { value: 'adcolony', label: 'AdColony' },
-  { value: 'tapjoy', label: 'Tapjoy' },
-  { value: 'chartboost', label: 'Chartboost' },
-  { value: 'inmobi', label: 'InMobi' },
-  { value: 'mobvista', label: 'Mobvista' },
+  { value: 'pangle', label: '穿山甲', isSDK: true, connectType: '客户端SDK' },
+  { value: 'ylh', label: '优量汇', isSDK: true, connectType: '客户端SDK' },
+  { value: 'gdt', label: '广点通', isSDK: true, connectType: '服务端SDK' },
+  { value: 'ks', label: '快手', connectType: '接入我方API' },
+  { value: 'bd', label: '百度', connectType: '接入我方API' },
+  { value: 'sjyt', label: 'Sigmob', connectType: '接入对方API' },
+  { value: 'mintegral', label: 'Mintegral', connectType: '接入对方API' },
+  { value: 'unity', label: 'Unity Ads', connectType: '接入对方API' },
+  { value: 'vungle', label: 'Vungle', connectType: '接入对方API' },
+  { value: 'ironsource', label: 'IronSource', connectType: '接入对方API' },
+  { value: 'applovin', label: 'AppLovin', connectType: '接入对方API' },
+  { value: 'adcolony', label: 'AdColony', connectType: '接入对方API' },
+  { value: 'tapjoy', label: 'Tapjoy', connectType: '接入对方API' },
+  { value: 'chartboost', label: 'Chartboost', connectType: '接入对方API' },
+  { value: 'inmobi', label: 'InMobi', connectType: '接入对方API' },
+  { value: 'mobvista', label: 'Mobvista', connectType: '接入对方API' },
 ];
 const DSP_SOURCE_NAMES: Record<string, string> = {};
 DSP_SOURCE_LIST.forEach((d: { value: string; label: string }) => { DSP_SOURCE_NAMES[d.value] = d.label; });
-const SDK_SOURCE_VALUES = new Set(['pangle', 'ylh', 'gdt']);
+const SDK_SOURCE_VALUES = new Set(DSP_SOURCE_LIST.filter(d => (d as { isSDK?: boolean }).isSDK).map(d => d.value));
+
+const DSP_CONNECT_TYPE_MAP = new Map(DSP_SOURCE_LIST.map(d => [d.value, (d as { connectType?: string }).connectType || '接入我方API']));
 
 const SLOT_NAME_MAP: Record<string, string> = {
   '100001': '原生模板', '100002': '原生自渲染',
@@ -81,6 +85,9 @@ interface AdSource {
   platforms: string[];
   codeId: string;
   dspSources: string[];
+  connectType?: string;
+  minVersion?: string;
+  maxVersion?: string;
 }
 
 interface Group {
@@ -140,11 +147,8 @@ function CreateABTestContent() {
   const [editingSource, setEditingSource] = useState<{ source: AdSource; group: 'A' | 'B'; type: 'enabled' | 'disabled' } | null>(null);
 
   const [showAddPidDialog, setShowAddPidDialog] = useState(false);
-  const [selectedDspSources, setSelectedDspSources] = useState<string[]>([]);
-  const [tempSelectedDSPSources, setTempSelectedDSPSources] = useState<string[]>([]);
-  const [showDSPSelectorDrawer, setShowDSPSelectorDrawer] = useState(false);
-  const [dspSearchKeyword, setDspSearchKeyword] = useState('');
-  const [selectedDspSearchKeyword, setSelectedDspSearchKeyword] = useState('');
+  const [newSourceName, setNewSourceName] = useState('');
+  const [dspSelectOpen, setDspSelectOpen] = useState(false);
   const [pidCodeId, setPidCodeId] = useState('');
   const [pidMinVersion, setPidMinVersion] = useState('');
   const [pidMaxVersion, setPidMaxVersion] = useState('');
@@ -152,6 +156,9 @@ function CreateABTestContent() {
   const [pidPriceA, setPidPriceA] = useState('0');
   const [pidPriceB, setPidPriceB] = useState('0');
   const [isSdkSource, setIsSdkSource] = useState(false);
+  const [hoveredSource, setHoveredSource] = useState<AdSource | null>(null);
+  const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
+  const [sourceError, setSourceError] = useState('');
   const [abTestConfig, setAbTestConfig] = useState<{ enabledSources: AdSource[] }>({ enabledSources: [] });
   const [collapsedDisabled, setCollapsedDisabled] = useState(true);
 
@@ -176,7 +183,10 @@ function CreateABTestContent() {
   const disabledSources = currentGroup?.adSources?.filter(s => s.status !== 'enabled') || [];
 
   const handleAddPidSource = () => {
-    if (selectedDspSources.length === 0 || !pidCodeId || !selectedGroupId) return;
+    if (!newSourceName || !pidCodeId || !selectedGroupId) {
+      setSourceError('请填写必填项');
+      return;
+    }
 
     const newSource: AdSource = {
       id: `pid-${Date.now()}`,
@@ -203,8 +213,9 @@ function CreateABTestContent() {
       lastUpdated: new Date().toISOString().slice(0, 16).replace('T', ' '),
       platforms: [],
       codeId: pidCodeId,
-      dspSources: selectedDspSources,
-      ...(selectedDspSources.some(n => SDK_SOURCE_VALUES.has(n)) ? {
+      dspSources: [newSourceName],
+      connectType: DSP_CONNECT_TYPE_MAP.get(newSourceName) || '接入我方API',
+      ...(SDK_SOURCE_VALUES.has(newSourceName) ? {
         minVersion: pidMinVersion,
         maxVersion: pidMaxVersion,
       } : {})
@@ -215,17 +226,18 @@ function CreateABTestContent() {
       enabledSources: [...prev.enabledSources, newSource]
     }));
     setShowAddPidDialog(false);
-    setSelectedDspSources([]);
+    setNewSourceName('');
     setPidCodeId('');
     setPidMinVersion('');
     setPidMaxVersion('');
     setPidStatus('active');
     setPidPriceA('0');
     setPidPriceB('0');
+    setSourceError('');
   };
 
   const handleEditPidSource = () => {
-    if (!editingSource || !pidCodeId || selectedDspSources.length === 0) return;
+    if (!editingSource || !pidCodeId || !newSourceName) return;
 
     setAbTestConfig(prev => ({
       ...prev,
@@ -239,8 +251,9 @@ function CreateABTestContent() {
               priceA: parseFloat(pidPriceA) || 0,
               priceB: parseFloat(pidPriceB) || 0,
               codeId: pidCodeId,
-              dspSources: selectedDspSources,
-              ...(selectedDspSources.some(n => SDK_SOURCE_VALUES.has(n)) ? {
+              dspSources: [newSourceName],
+              connectType: DSP_CONNECT_TYPE_MAP.get(newSourceName) || '接入我方API',
+              ...(SDK_SOURCE_VALUES.has(newSourceName) ? {
                 minVersion: pidMinVersion,
                 maxVersion: pidMaxVersion,
               } : {})
@@ -249,7 +262,7 @@ function CreateABTestContent() {
       )
     }));
     setEditingSource(null);
-    setSelectedDspSources([]);
+    setNewSourceName('');
     setPidCodeId('');
     setPidMinVersion('');
     setPidMaxVersion('');
@@ -258,42 +271,15 @@ function CreateABTestContent() {
     setPidPriceB('0');
   };
 
-  // DSP来源选择器相关函数
-  const filteredAvailableDSPSources = DSP_SOURCE_LIST.filter(d =>
-    !tempSelectedDSPSources.includes(d.value) &&
-    d.label.toLowerCase().includes(dspSearchKeyword.toLowerCase())
-  );
-  const filteredSelectedDSPSources = DSP_SOURCE_LIST.filter(d =>
-    tempSelectedDSPSources.includes(d.value) &&
-    d.label.toLowerCase().includes(selectedDspSearchKeyword.toLowerCase())
-  );
-
-  const handleToggleDSPSource = (value: string) => {
-    setTempSelectedDSPSources(prev =>
-      prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value]
-    );
+  // 鼠标悬停显示详情
+  const handleMouseEnterSource = (source: AdSource, e: React.MouseEvent) => {
+    const rect = (e.target as HTMLElement).getBoundingClientRect();
+    setHoverPosition({ x: rect.right + 10, y: rect.top });
+    setHoveredSource(source);
   };
 
-  const handleConfirmDSPSources = () => {
-    setSelectedDspSources(tempSelectedDSPSources);
-    setIsSdkSource(tempSelectedDSPSources.some(n => SDK_SOURCE_VALUES.has(n)));
-    setShowDSPSelectorDrawer(false);
-    setDspSearchKeyword('');
-    setSelectedDspSearchKeyword('');
-  };
-
-  const handleOpenDSPSelector = () => {
-    setTempSelectedDSPSources([...selectedDspSources]);
-    setShowDSPSelectorDrawer(true);
-  };
-
-  const handleAddAllDSPSources = () => {
-    const available = DSP_SOURCE_LIST.filter(d => !tempSelectedDSPSources.includes(d.value));
-    setTempSelectedDSPSources(prev => [...prev, ...available.map(d => d.value)]);
-  };
-
-  const handleRemoveAllDSPSources = () => {
-    setTempSelectedDSPSources([]);
+  const handleMouseLeaveSource = () => {
+    setHoveredSource(null);
   };
 
   const handleLaunch = async () => {
@@ -445,7 +431,11 @@ function CreateABTestContent() {
                               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#86909C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
                             </Button>
                           </TableCell><TableCell>
-                            <div className="flex items-center gap-2">
+                            <div
+                              className="flex items-center gap-2"
+                              onMouseEnter={(e) => handleMouseEnterSource(source, e)}
+                              onMouseLeave={handleMouseLeaveSource}
+                            >
                               <div className="w-2 h-2 rounded-full" style={{ backgroundColor: colors.dot }} />
                               <span className="text-sm text-[#1D2129]">{source.name}</span>
                             </div>
@@ -497,7 +487,11 @@ function CreateABTestContent() {
                                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#86909C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
                                 </Button>
                               </TableCell><TableCell>
-                                <div className="flex items-center gap-2">
+                                <div
+                                  className="flex items-center gap-2"
+                                  onMouseEnter={(e) => handleMouseEnterSource(source, e)}
+                                  onMouseLeave={handleMouseLeaveSource}
+                                >
                                   <div className="w-2 h-2 rounded-full" style={{ backgroundColor: colors.dot }} />
                                   <span className="text-sm text-[#1D2129]">{source.name}</span>
                                 </div>
@@ -521,44 +515,45 @@ function CreateABTestContent() {
               <Button className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white" onClick={handleLaunch}>开始测试</Button>
             </div>
           </div>
-      <Dialog open={showAddPidDialog} onOpenChange={setShowAddPidDialog}>
+      <Dialog open={showAddPidDialog} onOpenChange={(v) => { if (!v) { setShowAddPidDialog(false); setNewSourceName(''); setPidCodeId(''); setPidMinVersion(''); setPidMaxVersion(''); setPidStatus('active'); setPidPriceA('0'); setPidPriceB('0'); setSourceError(''); } }}>
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
             <DialogTitle className="text-base font-semibold">添加PID</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-2">
-            {/* DSP来源名称 */}
-            <div className="flex items-start">
-              <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0 pt-2"><span className="text-red-500">*</span> DSP来源</label>
-              <div className="flex-1">
-                <Button
-                  variant="outline"
-                  onClick={handleOpenDSPSelector}
-                  className="min-h-[36px] h-auto flex-wrap justify-start gap-2"
-                >
-                  {selectedDspSources.length > 0 ? (
-                    <div className="flex flex-wrap gap-1">
-                      {selectedDspSources.map((name) => (
-                        <span key={name} className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#FEF3F7] text-[#FF4D88] rounded text-xs">
-                          {DSP_SOURCE_NAMES[name] || name}
-                          <X
-                            className="w-3 h-3 cursor-pointer"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              const newSelected = selectedDspSources.filter(n => n !== name);
-                              setSelectedDspSources(newSelected);
-                              setIsSdkSource(newSelected.some(n => SDK_SOURCE_VALUES.has(n)));
-                            }}
-                          />
-                        </span>
+            {/* DSP来源名称 - 单选 */}
+            <div className="flex items-center">
+              <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0"><span className="text-red-500">*</span> DSP来源</label>
+              <Popover open={dspSelectOpen} onOpenChange={setDspSelectOpen}>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="w-64 justify-between" role="combobox">
+                    {newSourceName ? (DSP_SOURCE_NAMES[newSourceName] || newSourceName) : '请选择DSP来源'}
+                    <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-64 p-0">
+                  <Command>
+                    <CommandInput placeholder="搜索DSP来源..." />
+                    <CommandList>
+                      <CommandEmpty>未找到匹配的DSP来源</CommandEmpty>
+                      {DSP_SOURCE_LIST.map((dsp) => (
+                        <CommandItem
+                          key={dsp.value}
+                          value={dsp.label}
+                          onSelect={() => {
+                            setNewSourceName(dsp.value);
+                            setDspSelectOpen(false);
+                            setIsSdkSource(!!(dsp as { isSDK?: boolean }).isSDK);
+                          }}
+                        >
+                          {dsp.label}
+                          {(dsp as { isSDK?: boolean }).isSDK && <span className="text-[#86909C] text-xs ml-1">SDK</span>}
+                        </CommandItem>
                       ))}
-                    </div>
-                  ) : (
-                    <span className="text-[#86909C]">请选择DSP来源</span>
-                  )}
-                </Button>
-                <p className="text-xs text-[#86909C] mt-1">点击选择DSP来源，最多支持选择多个</p>
-              </div>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
             </div>
 
             {/* 广告场景 */}
@@ -611,12 +606,12 @@ function CreateABTestContent() {
             </div>
 
             {/* SDK版本配置 - 仅在选择SDK类型DSP来源时显示 */}
-            {isSdkSource && (
+            {SDK_SOURCE_VALUES.has(newSourceName) && (
               <div className="border border-[#E5E6EB] rounded-lg p-4 space-y-3">
                 <div className="text-xs text-[#86909C] font-medium">SDK版本配置</div>
                 <div className="flex items-center gap-4">
                   <div className="flex-1">
-                    <label className="text-xs text-[#4E5969] mb-1 block">最小版本 <span className="text-[#FF4D88]">*</span></label>
+                    <label className="text-xs text-[#4E5969] mb-1 block">最小版本</label>
                     <Input
                       value={pidMinVersion}
                       onChange={(e) => setPidMinVersion(e.target.value)}
@@ -624,7 +619,7 @@ function CreateABTestContent() {
                     />
                   </div>
                   <div className="flex-1">
-                    <label className="text-xs text-[#4E5969] mb-1 block">最大版本 <span className="text-[#FF4D88]">*</span></label>
+                    <label className="text-xs text-[#4E5969] mb-1 block">最大版本</label>
                     <Input
                       value={pidMaxVersion}
                       onChange={(e) => setPidMaxVersion(e.target.value)}
@@ -683,6 +678,9 @@ function CreateABTestContent() {
               <Switch checked={pidStatus === 'enabled'} onCheckedChange={(v) => setPidStatus(v ? 'enabled' : 'disabled')} />
             </div>
           </div>
+          {sourceError && (
+            <p className="text-red-500 text-sm text-center">{sourceError}</p>
+          )}
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowAddPidDialog(false)}>取消</Button>
             <Button className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white" onClick={handleAddPidSource}>提交</Button>
@@ -690,149 +688,80 @@ function CreateABTestContent() {
         </DialogContent>
       </Dialog>
 
-      {/* DSP来源选择器抽屉 */}
-      <Drawer open={showDSPSelectorDrawer} onOpenChange={setShowDSPSelectorDrawer}>
-        <DrawerContent className="h-[70vh]">
-          <div className="px-6 py-4 border-b border-[#E5E6EB]">
-            <span className="text-base font-semibold">选择DSP来源</span>
-          </div>
-          <div className="flex h-[calc(100%-120px)]">
-            {/* 左侧可选DSP来源列表 */}
-            <div className="flex-1 border-r border-[#E5E6EB] p-4 flex flex-col">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-sm text-[#1D2129]">待选DSP来源</span>
-                <Button variant="ghost" size="sm" className="text-[#86909C] hover:text-[#FF4D88]" onClick={handleAddAllDSPSources}>
-                  全选
-                </Button>
-              </div>
-              <div className="relative mb-3">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#86909C]" />
-                <Input
-                  placeholder="搜索DSP来源"
-                  value={dspSearchKeyword}
-                  onChange={(e) => setDspSearchKeyword(e.target.value)}
-                  className="pl-9"
-                />
-              </div>
-              <div className="flex-1 overflow-y-auto space-y-1">
-                {filteredAvailableDSPSources.map((dsp) => (
-                  <div
-                    key={dsp.value}
-                    className={`flex items-center gap-2 px-3 py-2 rounded cursor-pointer transition-colors ${
-                      tempSelectedDSPSources.includes(dsp.value)
-                        ? 'bg-[#FFF0F3]'
-                        : 'hover:bg-[#F7F8FA]'
-                    }`}
-                    onClick={() => handleToggleDSPSource(dsp.value)}
-                  >
-                    <Checkbox checked={tempSelectedDSPSources.includes(dsp.value)} />
-                    <span className="text-sm">{dsp.label}{SDK_SOURCE_VALUES.has(dsp.value) && <span className="text-[#86909C] text-xs ml-1">SDK</span>}</span>
-                  </div>
-                ))}
-                {filteredAvailableDSPSources.length === 0 && (
-                  <div className="text-center text-[#86909C] text-sm py-8">暂无数据</div>
-                )}
-              </div>
-            </div>
 
-            {/* 中间操作按钮 */}
-            <div className="flex flex-col items-center justify-center gap-2 px-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleAddAllDSPSources}
-                disabled={filteredAvailableDSPSources.length === 0}
-                className="text-[#86909C] hover:text-[#FF4D88]"
-              >
-                <ArrowRightIcon className="w-5 h-5" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleRemoveAllDSPSources}
-                disabled={tempSelectedDSPSources.length === 0}
-                className="text-[#86909C] hover:text-[#FF4D88]"
-              >
-                <ArrowLeftIcon className="w-5 h-5" />
-              </Button>
-            </div>
 
-            {/* 右侧已选DSP来源列表 */}
-            <div className="flex-1 p-4 flex flex-col">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-sm text-[#1D2129]">已选DSP来源（{tempSelectedDSPSources.length}项）</span>
-                <Button variant="ghost" size="sm" className="text-[#86909C] hover:text-[#FF4D88]" onClick={() => setTempSelectedDSPSources([])}>
-                  清空
-                </Button>
-              </div>
-              <div className="relative mb-3">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#86909C]" />
-                <Input
-                  placeholder="搜索已选DSP来源"
-                  value={selectedDspSearchKeyword}
-                  onChange={(e) => setSelectedDspSearchKeyword(e.target.value)}
-                  className="pl-9"
-                />
-              </div>
-              <div className="flex-1 overflow-y-auto space-y-1">
-                {filteredSelectedDSPSources.length > 0 ? (
-                  filteredSelectedDSPSources.map((dsp) => (
-                    <div
-                      key={dsp.value}
-                      className="flex items-center gap-2 px-3 py-2 rounded hover:bg-[#F7F8FA] cursor-pointer"
-                      onClick={() => handleToggleDSPSource(dsp.value)}
-                    >
-                      <Checkbox checked={true} />
-                      <span className="text-sm">{dsp.label}{SDK_SOURCE_VALUES.has(dsp.value) && <span className="text-[#86909C] text-xs ml-1">SDK</span>}</span>
-                    </div>
-                  ))
-                ) : (
-                  <div className="text-center text-[#86909C] text-sm py-8">暂无数据</div>
-                )}
-              </div>
+      {/* 悬停详情卡片 */}
+      {hoveredSource && (
+        <div
+          className="fixed z-50 bg-white rounded-lg shadow-lg border border-[#E5E6EB] p-4 w-64"
+          style={{ left: hoverPosition.x, top: hoverPosition.y }}
+        >
+          <h4 className="font-medium text-[#1D2129] mb-3">{hoveredSource.name}</h4>
+          <div className="space-y-2 text-sm">
+            <div className="flex justify-between">
+              <span className="text-[#86909C]">PID</span>
+              <span className="text-[#1D2129]">{hoveredSource.codeId || '未设置'}</span>
             </div>
+            <div className="flex justify-between">
+              <span className="text-[#86909C]">对接类型</span>
+              <span className="text-[#1D2129]">{hoveredSource.connectType || (hoveredSource.dspSources?.length ? (DSP_CONNECT_TYPE_MAP.get(hoveredSource.dspSources[0]) || '接入我方API') : '-')}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-[#86909C]">定价方式</span>
+              <span className={`text-[#1D2129] ${hoveredSource.pricingType === 'bidding' ? 'text-blue-500' : 'text-green-500'}`}>{hoveredSource.pricingType === 'bidding' ? '竞价' : '定价'}</span>
+            </div>
+            {hoveredSource.dspSources?.some(dsp => SDK_SOURCE_VALUES.has(dsp)) && (
+              <div className="flex justify-between">
+                <span className="text-[#86909C]">版本配置</span>
+                <span className="text-[#1D2129]">{hoveredSource.minVersion || '-'} ~ {hoveredSource.maxVersion || '-'}</span>
+              </div>
+            )}
           </div>
-
-          {/* 底部操作按钮 */}
-          <div className="border-t border-[#E5E6EB] px-6 py-4 flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setShowDSPSelectorDrawer(false)} className="border-[#E5E6EB] text-[#1D2129]">取消</Button>
-            <Button className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white" onClick={handleConfirmDSPSources}>确认</Button>
-          </div>
-        </DrawerContent>
-      </Drawer>
+        </div>
+      )}
 
       {/* 编辑PID弹窗 */}
-      <Dialog open={!!editingSource} onOpenChange={(v) => { if (!v) { setEditingSource(null); setSelectedDspSources([]); setPidCodeId(''); setPidMinVersion(''); setPidMaxVersion(''); setPidStatus('active'); setPidPriceA('0'); setPidPriceB('0'); } }}>
+      <Dialog open={!!editingSource} onOpenChange={(v) => { if (!v) { setEditingSource(null); setNewSourceName(''); setPidCodeId(''); setPidMinVersion(''); setPidMaxVersion(''); setPidStatus('active'); setPidPriceA('0'); setPidPriceB('0'); setSourceError(''); } }}>
         <DialogContent className="max-w-[700px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>编辑PID</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-2">
-            {/* DSP来源 - 多选同添加PID */}
+            {/* DSP来源 - 单选同添加PID */}
             <div>
               <label className="block text-sm font-medium mb-2">
                 <span className="text-red-500">*</span> DSP来源
               </label>
-              <div className="flex flex-wrap gap-2 p-3 border border-[#E5E6EB] rounded-lg bg-white min-h-[42px]">
-                {selectedDspSources.length === 0 ? (
-                  <span className="text-sm text-[#86909C]">请选择DSP来源</span>
-                ) : (
-                  selectedDspSources.map((val) => {
-                    const dsp = DSP_SOURCE_LIST.find(d => d.value === val);
-                    return (
-                      <span key={val} className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#FFF0F5] text-[#FF4D88] text-xs rounded-sm">
-                        {dsp?.label || val}
-                        {SDK_SOURCE_VALUES.has(val) && <span className="text-[#86909C] text-[10px]">SDK</span>}
-                        <button onClick={() => setSelectedDspSources(prev => prev.filter(v => v !== val))} className="ml-0.5 hover:text-[#FF4D88]">×</button>
-                      </span>
-                    );
-                  })
-                )}
-                <button
-                  onClick={() => { setTempSelectedDSPSources([...selectedDspSources]); setShowDSPSelectorDrawer(true); }}
-                  className="text-sm text-[#FF4D88] hover:text-[#FF6A9E] ml-auto"
-                >选择DSP来源</button>
-              </div>
+              <Popover open={dspSelectOpen} onOpenChange={setDspSelectOpen}>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="w-64 justify-between" role="combobox">
+                    {newSourceName ? (DSP_SOURCE_NAMES[newSourceName] || newSourceName) : '请选择DSP来源'}
+                    <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-64 p-0">
+                  <Command>
+                    <CommandInput placeholder="搜索DSP来源..." />
+                    <CommandList>
+                      <CommandEmpty>未找到匹配的DSP来源</CommandEmpty>
+                      {DSP_SOURCE_LIST.map((dsp) => (
+                        <CommandItem
+                          key={dsp.value}
+                          value={dsp.label}
+                          onSelect={() => {
+                            setNewSourceName(dsp.value);
+                            setDspSelectOpen(false);
+                            setIsSdkSource(!!(dsp as { isSDK?: boolean }).isSDK);
+                          }}
+                        >
+                          {dsp.label}
+                          {(dsp as { isSDK?: boolean }).isSDK && <span className="text-[#86909C] text-xs ml-1">SDK</span>}
+                        </CommandItem>
+                      ))}
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
             </div>
 
             {/* 广告场景 - 只读 */}
@@ -878,16 +807,16 @@ function CreateABTestContent() {
             </div>
 
             {/* SDK版本配置 */}
-            {selectedDspSources.some(n => SDK_SOURCE_VALUES.has(n)) && (
+            {SDK_SOURCE_VALUES.has(newSourceName) && (
               <div className="bg-[#FFFBF0] border border-[#FFE58F] rounded-lg p-3">
                 <label className="block text-sm font-medium mb-2">SDK版本配置</label>
                 <div className="flex gap-3">
                   <div className="flex-1">
-                    <label className="text-xs text-[#4E5969] mb-1 block">最小版本 <span className="text-[#FF4D88]">*</span></label>
+                    <label className="text-xs text-[#4E5969] mb-1 block">最小版本</label>
                     <Input value={pidMinVersion} onChange={(e) => setPidMinVersion(e.target.value)} placeholder="如 8.12.0" />
                   </div>
                   <div className="flex-1">
-                    <label className="text-xs text-[#4E5969] mb-1 block">最大版本 <span className="text-[#FF4D88]">*</span></label>
+                    <label className="text-xs text-[#4E5969] mb-1 block">最大版本</label>
                     <Input value={pidMaxVersion} onChange={(e) => setPidMaxVersion(e.target.value)} placeholder="如 9.01.0" />
                   </div>
                 </div>
