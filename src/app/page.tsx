@@ -2796,6 +2796,7 @@ function SourceTable({
               </Tooltip>
             </div>
           </TableHead>
+          <TableHead className="w-20">预估收入</TableHead>
           <TableHead className="w-20">
             <div className="flex items-center gap-1">
               千人均收益
@@ -2822,6 +2823,7 @@ function SourceTable({
               </Tooltip>
             </div>
           </TableHead>
+          <TableHead className="w-20">千次请求价值</TableHead>
           <TableHead className="w-20">请求量</TableHead>
           <TableHead className="w-20">
             <div className="flex items-center gap-1">
