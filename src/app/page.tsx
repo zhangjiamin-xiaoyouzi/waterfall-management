@@ -1705,6 +1705,14 @@ export default function WaterfallManagementPage() {
               </span>
             </div>
 
+            {/* 平台 - 自动带入当前分组归属的平台，不支持修改 */}
+            <div className="flex items-center">
+              <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0">平台</label>
+              <span className="text-sm text-[#86909C] bg-[#F5F5F5] px-3 py-1.5 rounded">
+                {selectedPlatform}
+              </span>
+            </div>
+
             {/* 广告位 - 多选 */}
             <div className="flex items-start">
               <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0 pt-1.5">
