@@ -202,6 +202,7 @@ const SCENE_ITEMS = [
   { value: 'rewarded', label: '激励视频' },
   { value: 'feed', label: '信息流' },
   { value: 'native', label: '原生' },
+  { value: 'search', label: '搜索' },
 ];
 
 // 广告位名称映射
@@ -215,6 +216,7 @@ const SLOT_NAME_MAP: Record<string, string> = {
   '3001': '美柚-Banner广告',
   '3002': '美柚-激励视频',
   '3003': '美柚-原生广告',
+  '4001': '美柚-搜索广告',
 };
 
 // 广告场景 - 广告位ID映射
@@ -225,6 +227,7 @@ const SCENE_SLOT_IDS: Record<AdScene, string[]> = {
   rewarded: ['3002'],
   feed: ['1120', '1601', '1602'],
   native: ['3003'],
+  search: ['4001'],
 };
 
 // 按场景获取广告位选项
@@ -245,6 +248,8 @@ const getSlotOptionsByScene = (scene: string) => {
     options.push({ value: '1602', label: '1602 - 美柚-她她圈-帖子详情信息流' });
   } else if (scene === 'native') {
     options.push({ value: '3003', label: '3003 - 美柚-原生广告' });
+  } else if (scene === 'search') {
+    options.push({ value: '4001', label: '4001 - 美柚-搜索广告' });
   }
   return options;
 };
@@ -260,6 +265,7 @@ const CODE_SLOT_MAP: Record<string, string> = {
   '3001': '美柚-Banner广告',
   '3002': '美柚-激励视频',
   '3003': '美柚-原生广告',
+  '4001': '美柚-搜索广告',
 };
 
 export default function WaterfallManagementPage() {

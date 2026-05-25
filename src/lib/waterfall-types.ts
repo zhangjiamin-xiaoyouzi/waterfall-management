@@ -1,6 +1,6 @@
 // 瀑布流管理页面类型定义
 
-export type AdScene = 'splash' | 'banner' | 'interstitial' | 'rewarded' | 'feed' | 'native';
+export type AdScene = 'splash' | 'banner' | 'interstitial' | 'rewarded' | 'feed' | 'native' | 'search';
 
 export type PricingType = 'CPM' | 'CPC' | 'CPA' | 'CPS' | 'bidding';
 
@@ -143,6 +143,7 @@ export const SCENE_NAV_ITEMS: SceneNavItem[] = [
   { id: 'rewarded', name: '激励视频', icon: 'video' },
   { id: 'feed', name: '信息流', icon: 'layout-list' },
   { id: 'native', name: '原生', icon: 'smartphone' },
+  { id: 'search', name: '搜索', icon: 'search' },
 ];
 
 export const MOCK_AD_GROUPS: AdGroup[] = [
@@ -349,6 +350,34 @@ export const MOCK_AD_GROUPS: AdGroup[] = [
     rules: [],
     status: 'enabled',
     floorPrice: 8.0,
+    adSources: [],
+  },
+  // ===== 搜索 × Android =====
+  {
+    id: 'search-android-default',
+    name: '默认分组',
+    priority: Infinity,
+    platforms: ['Android'],
+    adSlots: ['4001'],
+    scene: 'search',
+    platform: 'Android',
+    rules: [],
+    status: 'enabled',
+    floorPrice: 0,
+    adSources: [],
+  },
+  // ===== 搜索 × iOS =====
+  {
+    id: 'search-ios-default',
+    name: '默认分组',
+    priority: Infinity,
+    platforms: ['iOS'],
+    adSlots: ['4001'],
+    scene: 'search',
+    platform: 'iOS',
+    rules: [],
+    status: 'enabled',
+    floorPrice: 0,
     adSources: [],
   },
   // ===== 信息流 × Android =====

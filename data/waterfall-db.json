@@ -538,6 +538,40 @@
       "adSources": []
     },
     {
+      "id": "search-android-default",
+      "name": "默认分组",
+      "priority": 999,
+      "platforms": [
+        "Android"
+      ],
+      "adSlots": [
+        "4001"
+      ],
+      "scene": "search",
+      "platform": "Android",
+      "rules": [],
+      "status": "enabled",
+      "floorPrice": 0,
+      "adSources": []
+    },
+    {
+      "id": "search-ios-default",
+      "name": "默认分组",
+      "priority": 999,
+      "platforms": [
+        "iOS"
+      ],
+      "adSlots": [
+        "4001"
+      ],
+      "scene": "search",
+      "platform": "iOS",
+      "rules": [],
+      "status": "enabled",
+      "floorPrice": 0,
+      "adSources": []
+    },
+    {
       "id": "feed-android-default",
       "name": "默认分组",
       "priority": 999,
@@ -765,23 +799,6 @@
           ]
         }
       ]
-    },
-    {
-      "id": "test-1",
-      "name": "测试分组",
-      "priority": 3,
-      "platforms": [
-        "Android"
-      ],
-      "adSlots": [
-        "3001"
-      ],
-      "scene": "banner",
-      "platform": "Android",
-      "rules": [],
-      "status": "enabled",
-      "floorPrice": 0,
-      "adSources": []
     }
   ]
 }
