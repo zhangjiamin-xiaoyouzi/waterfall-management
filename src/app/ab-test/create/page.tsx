@@ -595,7 +595,7 @@ function CreateABTestContent() {
                       const slotName = SLOT_NAME_MAP[slotId] || slotId;
                       return (
                         <span key={slotId} className="inline-flex items-center px-2.5 py-1 bg-[#F2F3F5] text-[#4E5969] rounded text-sm">
-                          {slotId} - {slotName}
+                          {slotName}
                         </span>
                       );
                     })
