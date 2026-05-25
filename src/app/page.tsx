@@ -347,6 +347,7 @@ export default function WaterfallManagementPage() {
   const [sourceError, setSourceError] = useState('');
   const [newSourceMinVersion, setNewSourceMinVersion] = useState('');
   const [newSourceMaxVersion, setNewSourceMaxVersion] = useState('');
+  const [dspSelectOpen, setDspSelectOpen] = useState(false);
   
   // 编辑DSP来源
   const [editingSource, setEditingSource] = useState<AdSource | null>(null);
@@ -2170,18 +2171,36 @@ export default function WaterfallManagementPage() {
             {/* DSP来源名称 - 单选 */}
             <div className="flex items-center">
               <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0"><span className="text-red-500">*</span> DSP来源</label>
-              <Select value={newSourceName} onValueChange={setNewSourceName}>
-                <SelectTrigger className="w-64">
-                  <SelectValue placeholder="请选择DSP来源" />
-                </SelectTrigger>
-                <SelectContent>
-                  {DSP_SOURCE_LIST.map((dsp: { value: string; label: string }) => (
-                    <SelectItem key={dsp.value} value={dsp.value}>
-                      <span>{dsp.label}{SDK_SOURCE_VALUES.has(dsp.value) && <span className="text-[#86909C] text-xs ml-1">SDK</span>}</span>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Popover open={dspSelectOpen} onOpenChange={setDspSelectOpen}>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="w-64 justify-between" role="combobox">
+                    {newSourceName ? (DSP_SOURCE_NAMES[newSourceName] || newSourceName) : '请选择DSP来源'}
+                    <ChevronDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-64 p-0">
+                  <Command>
+                    <CommandInput placeholder="搜索DSP来源..." />
+                    <CommandList>
+                      <CommandEmpty>未找到匹配的DSP来源</CommandEmpty>
+                      {DSP_SOURCE_LIST.map((dsp: { value: string; label: string }) => (
+                        <CommandItem
+                          key={dsp.value}
+                          value={dsp.label}
+                          onSelect={(currentValue) => {
+                            const _ = currentValue;
+                            setNewSourceName(dsp.value);
+                            setDspSelectOpen(false);
+                          }}
+                        >
+                          {dsp.label}
+                          {SDK_SOURCE_VALUES.has(dsp.value) && <span className="text-[#86909C] text-xs ml-1">SDK</span>}
+                        </CommandItem>
+                      ))}
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
             </div>
 
             {/* 广告场景 */}
