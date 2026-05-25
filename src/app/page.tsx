@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, { useState, useCallback, useEffect, useMemo, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { TimeSlotPicker } from '@/components/time-slot-picker';
 import {
@@ -251,6 +251,14 @@ const CODE_SLOT_MAP: Record<string, string> = {
 };
 
 export default function WaterfallManagementPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center h-screen text-[#86909C]">加载中...</div>}>
+      <WaterfallManagementPageContent />
+    </Suspense>
+  );
+}
+
+function WaterfallManagementPageContent() {
   // 页面切换状态
   const [currentPage, setCurrentPage] = useState<'waterfall' | 'codePosition'>('waterfall');
   
