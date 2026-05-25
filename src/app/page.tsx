@@ -2253,8 +2253,7 @@ export default function WaterfallManagementPage() {
                     );
                   })()}
                 </div>
-                <p className="text-xs text-[#86909C] mt-1">广告位根据分组配置自动带入</p>
-              </div>
+                </div>
             </div>
 
             {/* PID - 必填，手动输入 */}
