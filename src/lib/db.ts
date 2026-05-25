@@ -13,7 +13,7 @@ function getDefaultDb(): Database {
   const groups: AdGroup[] = JSON.parse(JSON.stringify(MOCK_AD_GROUPS));
   // JSON.stringify converts Infinity to null, restore sentinel value for default group
   groups.forEach(g => {
-    if (g.id === 'group-default' || g.priority === null) {
+    if (g.priority === null) {
       g.priority = 999;
     }
   });

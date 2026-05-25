@@ -464,9 +464,9 @@ export const MOCK_AD_GROUPS: AdGroup[] = [
     floorPrice: 0,
     adSources: [],
   },
-  // ===== 信息流 × Android =====
+  // ===== 信息流 × iOS =====
   {
-    id: 'feed-android-default',
+    id: 'feed-ios-default',
     name: '默认分组',
     priority: Infinity,
     platforms: ['iOS'],
