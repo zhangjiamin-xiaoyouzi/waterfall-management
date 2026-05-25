@@ -41,21 +41,22 @@ const SDK_SOURCE_VALUES = new Set(DSP_SOURCE_LIST.filter(d => (d as { isSDK?: bo
 const DSP_CONNECT_TYPE_MAP = new Map(DSP_SOURCE_LIST.map(d => [d.value, (d as { connectType?: string }).connectType || '接入我方API']));
 
 const SLOT_NAME_MAP: Record<string, string> = {
-  '100001': '原生模板', '100002': '原生自渲染',
-  '100003': 'Banner', '100004': '插屏',
-  '100005': '开屏', '100006': '激励视频',
-  '100007': '全屏视频',
+  '1000': '美柚--开屏',
+  '2101': '美柚-首页-插屏',
+  '2514': '爱爱记录-记录完成插屏',
+  '1120': '首页大社区feeds流',
+  '1601': '美柚-她她圈-帖子详情楼间广告',
+  '1602': '美柚-她她圈-帖子详情信息流',
+  '4001': '美柚-搜索广告',
 };
 const SCENE_SLOT_IDS: Record<string, string[]> = {
-  splash: ['100005'],
-  banner: ['100003'],
-  interstitial: ['100004'],
-  'rewarded-video': ['100006'],
-  feed: ['100001', '100002'],
-  native: ['100001', '100002'],
+  splash: ['1000'],
+  interstitial: ['2101', '2514'],
+  feed: ['1120', '1601', '1602'],
+  search: ['4001'],
 };
 
-type AdScene = 'splash' | 'banner' | 'interstitial' | 'rewarded-video' | 'feed' | 'native';
+type AdScene = 'splash' | 'interstitial' | 'feed' | 'search';
 
 interface AdSource {
   id: string;
@@ -577,13 +578,7 @@ function CreateABTestContent() {
                 {currentGroup?.platform || (currentGroup?.platforms?.join(' / ') || <span className="text-[#86909C]">自动带入</span>)}
               </span>
             </div>
-            {/* 平台 - 自动带入 */}
-            <div className="flex items-center">
-              <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0">平台</label>
-              <span className="text-sm text-[#1D2129]">
-                {currentGroup?.platform || (currentGroup?.platforms?.join(' / ') || <span className="text-[#86909C]">自动带入</span>)}
-              </span>
-            </div>
+
 
             {/* 广告位 - 根据分组广告位带入，不可编辑 */}
             <div className="flex items-start">
