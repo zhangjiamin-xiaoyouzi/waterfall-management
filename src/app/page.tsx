@@ -1046,19 +1046,34 @@ export default function WaterfallManagementPage() {
         {/* 广告场景与平台筛选 */}
         <div className="bg-white border-b border-[#E5E6EB] px-6 py-3">
           <div className="flex items-center gap-4">
-            {/* 广告场景 */}
+            {/* 广告场景 - 可搜索 */}
             <div className="flex items-center gap-3">
               <span className="text-sm text-[#86909C]">广告场景：</span>
-              <Select value={activeScene} onValueChange={(value) => { setActiveScene(value as AdScene); setSelectedSlot(''); setSelectedSubPositions([]); }}>
-                <SelectTrigger className="w-28 h-8 border-[#E5E6EB]">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="splash">开屏</SelectItem>
-                  <SelectItem value="interstitial">插屏</SelectItem>
-                  <SelectItem value="feed">信息流</SelectItem>
-                </SelectContent>
-              </Select>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="w-36 h-8 justify-between text-sm font-normal border-[#E5E6EB] px-3" role="combobox">
+                    <span>{SCENE_ITEMS.find(s => s.value === activeScene)?.label || activeScene}</span>
+                    <ChevronDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-36 p-0" align="start">
+                  <Command>
+                    <CommandInput placeholder="搜索场景..." className="h-8" />
+                    <CommandList>
+                      <CommandEmpty>未找到匹配场景</CommandEmpty>
+                      {SCENE_ITEMS.map((scene) => (
+                        <CommandItem
+                          key={scene.value}
+                          value={scene.label}
+                          onSelect={() => { setActiveScene(scene.value as AdScene); setSelectedSlot(''); setSelectedSubPositions([]); }}
+                        >
+                          {scene.label}
+                        </CommandItem>
+                      ))}
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
             </div>
             {/* 平台筛选 */}
             <div className="flex items-center gap-3">

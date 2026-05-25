@@ -105,7 +105,15 @@
       ],
       "scene": "splash",
       "platform": "iOS",
-      "rules": [],
+      "rules": [
+        {
+          "ruleType": "identity",
+          "matchType": "include",
+          "values": [
+            "经期"
+          ]
+        }
+      ],
       "status": "enabled",
       "floorPrice": 0,
       "adSources": [
