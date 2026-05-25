@@ -228,6 +228,18 @@ function CreateABTestContent() {
       ...prev,
       enabledSources: [...prev.enabledSources, newSource]
     }));
+
+    // Also update the group's adSources so the UI shows the new PID
+    setGroups(prev => prev.map(g => {
+      if (g.id === selectedGroupId) {
+        return {
+          ...g,
+          adSources: [...(g.adSources || []), newSource]
+        };
+      }
+      return g;
+    }));
+
     setShowAddPidDialog(false);
     setNewSourceName('');
     setPidCodeId('');
