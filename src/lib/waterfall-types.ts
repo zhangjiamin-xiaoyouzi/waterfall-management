@@ -78,6 +78,10 @@ export interface AdSource {
   status: 'enabled' | 'disabled';
   pricingType: PricingType;
   price: number;
+  /** A/B 测试对照组价格 */
+  priceA?: number;
+  /** A/B 测试测试组价格 */
+  priceB?: number;
   estimatedRevenue: number;
   ecpm: number;
   thousandRequestValue: number;

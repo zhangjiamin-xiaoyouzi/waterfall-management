@@ -1391,6 +1391,7 @@ export default function WaterfallManagementPage() {
                 onMouseEnter={handleMouseEnterSource}
                 onMouseLeave={handleMouseLeaveSource}
                 onEditSource={handleEditSource}
+                abTestSelectedGroup={currentGroup?.hasABTest ? abTestSelectedGroup : undefined}
               />
             </div>
 
@@ -2785,7 +2786,8 @@ function SourceTable({
   onMouseEnter,
   onMouseLeave,
   onEditSource,
-}: SourceTableProps) {
+  abTestSelectedGroup,
+}: SourceTableProps & { abTestSelectedGroup?: 'A' | 'B' }) {
   const [editingPrice, setEditingPrice] = useState<{ id: string; value: string } | null>(null);
 
   const handlePriceSave = (sourceId: string) => {
@@ -3025,13 +3027,13 @@ function SourceTable({
                   ) : (
                     <div className="flex items-center gap-1">
                       <span className="text-sm">
-                        ¥{source.price.toFixed(2)}
+                        ¥{(abTestSelectedGroup === 'A' ? (source.priceA ?? source.price) : abTestSelectedGroup === 'B' ? (source.priceB ?? source.price) : source.price).toFixed(2)}
                       </span>
                       <Button
                         size="sm"
                         variant="ghost"
                         className="h-6 w-6 p-0 text-[#86909C] hover:text-[#2563EB] hover:bg-[#F2F3F5]"
-                        onClick={() => setEditingPrice({ id: source.id, value: source.price.toString() })}
+                        onClick={() => setEditingPrice({ id: source.id, value: (abTestSelectedGroup === 'A' ? (source.priceA ?? source.price) : abTestSelectedGroup === 'B' ? (source.priceB ?? source.price) : source.price).toString() })}
                       >
                         <Pencil className="w-3 h-3" />
                       </Button>
