@@ -100,8 +100,6 @@ export interface AdSource {
   dspSources?: string[]; // 关联的多个DSP来源
   minVersion?: string; // SDK最小版本
   maxVersion?: string; // SDK最大版本
-  integrationType?: string; // 对接类型：接入我方API、接入对方API、客户端SDK、服务端SDK
-  levelType?: 'bidding' | 'pricing'; // 定级方式：竞价/定价
 }
 
 export interface AdGroup {

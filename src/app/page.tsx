@@ -343,8 +343,6 @@ export default function WaterfallManagementPage() {
   const [sourceError, setSourceError] = useState('');
   const [newSourceMinVersion, setNewSourceMinVersion] = useState('');
   const [newSourceMaxVersion, setNewSourceMaxVersion] = useState('');
-  const [newIntegrationType, setNewIntegrationType] = useState('');
-  const [newLevelType, setNewLevelType] = useState<'bidding' | 'pricing'>('bidding');
   
   // 编辑DSP来源
   const [editingSource, setEditingSource] = useState<AdSource | null>(null);
@@ -374,8 +372,6 @@ export default function WaterfallManagementPage() {
     setNewSourceSubPositions(source.subPositions || []);
     setNewSourceMinVersion(source.minVersion || '');
     setNewSourceMaxVersion(source.maxVersion || '');
-    setNewIntegrationType(source.integrationType || '');
-    setNewLevelType(source.levelType || 'bidding');
     setShowAddSourceDialog(true);
     setSourceError('');
   };
@@ -390,8 +386,6 @@ export default function WaterfallManagementPage() {
     setNewSourceSubPositions([]);
     setNewSourceMinVersion('');
     setNewSourceMaxVersion('');
-    setNewIntegrationType('');
-    setNewLevelType('bidding');
     setSourceError('');
     setEditingSource(null);
   };
@@ -849,8 +843,6 @@ export default function WaterfallManagementPage() {
         subPositions: newSourceSubPositions,
         minVersion: newSourceMinVersion || undefined,
         maxVersion: newSourceMaxVersion || undefined,
-        integrationType: newIntegrationType || undefined,
-        levelType: newLevelType || undefined,
         lastUpdated: new Date().toLocaleString('zh-CN'),
       };
       try {
@@ -893,8 +885,6 @@ export default function WaterfallManagementPage() {
         dspSources: [newSourceName],
         minVersion: newSourceMinVersion || undefined,
         maxVersion: newSourceMaxVersion || undefined,
-        integrationType: newIntegrationType || undefined,
-        levelType: newLevelType || undefined,
       };
       
       if (addSourceFromABTest) {
@@ -928,7 +918,7 @@ export default function WaterfallManagementPage() {
     resetSourceForm();
     setAddSourceFromABTest(false);
     setShowAddSourceDialog(false);
-  }, [newSourceName, newSourcePlatform, newSourceCodeId, newSourceStatus, newSourceSubPositions, selectedGroupId, addSourceFromABTest, editingSource, resetSourceForm, setAdGroups, setAbTestConfig, setAddSourceFromABTest, setShowAddSourceDialog, newSourceMinVersion, newSourceMaxVersion, newIntegrationType, newLevelType]);
+  }, [newSourceName, newSourcePlatform, newSourceCodeId, newSourceStatus, newSourceSubPositions, selectedGroupId, addSourceFromABTest, editingSource, resetSourceForm, setAdGroups, setAbTestConfig, setAddSourceFromABTest, setShowAddSourceDialog, newSourceMinVersion, newSourceMaxVersion]);
 
   // 鼠标悬停显示详情
   const handleMouseEnterSource = useCallback((source: AdSource, e: React.MouseEvent) => {
@@ -1624,16 +1614,6 @@ export default function WaterfallManagementPage() {
               <span className="text-[#86909C]">PID</span>
               <span className="text-[#1D2129]">{hoveredSource.codeId || '未设置'}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-[#86909C]">对接类型</span>
-              <span className="text-[#1D2129]">{hoveredSource.integrationType || '未设置'}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-[#86909C]">定级方式</span>
-              <span className={`text-sm font-medium ${hoveredSource.levelType === 'bidding' ? 'text-[#165DFF]' : 'text-[#00B42A]'}`}>
-                {hoveredSource.levelType === 'bidding' ? '竞价' : hoveredSource.levelType === 'pricing' ? '定价' : '未设置'}
-              </span>
-            </div>
             {hoveredSource.dspSources?.some(dsp => SDK_SOURCE_VALUES.has(dsp)) && (
               <div className="flex justify-between">
                 <span className="text-[#86909C]">版本配置</span>
@@ -2233,36 +2213,6 @@ export default function WaterfallManagementPage() {
                 placeholder="请输入PID"
                 className="w-64"
               />
-            </div>
-
-            {/* 对接类型 - Select选择 */}
-            <div className="flex items-center">
-              <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0">对接类型</label>
-              <Select value={newIntegrationType} onValueChange={setNewIntegrationType}>
-                <SelectTrigger className="w-64">
-                  <SelectValue placeholder="请选择对接类型" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="接入我方API">接入我方API</SelectItem>
-                  <SelectItem value="接入对方API">接入对方API</SelectItem>
-                  <SelectItem value="客户端SDK">客户端SDK</SelectItem>
-                  <SelectItem value="服务端SDK">服务端SDK</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* 定级方式 - Select选择 */}
-            <div className="flex items-center">
-              <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0">定级方式</label>
-              <Select value={newLevelType} onValueChange={(v) => setNewLevelType(v as 'bidding' | 'pricing')}>
-                <SelectTrigger className="w-64">
-                  <SelectValue placeholder="请选择定级方式" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="bidding">竞价</SelectItem>
-                  <SelectItem value="pricing">定价</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
 
             {/* SDK版本配置 - 仅在选择SDK类型DSP来源时显示 */}
