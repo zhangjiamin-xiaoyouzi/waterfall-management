@@ -2366,13 +2366,6 @@ export default function WaterfallManagementPage() {
                       </TableCell>
                       <TableCell>
                         {source.pricingType === 'bidding' ? (
-                          <span className="text-xs px-2 py-0.5 bg-[#E8F3FF] text-[#165DFF] rounded">竞价</span>
-                        ) : (
-                          <span className="text-xs px-2 py-0.5 bg-[#E8FFEB] text-[#00B42A] rounded">{source.pricingType}</span>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {source.pricingType === 'bidding' ? (
                           <span className="text-[#86909C]">-</span>
                         ) : (
                           <div className="flex items-center gap-1">
@@ -2490,13 +2483,6 @@ export default function WaterfallManagementPage() {
                             setAbTestConfig(prev => ({ ...prev, disabledSources: newSources }));
                           }
                         }} className="data-[state=checked]:bg-[#00B42A]" />
-                      </TableCell>
-                      <TableCell>
-                        {source.pricingType === 'bidding' ? (
-                          <span className="text-xs px-2 py-0.5 bg-[#E8F3FF] text-[#165DFF] rounded">竞价</span>
-                        ) : (
-                          <span className="text-xs px-2 py-0.5 bg-[#E8FFEB] text-[#00B42A] rounded">{source.pricingType}</span>
-                        )}
                       </TableCell>
                       <TableCell>
                         {source.pricingType === 'bidding' ? (
@@ -2755,19 +2741,6 @@ function SourceTable({
           <TableHead className="w-20">操作</TableHead>
           <TableHead className="w-32">DSP来源</TableHead>
           <TableHead className="w-20">状态</TableHead>
-          <TableHead className="w-24">
-            <div className="flex items-center gap-1">
-              定价方式
-              <Tooltip>
-                <TooltipTrigger>
-                  <Info className="w-3 h-3 text-[#86909C]" />
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>DSP来源的计费模式</p>
-                </TooltipContent>
-              </Tooltip>
-            </div>
-          </TableHead>
           <TableHead className="w-20">
             <div className="flex items-center gap-1">
               价格
@@ -2794,19 +2767,6 @@ function SourceTable({
               </Tooltip>
             </div>
           </TableHead>
-          <TableHead className="w-24">
-            <div className="flex items-center gap-1">
-              预估收入
-              <Tooltip>
-                <TooltipTrigger>
-                  <Info className="w-3 h-3 text-[#86909C]" />
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>预计收入金额</p>
-                </TooltipContent>
-              </Tooltip>
-            </div>
-          </TableHead>
           <TableHead className="w-20">
             <div className="flex items-center gap-1">
               eCPM
@@ -2816,19 +2776,6 @@ function SourceTable({
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>千次展示收益</p>
-                </TooltipContent>
-              </Tooltip>
-            </div>
-          </TableHead>
-          <TableHead className="w-24">
-            <div className="flex items-center gap-1">
-              千次请求价值
-              <Tooltip>
-                <TooltipTrigger>
-                  <Info className="w-3 h-3 text-[#86909C]" />
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>每千次请求的价值</p>
                 </TooltipContent>
               </Tooltip>
             </div>
@@ -2942,17 +2889,8 @@ function SourceTable({
                     className="data-[state=checked]:bg-[#2563EB]"
                   />
                 </div>
-              </TableCell><TableCell>
-                <div className="flex items-center gap-1">
-                  <span className={`inline-flex px-1.5 py-0.5 rounded text-xs font-medium whitespace-nowrap ${
-                    source.pricingType === 'bidding'
-                      ? 'bg-[#2563EB]/10 text-[#2563EB]'
-                      : 'bg-[#00B42A]/10 text-[#00B42A]'
-                  }`}>
-                    {source.pricingType === 'bidding' ? '竞价' : '定价'}
-                  </span>
-                </div>
-              </TableCell><TableCell onClick={(e) => e.stopPropagation()}>
+              </TableCell>
+              <TableCell onClick={(e) => e.stopPropagation()}>
                 <div className="flex items-center gap-1 text-[#1D2129]">
                   {editingPrice?.id === source.id ? (
                     <div className="flex items-center gap-1">
