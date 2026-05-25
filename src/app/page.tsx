@@ -1600,25 +1600,15 @@ export default function WaterfallManagementPage() {
           <h4 className="font-medium text-[#1D2129] mb-3">{hoveredSource.name}</h4>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
-              <span className="text-[#86909C]">定价方式</span>
-              <span className="text-[#1D2129]">{hoveredSource.pricingType}</span>
+              <span className="text-[#86909C]">PID</span>
+              <span className="text-[#1D2129]">{hoveredSource.codeId || '未设置'}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-[#86909C]">价格</span>
-              <span className="text-[#1D2129]">¥{hoveredSource.price.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-[#86909C]">eCPM</span>
-              <span className="text-[#1D2129]">¥{hoveredSource.ecpm.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-[#86909C]">请求量</span>
-              <span className="text-[#1D2129]">{hoveredSource.requests.toLocaleString()}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-[#86909C]">返回量</span>
-              <span className="text-[#1D2129]">{hoveredSource.responses.toLocaleString()}</span>
-            </div>
+            {hoveredSource.dspSources?.some(dsp => SDK_SOURCE_VALUES.has(dsp)) && (
+              <div className="flex justify-between">
+                <span className="text-[#86909C]">版本配置</span>
+                <span className="text-[#1D2129]">{hoveredSource.minVersion || '-'} ~ {hoveredSource.maxVersion || '-'}</span>
+              </div>
+            )}
           </div>
         </div>
       )}
