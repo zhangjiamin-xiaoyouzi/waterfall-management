@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>美柚广告系统 - 瀑布流管理</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.cn/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+body { background: #F2F2F5; }
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #C9CDD4; border-radius: 3px; }
+/* Switch */
+.switch { position: relative; display: inline-block; width: 36px; height: 20px; cursor: pointer; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #C9CDD4; border-radius: 10px; transition: 0.2s; }
+.slider::before { content: ''; position: absolute; left: 2px; bottom: 2px; width: 16px; height: 16px; background: white; border-radius: 50%; transition: 0.2s; }
+.switch input:checked + .slider { background: #165DFF; }
+.switch input:checked + .slider::before { transform: translateX(16px); }
+/* Tab */
+.tab-active { color: #FF4D88; border-bottom: 2px solid #FF4D88; }
+/* Dialog overlay */
+.dialog-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3); z-index: 50; align-items: center; justify-content: center; }
+.dialog-overlay.active { display: flex; }
+.dialog { background: white; border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); max-width: 520px; width: 90%; max-height: 80vh; overflow-y: auto; }
+/* Table */
+.table-container { overflow-x: auto; }
+.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.data-table th { background: #F7F8FA; color: #86909C; font-weight: 500; text-align: left; padding: 10px 12px; white-space: nowrap; border-bottom: 1px solid #E5E6EB; }
+.data-table td { padding: 10px 12px; border-bottom: 1px solid #F2F3F5; color: #1D2129; white-space: nowrap; }
+.data-table tr:hover td { background: #F7F8FA; }
+/* Dropdown */
+.dropdown { position: relative; display: inline-block; }
+.dropdown-menu { display: none; position: absolute; right: 0; top: 100%; background: white; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 120px; z-index: 10; padding: 4px; }
+.dropdown-menu.active { display: block; }
+.dropdown-item { padding: 6px 12px; cursor: pointer; font-size: 13px; color: #1D2129; border-radius: 4px; }
+.dropdown-item:hover { background: #F2F3F5; }
+/* Badge */
+.badge-bidding { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 4px; font-size: 12px; background: #E8F3FF; color: #165DFF; }
+.badge-pricing { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 4px; font-size: 12px; background: #E8FFEA; color: #00B42A; }
+/* Hover card */
+.hover-card { display: none; position: fixed; background: white; border-radius: 8px; box-shadow: 0 6px 20px rgba(0,0,0,0.12); padding: 16px; z-index: 100; min-width: 260px; }
+.hover-card.active { display: block; }
+/* Nav active */
+.nav-active { background: #FFF0F5; color: #FF4D88; border-right: 2px solid #FF4D88; }
+/* Tooltip */
+.tooltip-trigger { position: relative; cursor: help; display: inline-flex; align-items: center; }
+.tooltip-trigger .tooltip-text { display: none; position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: #1D2129; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; white-space: nowrap; z-index: 20; }
+.tooltip-trigger:hover .tooltip-text { display: block; }
+/* Popover */
+.popover { position: relative; display: inline-block; }
+.popover-content { display: none; position: absolute; top: 100%; left: 0; margin-top: 4px; background: white; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 10; min-width: 160px; padding: 4px; }
+.popover-content.active { display: block; }
+.popover-item { padding: 6px 12px; cursor: pointer; font-size: 13px; border-radius: 4px; }
+.popover-item:hover { background: #F2F3F5; }
+.popover-item.selected { background: #E8F3FF; color: #165DFF; }
+/* Collapse */
+.collapse-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+.collapse-content.open { max-height: 5000px; }
+/* Tag */
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; background: #F2F3F5; border-radius: 4px; font-size: 12px; color: #4E5969; }
+.tag-close { cursor: pointer; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+.tag-close:hover { background: #E5E6EB; }
+/* Color dot */
+.color-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+/* Input */
+.input-field { width: 100%; padding: 6px 10px; border: 1px solid #E5E6EB; border-radius: 6px; font-size: 13px; outline: none; }
+.input-field:focus { border-color: #165DFF; box-shadow: 0 0 0 2px rgba(22,93,255,0.1); }
+.select-field { width: 100%; padding: 6px 10px; border: 1px solid #E5E6EB; border-radius: 6px; font-size: 13px; outline: none; background: white; cursor: pointer; }
+.select-field:focus { border-color: #165DFF; }
+/* Pagination */
+.pagination { display: flex; align-items: center; gap: 4px; }
+.page-btn { padding: 4px 10px; border: 1px solid #E5E6EB; border-radius: 4px; font-size: 13px; cursor: pointer; color: #4E5969; background: white; }
+.page-btn:hover { border-color: #165DFF; color: #165DFF; }
+.page-btn.active { background: #165DFF; color: white; border-color: #165DFF; }
+.page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+/* Skeleton */
+.skeleton { background: linear-gradient(90deg, #F2F3F5 25%, #E5E6EB 50%, #F2F3F5 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 4px; }
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+</style>
+</head>
+<body>
+
+<div id="app" class="min-h-screen bg-[#F2F2F5]"></div>
+
+<script>
+// ============ MOCK DATA ============
+const SCENE_ITEMS = [
+  { value: 'splash', label: '开屏' },
+  { value: 'interstitial', label: '插屏' },
+  { value: 'feed', label: '信息流' },
+  { value: 'search', label: '搜索' }
+];
+const PLATFORM_ITEMS = [
+  { value: 'all', label: '全部' },
+  { value: 'android', label: 'Android' },
+  { value: 'ios', label: 'iOS' }
+];
+const DSP_SOURCE_NAMES = { pangle: '穿山甲', gdt: '优量汇', ks: '快手联盟', baidu: '百度联盟', mintegral: 'Mintegral', sdk: 'SDK' };
+const PRICING_TYPES = ['bidding', 'pricing'];
+
+const MOCK_AD_SOURCES = [
+  { id: 's1', name: '穿山甲', dspSources: ['pangle'], status: 'enabled', pricingType: 'bidding', price: 10.00, priceA: 10.00, priceB: 12.00, revenuePerThousand: 8.50, estimatedRevenue: 2560.0, ecpm: 22.50, revenuePerThousandRequests: 15.30, requests: 125000, responseRate: 68.5, bidWins: 85200, bidWinRate: 72.3, impressions: 62000, winImpressionRate: 45.2, ctr: 3.8, cpc: 0.35, color: '#165DFF' },
+  { id: 's2', name: '优量汇', dspSources: ['gdt'], status: 'enabled', pricingType: 'pricing', price: 8.00, priceA: 8.00, priceB: 10.00, revenuePerThousand: 6.20, estimatedRevenue: 1890.0, ecpm: 18.30, revenuePerThousandRequests: 12.50, requests: 98000, responseRate: 72.1, bidWins: 70600, bidWinRate: 68.5, impressions: 51000, winImpressionRate: 42.8, ctr: 4.2, cpc: 0.28, color: '#00B42A' },
+  { id: 's3', name: '快手联盟', dspSources: ['ks'], status: 'enabled', pricingType: 'bidding', price: 6.50, priceA: 6.50, priceB: 8.00, revenuePerThousand: 5.10, estimatedRevenue: 1250.0, ecpm: 15.80, revenuePerThousandRequests: 10.20, requests: 76000, responseRate: 65.8, bidWins: 50000, bidWinRate: 65.2, impressions: 36000, winImpressionRate: 38.5, ctr: 5.1, cpc: 0.22, color: '#FF7D00' },
+  { id: 's4', name: '百度联盟', dspSources: ['baidu'], status: 'disabled', pricingType: 'pricing', price: 5.00, priceA: 5.00, priceB: 6.50, revenuePerThousand: 3.80, estimatedRevenue: 890.0, ecpm: 12.60, revenuePerThousandRequests: 8.40, requests: 52000, responseRate: 70.2, bidWins: 36500, bidWinRate: 62.8, impressions: 25000, winImpressionRate: 35.6, ctr: 6.2, cpc: 0.18, color: '#722ED1' },
+  { id: 's5', name: 'Mintegral', dspSources: ['mintegral'], status: 'enabled', pricingType: 'bidding', price: 12.00, priceA: 12.00, priceB: 14.00, revenuePerThousand: 9.80, estimatedRevenue: 3200.0, ecpm: 28.50, revenuePerThousandRequests: 19.60, requests: 168000, responseRate: 75.3, bidWins: 126400, bidWinRate: 76.8, impressions: 92000, winImpressionRate: 48.9, ctr: 3.2, cpc: 0.42, color: '#F51753' },
+];
+
+const MOCK_GROUPS = [
+  { id: 'g1', name: '默认分组', scene: 'splash', platform: 'android', adSlotIds: ['1000', '1001'], adSources: MOCK_AD_SOURCES.filter(s => s.status === 'enabled'), status: 'enabled', priority: '1', isDefault: true, targetType: '全部用户' },
+  { id: 'g2', name: '高价值用户', scene: 'splash', platform: 'android', adSlotIds: ['1000', '1001'], adSources: MOCK_AD_SOURCES.filter(s => s.status === 'enabled').slice(0, 3), status: 'enabled', priority: '2', isDefault: false, targetType: '特定用户' },
+  { id: 'g3', name: '默认分组', scene: 'splash', platform: 'ios', adSlotIds: ['1002', '1003'], adSources: MOCK_AD_SOURCES.filter(s => s.id !== 's4'), status: 'enabled', priority: '1', isDefault: true, targetType: '全部用户' },
+  { id: 'g4', name: '默认分组', scene: 'interstitial', platform: 'android', adSlotIds: ['1004', '1005'], adSources: MOCK_AD_SOURCES.filter(s => s.status === 'enabled').slice(0, 3), status: 'enabled', priority: '1', isDefault: true, targetType: '全部用户' },
+  { id: 'g5', name: '默认分组', scene: 'feed', platform: 'android', adSlotIds: ['1006'], adSources: MOCK_AD_SOURCES.filter(s => s.status === 'enabled'), status: 'enabled', priority: '1', isDefault: true, targetType: '全部用户' },
+  { id: 'g6', name: '默认分组', scene: 'search', platform: 'android', adSlotIds: ['1007'], adSources: MOCK_AD_SOURCES.filter(s => s.status === 'enabled').slice(0, 4), status: 'enabled', priority: '1', isDefault: true, targetType: '全部用户' },
+  { id: 'g7', name: '默认分组', scene: 'interstitial', platform: 'ios', adSlotIds: ['1008', '1009'], adSources: MOCK_AD_SOURCES.filter(s => s.status === 'enabled').slice(0, 2), status: 'enabled', priority: '1', isDefault: true, targetType: '全部用户' },
+];
+
+// ============ STATE ============
+let state = {
+  currentPage: 'waterfall',
+  activeScene: 'splash',
+  selectedPlatform: 'android',
+  selectedGroupId: 'g1',
+  groupFilter: '',
+  collapsedDisabled: true,
+  abTestSelectedGroup: 'B',
+  pidDialogOpen: false,
+  pidDialogMode: 'add',
+  editingSource: null,
+  hoveredSource: null,
+  hoverPos: { x: 0, y: 0 },
+  menuOpenSource: null,
+  page: 1,
+  pageSize: 10,
+  codePage: 1,
+  codePageSize: 10,
+  addCodeDialogOpen: false,
+  newCodeId: '',
+  newCodeScene: 'splash',
+  newCodePlatform: 'android',
+  newCodeSlot: '',
+  newCodeGroup: '',
+};
+
+// ============ HELPERS ============
+function getActiveSources() {
+  const group = MOCK_GROUPS.find(g => g.id === state.selectedGroupId);
+  return group ? group.adSources : [];
+}
+function getCurrentGroup() {
+  return MOCK_GROUPS.find(g => g.id === state.selectedGroupId);
+}
+function formatNumber(n) {
+  if (!n && n !== 0) return '-';
+  if (n >= 10000) return (n / 10000).toFixed(1) + '万';
+  return n.toLocaleString('zh-CN');
+}
+function getSourceColor(name) {
+  const colors = ['#165DFF','#00B42A','#FF7D00','#722ED1','#F51753','#3491FA','#7BE188'];
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) { hash = name.charCodeAt(i) + ((hash << 5) - hash); }
+  return colors[Math.abs(hash) % colors.length];
+}
+
+// ============ RENDER ============
+function render() {
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="flex h-screen">
+      <!-- Sidebar -->
+      <div class="w-56 bg-white border-r border-[#E5E6EB] flex flex-col shrink-0">
+        <div class="h-14 flex items-center px-5 border-b border-[#E5E6EB]">
+          <div class="w-6 h-6 bg-[#FF4D88] rounded flex items-center justify-center text-white text-xs font-bold mr-2">M</div>
+          <span class="text-sm font-semibold text-[#1D2129]">美柚广告系统</span>
+        </div>
+        <div class="flex-1 py-3">
+          <div class="text-xs text-[#86909C] px-5 mb-2">流量管理</div>
+          <div class="nav-item ${state.currentPage === 'waterfall' ? 'nav-active' : ''}" onclick="navigate('waterfall')">
+            <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/></svg>
+            <span>瀑布流管理</span>
+          </div>
+          <div class="nav-item ${state.currentPage === 'codes' ? 'nav-active' : ''}" onclick="navigate('codes')">
+            <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+            <span>代码位ID管理</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main -->
+      <div class="flex-1 flex flex-col overflow-hidden">
+        ${state.currentPage === 'waterfall' ? renderWaterfallPage() : renderCodePage()}
+      </div>
+    </div>
+
+    ${state.pidDialogOpen ? renderPidDialog() : ''}
+    ${state.addCodeDialogOpen ? renderAddCodeDialog() : ''}
+
+    <!-- Hover Card -->
+    <div class="hover-card ${state.hoveredSource ? 'active' : ''}" id="hoverCard" style="left:${state.hoverPos.x}px;top:${state.hoverPos.y}px">
+      ${state.hoveredSource ? renderHoverCard(state.hoveredSource) : ''}
+    </div>
+  `;
+}
+
+function renderWaterfallPage() {
+  const group = getCurrentGroup();
+  return `
+    <!-- Header -->
+    <div class="h-14 bg-white border-b border-[#E5E6EB] flex items-center px-6">
+      <div class="flex items-center gap-2 text-sm">
+        <span class="text-[#86909C]">流量管理</span>
+        <svg class="w-3 h-3 text-[#C9CDD4]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-[#1D2129] font-medium">瀑布流管理</span>
+      </div>
+    </div>
+
+    <!-- Scene & Platform Bar -->
+    <div class="bg-white border-b border-[#E5E6EB] px-6 py-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <!-- Scene tabs -->
+          <div class="flex items-center gap-1 bg-[#F7F8FA] rounded-lg p-1">
+            ${SCENE_ITEMS.map(s => `
+              <button class="px-3 py-1.5 text-sm rounded-md transition-colors ${state.activeScene === s.value ? 'bg-white text-[#1D2129] font-medium shadow-sm' : 'text-[#86909C] hover:text-[#4E5969]'}"
+                onclick="setScene('${s.value}')">${s.label}</button>
+            `).join('')}
+          </div>
+          <div class="w-px h-5 bg-[#E5E6EB]"></div>
+          <!-- Platform -->
+          <div class="flex items-center gap-2">
+            ${PLATFORM_ITEMS.map(p => `
+              <button class="px-3 py-1.5 text-sm rounded ${state.selectedPlatform === p.value ? 'bg-[#FF4D88] text-white' : 'bg-[#F7F8FA] text-[#4E5969] hover:bg-[#E5E6EB]'}"
+                onclick="setPlatform('${p.value}')">${p.label}</button>
+            `).join('')}
+          </div>
+        </div>
+        <button class="px-4 py-1.5 bg-[#FF4D88] text-white text-sm rounded hover:bg-[#F5316B]" onclick="openAddPid()">+ 添加广告源</button>
+      </div>
+    </div>
+
+    <!-- Group Management -->
+    <div class="bg-white border-b border-[#E5E6EB] px-6 py-3">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-3">
+          <span class="text-sm font-medium text-[#1D2129]">流量分组</span>
+          <button class="px-3 py-1 text-xs border border-[#E5E6EB] rounded text-[#4E5969] hover:bg-[#F7F8FA]" onclick="alert('新建分组功能')">+ 新建分组</button>
+        </div>
+        <div class="flex items-center gap-3">
+          <input class="input-field w-48" placeholder="搜索分组名称..." value="${state.groupFilter}" oninput="state.groupFilter=this.value;render()" />
+          <button class="px-3 py-1 text-xs border border-[#E5E6EB] rounded text-[#4E5969] hover:bg-[#F7F8FA]">批量管理</button>
+        </div>
+      </div>
+      <!-- Group Tabs -->
+      <div class="flex flex-wrap items-center gap-2">
+        ${getFilteredGroups().map(g => `
+          <div class="flex items-center gap-2 px-3 py-1.5 rounded border text-sm cursor-pointer transition-colors ${state.selectedGroupId === g.id ? 'border-[#FF4D88] bg-[#FFF0F5] text-[#FF4D88]' : 'border-[#E5E6EB] text-[#4E5969] hover:border-[#C9CDD4]'}"
+            onclick="selectGroup('${g.id}')">
+            <span>${g.name}</span>
+            <span class="text-xs opacity-60">(${g.adSources.length})</span>
+            <label class="switch ml-1" onclick="event.stopPropagation()">
+              <input type="checkbox" ${g.status === 'enabled' ? 'checked' : ''} onchange="toggleGroup('${g.id}', this.checked)" />
+              <span class="slider"></span>
+            </label>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <!-- Group Config + Source Table -->
+    <div class="flex-1 overflow-auto bg-white mx-6 my-4 rounded-lg border border-[#E5E6EB]">
+      <!-- Group Info -->
+      ${group ? `
+      <div class="px-6 py-4 border-b border-[#E5E6EB] flex items-center justify-between">
+        <div class="flex items-center gap-6">
+          <div>
+            <span class="text-xs text-[#86909C]">平台</span>
+            <span class="text-sm text-[#1D2129] ml-2">${state.selectedPlatform === 'android' ? 'Android' : state.selectedPlatform === 'ios' ? 'iOS' : '全部'}</span>
+          </div>
+          <div>
+            <span class="text-xs text-[#86909C]">广告位</span>
+            <span class="text-sm text-[#1D2129] ml-2">${group.adSlotIds?.map(id => '美柚-' + SCENE_ITEMS.find(s => s.value === state.activeScene)?.label).join('、') || '-'}</span>
+          </div>
+          <div>
+            <span class="text-xs text-[#86909C]">受众定向</span>
+            <span class="inline-flex items-center gap-1 ml-2"><span class="tag">${group.targetType || '全部用户'}</span></span>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-[#86909C]">状态</span>
+          <label class="switch">
+            <input type="checkbox" ${group.status === 'enabled' ? 'checked' : ''} onchange="toggleGroup('${group.id}', this.checked)" />
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+      ` : ''}
+
+      <!-- Table -->
+      <div class="p-4">
+        <!-- A/B Test Selector -->
+        <div class="flex items-center gap-3 mb-4">
+          <button class="px-3 py-1 text-xs rounded ${state.abTestSelectedGroup === 'A' ? 'bg-[#165DFF] text-white' : 'bg-[#F7F8FA] text-[#4E5969]'}" onclick="setABGroup('A')">对照组A</button>
+          <button class="px-3 py-1 text-xs rounded ${state.abTestSelectedGroup === 'B' ? 'bg-[#FF4D88] text-white' : 'bg-[#F7F8FA] text-[#4E5969]'}" onclick="setABGroup('B')">测试组B</button>
+          <span class="text-xs text-[#86909C]">流量比例: 50% : 50%</span>
+        </div>
+
+        <div class="table-container rounded border border-[#E5E6EB]">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th class="w-10"><input type="checkbox" /></th>
+                <th class="w-36">DSP来源</th>
+                <th class="w-16">状态</th>
+                <th class="w-20">价格
+                  <span class="tooltip-trigger ml-1">
+                    <svg class="w-3.5 h-3.5 text-[#C9CDD4]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span class="tooltip-text">该DSP的出价或售价</span>
+                  </span>
+                </th>
+                <th class="w-20">预估收入
+                  <span class="tooltip-trigger ml-1">
+                    <svg class="w-3.5 h-3.5 text-[#C9CDD4]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span class="tooltip-text">预估广告收入</span>
+                  </span>
+                </th>
+                <th class="w-20">千人均收益
+                  <span class="tooltip-trigger ml-1">
+                    <svg class="w-3.5 h-3.5 text-[#C9CDD4]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span class="tooltip-text">每千次展示的收益</span>
+                  </span>
+                </th>
+                <th class="w-16">eCPM</th>
+                <th class="w-20">千次请求价值
+                  <span class="tooltip-trigger ml-1">
+                    <svg class="w-3.5 h-3.5 text-[#C9CDD4]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span class="tooltip-text">千次展示对应的请求价值</span>
+                  </span>
+                </th>
+                <th class="w-16">请求量</th>
+                <th class="w-16">返回率</th>
+                <th class="w-20">竞价成功数</th>
+                <th class="w-20">竞胜率</th>
+                <th class="w-16">展示量</th>
+                <th class="w-20">竞胜展示率</th>
+                <th class="w-16">点击率</th>
+                <th class="w-16">CPC
+                  <span class="tooltip-trigger ml-1">
+                    <svg class="w-3.5 h-3.5 text-[#C9CDD4]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span class="tooltip-text">每次点击成本</span>
+                  </span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              ${getActiveSources().map(s => renderSourceRow(s)).join('')}
+              ${renderSummaryRow()}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderSourceRow(source) {
+  const price = state.abTestSelectedGroup === 'A' ? (source.priceA ?? source.price) : (source.priceB ?? source.price);
+  return `
+    <tr onmouseenter="showHover(event, '${source.id}')" onmouseleave="hideHover()">
+      <td><input type="checkbox" /></td>
+      <td>
+        <div class="flex items-center gap-2">
+          <span class="color-dot" style="background:${getSourceColor(source.name)}"></span>
+          <span class="text-sm font-medium">${source.name}</span>
+        </div>
+      </td>
+      <td>
+        <label class="switch">
+          <input type="checkbox" ${source.status === 'enabled' ? 'checked' : ''} />
+          <span class="slider"></span>
+        </label>
+      </td>
+      <td>
+        <span class="${source.pricingType === 'bidding' ? 'badge-bidding' : 'badge-pricing'} mr-2">${source.pricingType === 'bidding' ? '竞价' : '定价'}</span>
+        <span>¥${price.toFixed(2)}</span>
+      </td>
+      <td>¥${source.revenuePerThousand.toFixed(2)}</td>
+      <td>${source.estimatedRevenue.toLocaleString('zh-CN', {minimumFractionDigits:1})}</td>
+      <td>¥${source.ecpm.toFixed(2)}</td>
+      <td>¥${source.revenuePerThousandRequests.toFixed(2)}</td>
+      <td>${formatNumber(source.requests)}</td>
+      <td>${source.responseRate.toFixed(1)}%</td>
+      <td>${formatNumber(source.bidWins)}</td>
+      <td>${source.bidWinRate.toFixed(1)}%</td>
+      <td>${formatNumber(source.impressions)}</td>
+      <td>${source.winImpressionRate.toFixed(1)}%</td>
+      <td>${source.ctr.toFixed(1)}%</td>
+      <td>¥${source.cpc.toFixed(2)}</td>
+    </tr>
+  `;
+}
+
+function renderSummaryRow() {
+  const sources = getActiveSources();
+  if (!sources.length) return '';
+  const s = sources;
+  const sum = {
+    estimatedRevenue: s.reduce((a, b) => a + b.estimatedRevenue, 0),
+    revenuePerThousand: s.reduce((a, b) => a + b.revenuePerThousand, 0) / s.length,
+    ecpm: s.reduce((a, b) => a + b.ecpm, 0) / s.length,
+    revenuePerThousandRequests: s.reduce((a, b) => a + b.revenuePerThousandRequests, 0) / s.length,
+    requests: s.reduce((a, b) => a + b.requests, 0),
+    responseRate: s.reduce((a, b) => a + b.responseRate, 0) / s.length,
+    bidWins: s.reduce((a, b) => a + b.bidWins, 0),
+    bidWinRate: s.reduce((a, b) => a + b.bidWinRate, 0) / s.length,
+    impressions: s.reduce((a, b) => a + b.impressions, 0),
+    winImpressionRate: s.reduce((a, b) => a + b.winImpressionRate, 0) / s.length,
+    ctr: s.reduce((a, b) => a + b.ctr, 0) / s.length,
+    cpc: s.reduce((a, b) => a + b.cpc, 0) / s.length,
+  };
+  const price = state.abTestSelectedGroup === 'A'
+    ? s.reduce((a, b) => a + (b.priceA ?? b.price), 0) / s.length
+    : s.reduce((a, b) => a + (b.priceB ?? b.price), 0) / s.length;
+  return `
+    <tr class="bg-[#FEF3F7] font-medium">
+      <td></td>
+      <td class="text-[#1D2129]">${sources.length}个DSP来源已启用</td>
+      <td></td>
+      <td></td>
+      <td class="text-[#1D2129]">¥${sum.revenuePerThousand.toFixed(2)}</td>
+      <td class="text-[#1D2129]">${sum.estimatedRevenue.toLocaleString('zh-CN', {minimumFractionDigits:1})}</td>
+      <td class="text-[#1D2129]">¥${sum.ecpm.toFixed(2)}</td>
+      <td class="text-[#1D2129]">¥${sum.revenuePerThousandRequests.toFixed(2)}</td>
+      <td class="text-[#1D2129]">${formatNumber(sum.requests)}</td>
+      <td class="text-[#1D2129]">${sum.responseRate.toFixed(1)}%</td>
+      <td class="text-[#1D2129]">${formatNumber(sum.bidWins)}</td>
+      <td class="text-[#1D2129]">${sum.bidWinRate.toFixed(1)}%</td>
+      <td class="text-[#1D2129]">${formatNumber(sum.impressions)}</td>
+      <td class="text-[#1D2129]">${sum.winImpressionRate.toFixed(1)}%</td>
+      <td class="text-[#1D2129]">${sum.ctr.toFixed(1)}%</td>
+      <td class="text-[#1D2129]">¥${sum.cpc.toFixed(2)}</td>
+    </tr>
+  `;
+}
+
+function renderHoverCard(source) {
+  return `
+    <div class="text-sm">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="color-dot" style="background:${getSourceColor(source.name)}"></span>
+        <span class="font-medium">${source.name}</span>
+      </div>
+      <div class="grid grid-cols-2 gap-x-6 gap-y-1.5 text-xs">
+        <span class="text-[#86909C]">定价方式</span>
+        <span>${source.pricingType === 'bidding' ? '竞价' : '定价'}</span>
+        <span class="text-[#86909C]">价格</span>
+        <span>¥${source.price.toFixed(2)}</span>
+        <span class="text-[#86909C]">eCPM</span>
+        <span>¥${source.ecpm.toFixed(2)}</span>
+        <span class="text-[#86909C]">请求量</span>
+        <span>${formatNumber(source.requests)}</span>
+        <span class="text-[#86909C]">返回率</span>
+        <span>${source.responseRate.toFixed(1)}%</span>
+        <span class="text-[#86909C]">竞胜率</span>
+        <span>${source.bidWinRate.toFixed(1)}%</span>
+      </div>
+    </div>
+  `;
+}
+
+function renderPidDialog() {
+  const scenes = ['splash','interstitial','feed','search'];
+  const platforms = ['android','ios'];
+  const sceneLabels = {splash:'开屏',interstitial:'插屏',feed:'信息流',search:'搜索'};
+  return `
+    <div class="dialog-overlay active" onclick="closePidDialog()">
+      <div class="dialog" onclick="event.stopPropagation()">
+        <div class="px-6 py-4 border-b border-[#E5E6EB] flex items-center justify-between">
+          <h3 class="text-base font-medium text-[#1D2129]">添加广告源</h3>
+          <button class="w-6 h-6 flex items-center justify-center rounded hover:bg-[#F2F3F5]" onclick="closePidDialog()">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div class="px-6 py-4 space-y-4">
+          <div>
+            <label class="text-sm font-medium text-[#1D2129] mb-1 block">DSP来源 <span class="text-[#FF4D88]">*</span></label>
+            <div class="relative popover">
+              <button class="input-field text-left flex items-center justify-between" onclick="togglePopover('dspPopover')">
+                <span id="dspLabel">请选择</span>
+                <svg class="w-3 h-3 text-[#C9CDD4]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </button>
+              <div class="popover-content" id="dspPopover">
+                ${Object.entries(DSP_SOURCE_NAMES).map(([k,v]) => `
+                  <div class="popover-item" onclick="selectDsp('${k}','${v}')">${v}</div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+          <div>
+            <label class="text-sm font-medium text-[#1D2129] mb-1 block">代码位ID <span class="text-[#FF4D88]">*</span></label>
+            <input class="input-field" placeholder="请输入代码位ID" />
+          </div>
+          <div>
+            <label class="text-sm font-medium text-[#1D2129] mb-1 block">广告场景</label>
+            <div class="text-sm text-[#4E5969] bg-[#F7F8FA] px-3 py-2 rounded">${sceneLabels[state.activeScene]}</div>
+          </div>
+          <div>
+            <label class="text-sm font-medium text-[#1D2129] mb-1 block">平台</label>
+            <div class="text-sm text-[#4E5969] bg-[#F7F8FA] px-3 py-2 rounded">${state.selectedPlatform === 'android' ? 'Android' : 'iOS'}</div>
+          </div>
+          <div>
+            <label class="text-sm font-medium text-[#1D2129] mb-1 block">广告位</label>
+            <div class="text-sm text-[#4E5969] bg-[#F7F8FA] px-3 py-2 rounded">${'美柚-' + sceneLabels[state.activeScene]}</div>
+          </div>
+          <div class="flex gap-4">
+            <div class="flex-1">
+              <label class="text-sm font-medium text-[#1D2129] mb-1 block">对照组(A) 价格 <span class="text-[#FF4D88]">*</span></label>
+              <input class="input-field" type="number" step="0.01" placeholder="0.00" value="10.00" />
+            </div>
+            <div class="flex-1">
+              <label class="text-sm font-medium text-[#1D2129] mb-1 block">测试组(B) 价格 <span class="text-[#FF4D88]">*</span></label>
+              <input class="input-field" type="number" step="0.01" placeholder="0.00" value="12.00" />
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-[#1D2129]">开启状态</span>
+            <label class="switch">
+              <input type="checkbox" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="px-6 py-4 border-t border-[#E5E6EB] flex justify-end gap-3">
+          <button class="px-4 py-1.5 text-sm text-[#4E5969] border border-[#E5E6EB] rounded hover:bg-[#F7F8FA]" onclick="closePidDialog()">取消</button>
+          <button class="px-4 py-1.5 text-sm bg-[#FF4D88] text-white rounded hover:bg-[#F5316B]" onclick="confirmAddPid()">提交</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderAddCodeDialog() {
+  const scenes = ['splash','interstitial','feed','search'];
+  const sceneLabels = {splash:'开屏',interstitial:'插屏',feed:'信息流',search:'搜索'};
+  return `
+    <div class="dialog-overlay active" onclick="closeAddCodeDialog()">
+      <div class="dialog" onclick="event.stopPropagation()">
+        <div class="px-6 py-4 border-b border-[#E5E6EB] flex items-center justify-between">
+          <h3 class="text-base font-medium text-[#1D2129]">新增代码位</h3>
+          <button class="w-6 h-6 flex items-center justify-center rounded hover:bg-[#F2F3F5]" onclick="closeAddCodeDialog()">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div class="px-6 py-4 space-y-4">
+          <div>
+            <label class="text-sm font-medium text-[#1D2129] mb-1 block">代码位Id <span class="text-[#FF4D88]">*</span></label>
+            <input class="input-field" placeholder="请输入代码位ID" oninput="state.newCodeId=this.value" />
+          </div>
+          <div>
+            <label class="text-sm font-medium text-[#1D2129] mb-1 block">系统平台 <span class="text-[#FF4D88]">*</span></label>
+            <div class="flex gap-3">
+              <label class="flex items-center gap-2"><input type="radio" name="codePlatform" value="android" checked onchange="state.newCodePlatform=this.value" /> <span class="text-sm">Android</span></label>
+              <label class="flex items-center gap-2"><input type="radio" name="codePlatform" value="ios" onchange="state.newCodePlatform=this.value" /> <span class="text-sm">iOS</span></label>
+            </div>
+          </div>
+          <div>
+            <label class="text-sm font-medium text-[#1D2129] mb-1 block">广告场景</label>
+            <select class="select-field" onchange="state.newCodeScene=this.value">
+              ${scenes.map(s => `<option value="${s}">${sceneLabels[s]}</option>`).join('')}
+            </select>
+          </div>
+          <div>
+            <label class="text-sm font-medium text-[#1D2129] mb-1 block">广告位Id</label>
+            <input class="input-field" placeholder="请输入广告位ID" oninput="state.newCodeSlot=this.value" />
+          </div>
+          <div>
+            <label class="text-sm font-medium text-[#1D2129] mb-1 block">绑定分组</label>
+            <select class="select-field" onchange="state.newCodeGroup=this.value">
+              <option value="">请选择分组</option>
+              ${MOCK_GROUPS.map(g => `<option value="${g.id}">${g.name}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+        <div class="px-6 py-4 border-t border-[#E5E6EB] flex justify-end gap-3">
+          <button class="px-4 py-1.5 text-sm text-[#4E5969] border border-[#E5E6EB] rounded hover:bg-[#F7F8FA]" onclick="closeAddCodeDialog()">取消</button>
+          <button class="px-4 py-1.5 text-sm bg-[#FF4D88] text-white rounded hover:bg-[#F5316B]" onclick="confirmAddCode()">提交</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderCodePage() {
+  const mockCodes = [
+    { id: 'CODE001', platform: 'android', scene: '开屏', slot: '美柚-开屏', group: '默认分组', status: 'enabled' },
+    { id: 'CODE002', platform: 'ios', scene: '插屏', slot: '美柚-插屏', group: '默认分组', status: 'enabled' },
+    { id: 'CODE003', platform: 'android', scene: '信息流', slot: '美柚-信息流', group: '高价值用户', status: 'disabled' },
+    { id: 'CODE004', platform: 'ios', scene: '搜索', slot: '美柚-搜索', group: '默认分组', status: 'enabled' },
+    { id: 'CODE005', platform: 'android', scene: '开屏', slot: '美柚-开屏', group: '默认分组', status: 'disabled' },
+    { id: 'CODE006', platform: 'android', scene: '插屏', slot: '美柚-插屏', group: '高价值用户', status: 'enabled' },
+    { id: 'CODE007', platform: 'ios', scene: '信息流', slot: '美柚-信息流', group: '默认分组', status: 'enabled' },
+    { id: 'CODE008', platform: 'android', scene: '搜索', slot: '美柚-搜索', group: '默认分组', status: 'disabled' },
+  ];
+  const start = (state.codePage - 1) * state.codePageSize;
+  const paged = mockCodes.slice(start, start + state.codePageSize);
+  const totalPages = Math.ceil(mockCodes.length / state.codePageSize);
+
+  return `
+    <div class="h-14 bg-white border-b border-[#E5E6EB] flex items-center px-6">
+      <div class="flex items-center gap-2 text-sm">
+        <span class="text-[#86909C]">流量管理</span>
+        <svg class="w-3 h-3 text-[#C9CDD4]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-[#1D2129] font-medium">代码位ID管理</span>
+      </div>
+    </div>
+    <div class="flex-1 p-6 overflow-auto">
+      <div class="bg-white rounded-lg border border-[#E5E6EB] p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-base font-medium text-[#1D2129]">代码位列表</h3>
+          <button class="px-4 py-1.5 bg-[#FF4D88] text-white text-sm rounded hover:bg-[#F5316B]" onclick="openAddCodeDialog()">+ 新增代码位</button>
+        </div>
+        <div class="table-container rounded border border-[#E5E6EB]">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>代码位Id</th>
+                <th>系统平台</th>
+                <th>广告场景</th>
+                <th>广告位</th>
+                <th>绑定分组信息</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${paged.map(c => `
+                <tr>
+                  <td class="font-medium">${c.id}</td>
+                  <td><span class="px-2 py-0.5 rounded text-xs ${c.platform === 'android' ? 'bg-[#E8F3FF] text-[#165DFF]' : 'bg-[#F5E8FF] text-[#722ED1]'}">${c.platform === 'android' ? 'Android' : 'iOS'}</span></td>
+                  <td>${c.scene}</td>
+                  <td>${c.slot}</td>
+                  <td><span class="tag">${c.group}</span></td>
+                  <td>
+                    ${c.status === 'enabled'
+                      ? '<button class="px-2 py-0.5 text-xs text-[#FF4D88] border border-[#FF4D88] rounded hover:bg-[#FFF0F5]">× 关闭广告代码位Id</button>'
+                      : '<span class="text-xs text-[#C9CDD4]">已关闭</span>'}
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+        <!-- Pagination -->
+        <div class="flex items-center justify-between mt-4">
+          <div class="flex items-center gap-2 text-sm text-[#4E5969]">
+            <span>每页</span>
+            <select class="border border-[#E5E6EB] rounded px-2 py-1 text-sm" value="${state.codePageSize}" onchange="state.codePageSize=parseInt(this.value);state.codePage=1;render()">
+              <option value="10" ${state.codePageSize===10?'selected':''}>10</option>
+              <option value="20" ${state.codePageSize===20?'selected':''}>20</option>
+              <option value="50" ${state.codePageSize===50?'selected':''}>50</option>
+            </select>
+            <span>条</span>
+          </div>
+          <div class="pagination">
+            <button class="page-btn" ${state.codePage <= 1 ? 'disabled' : ''} onclick="state.codePage=1;render()">首页</button>
+            <button class="page-btn" ${state.codePage <= 1 ? 'disabled' : ''} onclick="state.codePage=Math.max(1,state.codePage-1);render()">上一页</button>
+            ${Array.from({length: totalPages}, (_, i) => i + 1).map(p => `
+              <button class="page-btn ${state.codePage === p ? 'active' : ''}" onclick="state.codePage=${p};render()">${p}</button>
+            `).join('')}
+            <button class="page-btn" ${state.codePage >= totalPages ? 'disabled' : ''} onclick="state.codePage=Math.min(${totalPages},state.codePage+1);render()">下一页</button>
+            <button class="page-btn" ${state.codePage >= totalPages ? 'disabled' : ''} onclick="state.codePage=${totalPages};render()">末页</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ============ ACTIONS ============
+function navigate(page) { state.currentPage = page; render(); }
+function setScene(scene) { state.activeScene = scene; state.selectedGroupId = getFilteredGroups()[0]?.id || ''; render(); }
+function setPlatform(platform) { state.selectedPlatform = platform; state.selectedGroupId = getFilteredGroups()[0]?.id || ''; render(); }
+function selectGroup(id) { state.selectedGroupId = id; render(); }
+function setABGroup(g) { state.abTestSelectedGroup = g; render(); }
+function toggleGroup(id, checked) {
+  const g = MOCK_GROUPS.find(x => x.id === id);
+  if (g) g.status = checked ? 'enabled' : 'disabled';
+  render();
+}
+
+function getFilteredGroups() {
+  let groups = MOCK_GROUPS.filter(g => g.scene === state.activeScene && g.platform === state.selectedPlatform);
+  if (state.groupFilter) groups = groups.filter(g => g.name.includes(state.groupFilter));
+  return groups;
+}
+
+function showHover(e, sourceId) {
+  const source = getActiveSources().find(s => s.id === sourceId);
+  if (!source) return;
+  state.hoveredSource = source;
+  const rect = e.target.closest('tr').getBoundingClientRect();
+  state.hoverPos = { x: rect.right + 10, y: rect.top };
+  render();
+}
+function hideHover() { state.hoveredSource = null; render(); }
+
+function togglePopover(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('active');
+}
+function selectDsp(key, label) {
+  document.getElementById('dspLabel').textContent = label;
+  document.getElementById('dspPopover').classList.remove('active');
+}
+
+function openAddPid() { state.pidDialogOpen = true; render(); }
+function closePidDialog() { state.pidDialogOpen = false; render(); }
+function confirmAddPid() { alert('添加成功！'); state.pidDialogOpen = false; render(); }
+
+function openAddCodeDialog() { state.addCodeDialogOpen = true; render(); }
+function closeAddCodeDialog() { state.addCodeDialogOpen = false; render(); }
+function confirmAddCode() { alert('新增代码位成功！'); state.addCodeDialogOpen = false; render(); }
+
+// ============ INIT ============
+// Close popovers on click outside
+document.addEventListener('click', function(e) {
+  document.querySelectorAll('.popover-content.active').forEach(el => {
+    if (!el.closest('.popover')) el.classList.remove('active');
+  });
+});
+
+render();
+</script>
+</body>
+</html>
