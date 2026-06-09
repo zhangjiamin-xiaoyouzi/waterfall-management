@@ -56,7 +56,7 @@ const SCENE_SLOT_IDS: Record<string, string[]> = {
   search: ['4001'],
 };
 
-type AdScene = 'splash' | 'interstitial' | 'feed' | 'search';
+type AdScene = 'splash' | 'interstitial' | 'feed';
 
 interface AdSource {
   id: string;
@@ -603,7 +603,6 @@ function CreateABTestContent() {
                 {currentGroup?.scene === 'splash' ? '开屏' : 
                   currentGroup?.scene === 'interstitial' ? '插屏' : 
                   currentGroup?.scene === 'feed' ? '信息流' : 
-                  currentGroup?.scene === 'search' ? '搜索' : 
                   currentGroup?.scene || <span className="text-[#86909C]">自动带入</span>}
               </span>
             </div>

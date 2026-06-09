@@ -81,14 +81,14 @@ tr:hover{background:#F7F8FA}
 
 <script>
 // === Mock Data ===
-const SCENE_ITEMS = ['splash','interstitial','feed','search'];
-const SCENE_NAMES = {splash:'开屏',interstitial:'插屏',feed:'信息流',search:'搜索'};
+const SCENE_ITEMS = ['splash','interstitial','feed'];
+const SCENE_NAMES = {splash:'开屏',interstitial:'插屏',feed:'信息流'};
 const PLATFORM_NAMES = {android:'Android',ios:'iOS'};
 const DSP_SOURCE_NAMES = {pangle:'穿山甲',gdt:'优量汇',ks:'快手联盟',baidu:'百度联盟',sigmob:'Sigmob',mintegral:'Mintegral'};
 const DSP_SOURCES = ['pangle','gdt','ks','baidu','sigmob','mintegral'];
 
 // Generate mock groups for each scene+platform combination
-const SLOT_IDS = {splash:['1000','1005'],interstitial:['1001','1006'],feed:['1002','1007'],search:['1003','1008']};
+const SLOT_IDS = {splash:['1000','1005'],interstitial:['1001','1006'],feed:['1002','1007','1003','1008']};
 const SLOT_NAMES = {'1000':'美柚--开屏','1005':'美柚--开屏(iOS)','1001':'美柚--插屏','1006':'美柚--插屏(iOS)','1002':'美柚--信息流','1007':'美柚--信息流(iOS)','1003':'美柚--搜索','1008':'美柚--搜索(iOS)'};
 
 let groupIdCounter = 100;

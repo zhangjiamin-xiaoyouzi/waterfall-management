@@ -756,6 +756,87 @@
           ]
         }
       ]
+    },
+    {
+      "id": "group-1780997722617",
+      "name": "开屏高价分组 - 副本",
+      "priority": 3,
+      "platforms": [
+        "Android"
+      ],
+      "adSlots": [
+        "1000"
+      ],
+      "scene": "splash",
+      "platform": "Android",
+      "rules": [],
+      "status": "enabled",
+      "floorPrice": 0,
+      "adSources": []
+    },
+    {
+      "id": "group-1780997859526",
+      "name": "默认分组 - 副本",
+      "priority": 4,
+      "platforms": [
+        "Android"
+      ],
+      "adSlots": [
+        "1120",
+        "1601",
+        "1602"
+      ],
+      "scene": "feed",
+      "platform": "Android",
+      "rules": [],
+      "status": "enabled",
+      "floorPrice": 0,
+      "adSources": []
+    },
+    {
+      "id": "group-1780997864007",
+      "name": "默认分组 - 副本",
+      "priority": 5,
+      "platforms": [
+        "Android"
+      ],
+      "adSlots": [
+        "1120",
+        "1601",
+        "1602"
+      ],
+      "scene": "feed",
+      "platform": "Android",
+      "rules": [],
+      "status": "enabled",
+      "floorPrice": 0,
+      "adSources": [
+        {
+          "id": "source-1780997889426",
+          "name": "穿山甲",
+          "status": "enabled",
+          "pricingType": "bidding",
+          "price": 0,
+          "estimatedRevenue": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "requests": 0,
+          "responses": 0,
+          "responseRate": 0,
+          "bidWins": 0,
+          "bidWinRate": 0,
+          "lastUpdated": "2026/6/9 17:38:09",
+          "platforms": [
+            "Android"
+          ],
+          "codeId": "100000",
+          "subPositions": [],
+          "dspSources": [
+            "dsp_1"
+          ],
+          "minVersion": "9.01"
+        }
+      ]
     }
   ]
 }

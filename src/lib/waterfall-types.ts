@@ -144,7 +144,6 @@ export const SCENE_NAV_ITEMS: SceneNavItem[] = [
   { id: 'splash', name: '开屏', icon: 'tv' },
   { id: 'interstitial', name: '插屏', icon: 'square' },
   { id: 'feed', name: '信息流', icon: 'layout-list' },
-  { id: 'search', name: '搜索', icon: 'search' },
 ];
 
 export const MOCK_AD_GROUPS: AdGroup[] = [

@@ -199,7 +199,6 @@ const SCENE_ITEMS = [
   { value: 'splash', label: '开屏' },
   { value: 'interstitial', label: '插屏' },
   { value: 'feed', label: '信息流' },
-  { value: 'search', label: '搜索' },
 ];
 
 // 广告位名称映射
@@ -214,11 +213,10 @@ const SLOT_NAME_MAP: Record<string, string> = {
 };
 
 // 广告场景 - 广告位ID映射
-const SCENE_SLOT_IDS: Record<AdScene, string[]> = {
+const SCENE_SLOT_IDS: Record<string, string[]> = {
   splash: ['1000'],
   interstitial: ['2101', '2514'],
-  feed: ['1120', '1601', '1602'],
-  search: ['4001'],
+  feed: ['1120', '1601', '1602', '4001'],
 };
 
 // 按场景获取广告位选项
@@ -233,7 +231,6 @@ const getSlotOptionsByScene = (scene: string) => {
     options.push({ value: '1120', label: '1120 - 首页大社区feeds流' });
     options.push({ value: '1601', label: '1601 - 美柚-她她圈-帖子详情楼间广告' });
     options.push({ value: '1602', label: '1602 - 美柚-她她圈-帖子详情信息流' });
-  } else if (scene === 'search') {
     options.push({ value: '4001', label: '4001 - 美柚-搜索广告' });
   }
   return options;
@@ -272,7 +269,7 @@ function WaterfallManagementPageContent() {
   useEffect(() => {
     const sceneParam = searchParams.get('scene') as AdScene | null;
     const platformParam = searchParams.get('platform') as 'Android' | 'iOS' | null;
-    if (sceneParam && ['splash', 'interstitial', 'feed', 'search'].includes(sceneParam)) {
+    if (sceneParam && ['splash', 'interstitial', 'feed'].includes(sceneParam)) {
       setActiveScene(sceneParam);
     }
     if (platformParam && ['Android', 'iOS'].includes(platformParam)) {
@@ -567,7 +564,7 @@ function WaterfallManagementPageContent() {
     return group.scene === activeScene && group.platform === selectedPlatform;
   });
 
-  // 默认选中第一个场景可见的非默认分组（priority 最小），并在数据更新时保持同步
+  // 默认选中第一个场景可见的非默认分组（priority 最大），并在数据更新时保持同步
   useEffect(() => {
     if (adGroups.length > 0) {
       // 检查当前选中分组是否仍存在于数据中
@@ -583,7 +580,7 @@ function WaterfallManagementPageContent() {
         // 优先从当前场景可见的分组中选第一个非默认分组
         const firstVisible = filteredAdGroups
           .filter((g) => g.priority < 999)
-          .sort((a, b) => a.priority - b.priority)[0];
+          .sort((a, b) => b.priority - a.priority)[0];
         if (firstVisible) {
           setSelectedGroupId(firstVisible.id);
           return;
@@ -591,7 +588,7 @@ function WaterfallManagementPageContent() {
         // 退而求其次，从全部分组中选第一个非默认分组
         const firstFromAll = adGroups
           .filter((g) => g.priority < 999)
-          .sort((a, b) => a.priority - b.priority)[0];
+          .sort((a, b) => b.priority - a.priority)[0];
         if (firstFromAll) {
           setSelectedGroupId(firstFromAll.id);
         }
@@ -606,7 +603,7 @@ function WaterfallManagementPageContent() {
       if (!stillExists) {
         const firstGroup = filteredAdGroups
           .filter((g) => g.priority < 999)
-          .sort((a, b) => a.priority - b.priority)[0];
+          .sort((a, b) => b.priority - a.priority)[0];
         setSelectedGroupId(firstGroup?.id || filteredAdGroups[0]?.id || '');
       }
     }
@@ -614,7 +611,7 @@ function WaterfallManagementPageContent() {
 
   // 获取当前选中的分组（从筛选后的分组中选），优先选非默认分组
   const currentGroup = filteredAdGroups.find((g) => g.id === selectedGroupId) 
-    || filteredAdGroups.filter(g => g.priority < 999).sort((a, b) => a.priority - b.priority)[0] 
+    || filteredAdGroups.filter(g => g.priority < 999).sort((a, b) => b.priority - a.priority)[0] 
     || filteredAdGroups[0] 
     || adGroups[0];
   const enabledSources = currentGroup?.adSources.filter((s) => s.status === 'enabled') || [];
@@ -1137,8 +1134,8 @@ function WaterfallManagementPageContent() {
                   // 默认分组固定在最右
                   if (a.priority >= 999) return 1;
                   if (b.priority >= 999) return -1;
-                  // 其他按优先级升序排列（数值越小优先级越高）
-                  return a.priority - b.priority;
+                  // 其他按优先级降序排列（数值越大优先级越高）
+                  return b.priority - a.priority;
                 })
                 .map((group) => (
                   <div
@@ -2254,7 +2251,7 @@ function WaterfallManagementPageContent() {
             {/* 广告场景 */}
             <div className="flex items-center">
               <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0">广告场景</label>
-              <span className="text-sm text-[#1D2129]">{activeScene === 'splash' ? '开屏' : activeScene === 'interstitial' ? '插屏' : activeScene === 'search' ? '搜索' : '信息流'}</span>
+              <span className="text-sm text-[#1D2129]">{activeScene === 'splash' ? '开屏' : activeScene === 'interstitial' ? '插屏' : '信息流'}</span>
             </div>
 
             {/* 平台 - 从页面顶部配置带入，不可更改 */}
