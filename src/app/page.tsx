@@ -338,6 +338,8 @@ function WaterfallManagementPageContent() {
   const [newGroupPriority, setNewGroupPriority] = useState(0);
   const [newGroupSlots, setNewGroupSlots] = useState<string[]>([]);
   const [newGroupRules, setNewGroupRules] = useState<GroupRule[]>([]);
+  // 复制分组时暂存源分组的adSources，用于新建时带入
+  const [copySourceAdSources, setCopySourceAdSources] = useState<AdSource[] | null>(null);
 
   // 计算非默认分组的最大优先级，用于新建分组时自动分配
   const maxNonDefaultPriority = useMemo(() =>
@@ -793,6 +795,7 @@ function WaterfallManagementPageContent() {
       setEditingGroup(null);
     } else {
       // 新建模式：自动带入当前场景和平台
+      const copiedSources = copySourceAdSources || [];
       const newGroup: AdGroup = {
         id: `group-${Date.now()}`,
         name: newGroupName,
@@ -804,8 +807,9 @@ function WaterfallManagementPageContent() {
         rules: newGroupRules,
         status: 'enabled',
         floorPrice: 0,
-        adSources: [],
+        adSources: copiedSources,
       };
+      setCopySourceAdSources(null);
       try {
         const res = await fetch('/api/groups', {
           method: 'POST',
@@ -827,16 +831,23 @@ function WaterfallManagementPageContent() {
     setNewGroupPriority(0);
     setNewGroupSlots([]);
     setNewGroupRules([]);
+    setCopySourceAdSources(null);
     setShowAddGroupDialog(false);
-  }, [newGroupName, newGroupPriority, newGroupSlots, newGroupRules, editingGroup, activeScene, selectedPlatform]);
+  }, [newGroupName, newGroupPriority, newGroupSlots, newGroupRules, editingGroup, activeScene, selectedPlatform, copySourceAdSources]);
 
-  // 复制分组 - 打开添加弹窗并填充配置
+  // 复制分组 - 打开添加弹窗并填充配置（含分组下所有PID）
   const handleCopyGroup = useCallback((group: AdGroup) => {
     const maxPriority = Math.max(...adGroups.filter(g => g.priority < 999).map(g => g.priority), 0);
     setNewGroupName(`${group.name} - 副本`);
     setNewGroupPriority(maxPriority + 1);
     setNewGroupSlots([...group.adSlots]);
     setNewGroupRules(JSON.parse(JSON.stringify(group.rules)));
+    // 深拷贝adSources并生成新ID
+    const copiedSources: AdSource[] = (group.adSources || []).map(s => ({
+      ...JSON.parse(JSON.stringify(s)),
+      id: `src-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    }));
+    setCopySourceAdSources(copiedSources);
     setEditingGroup(null);
     setShowAddGroupDialog(true);
   }, [adGroups]);
