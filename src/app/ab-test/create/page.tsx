@@ -182,18 +182,24 @@ function CreateABTestContent() {
 
   const currentGroup = groups.find(g => g.id === selectedGroupId);
 
-  // Auto-populate A/B test config with group's DSP sources when group changes
+  // Auto-populate A/B test config with group's DSP sources when group data loads
   useEffect(() => {
     if (currentGroup?.adSources && currentGroup.adSources.length > 0) {
-      setAbTestConfig({
-        enabledSources: currentGroup.adSources.map(s => ({
-          ...s,
-          priceA: s.priceA ?? s.price,
-          priceB: s.priceB ?? s.price,
-        }))
+      setAbTestConfig(prev => {
+        // Only auto-populate when currently empty (initial load or group switch)
+        if (prev.enabledSources.length === 0) {
+          return {
+            enabledSources: currentGroup.adSources.map(s => ({
+              ...s,
+              priceA: s.priceA ?? s.price,
+              priceB: s.priceB ?? s.price,
+            }))
+          };
+        }
+        return prev;
       });
     }
-  }, [selectedGroupId]);
+  }, [currentGroup]);
 
   const enabledSources = abTestConfig.enabledSources?.filter(s => s.status === 'enabled') || [];
   const disabledSources = abTestConfig.enabledSources?.filter(s => s.status !== 'enabled') || [];
