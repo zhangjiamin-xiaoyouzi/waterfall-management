@@ -483,7 +483,7 @@ function CreateABTestContent() {
                               onMouseLeave={handleMouseLeaveSource}
                             >
                               <div className="w-2 h-2 rounded-full" style={{ backgroundColor: colors.dot }} />
-                              <span className="text-sm text-[#1D2129]">{DSP_SOURCE_NAMES[source.dspSources?.[0] || ''] || source.dspSources?.[0] || source.name}</span>
+                              <span className="text-sm text-[#1D2129]">{source.name}</span>
                             </div>
                           </TableCell><TableCell><Switch checked={source.status === 'enabled'} className="data-[state=checked]:bg-[#FF4D88]" /></TableCell><TableCell className="text-xs p-1"><div className="flex items-center gap-0.5"><span className="text-[#86909C]">¥</span><input type="number" step="0.01" min="0" value={(testGroup === 'A' ? (source.priceA ?? source.price) : (source.priceB ?? source.price))} onChange={(e) => { const val = parseFloat(e.target.value) || 0; setAbTestConfig(prev => ({ ...prev, enabledSources: prev.enabledSources.map(s => s.id === source.id ? { ...s, [testGroup === 'A' ? 'priceA' : 'priceB']: val } : s) })); }} className="w-16 h-6 text-xs border border-[#E5E6EB] rounded px-1 focus:outline-none focus:border-[#FF4D88] text-right" /></div></TableCell></TableRow>
                       );
@@ -539,7 +539,7 @@ function CreateABTestContent() {
                                   onMouseLeave={handleMouseLeaveSource}
                                 >
                                   <div className="w-2 h-2 rounded-full" style={{ backgroundColor: colors.dot }} />
-                                  <span className="text-sm text-[#1D2129]">{DSP_SOURCE_NAMES[source.dspSources?.[0] || ''] || source.dspSources?.[0] || source.name}</span>
+                                  <span className="text-sm text-[#1D2129]">{source.name}</span>
                                 </div>
                               </TableCell><TableCell><Switch checked={false} className="data-[state=unchecked]:bg-[#C9CDD4]" disabled /></TableCell><TableCell className="text-xs text-[#C9CDD4]">¥{(source.price || 0).toFixed(2)}</TableCell></TableRow>
                           );
@@ -703,7 +703,7 @@ function CreateABTestContent() {
           className="fixed z-50 bg-white rounded-lg shadow-lg border border-[#E5E6EB] p-4 w-64"
           style={{ left: hoverPosition.x, top: hoverPosition.y }}
         >
-          <h4 className="font-medium text-[#1D2129] mb-3">{DSP_SOURCE_NAMES[hoveredSource.dspSources?.[0] || ''] || hoveredSource.dspSources?.[0] || hoveredSource.name}</h4>
+          <h4 className="font-medium text-[#1D2129] mb-3">{hoveredSource.name}</h4>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-[#86909C]">PID</span>

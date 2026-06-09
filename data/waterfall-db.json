@@ -905,6 +905,82 @@
           ]
         }
       ]
+    },
+    {
+      "id": "group-1780998279885",
+      "name": "默认分组 - 副本",
+      "priority": 7,
+      "platforms": [
+        "iOS"
+      ],
+      "adSlots": [
+        "1000"
+      ],
+      "scene": "splash",
+      "platform": "iOS",
+      "rules": [],
+      "status": "enabled",
+      "floorPrice": 0,
+      "adSources": [
+        {
+          "id": "src-1780998277813-lfks93",
+          "name": "穿山甲-开屏iOS",
+          "status": "enabled",
+          "pricingType": "bidding",
+          "price": 18.5,
+          "estimatedRevenue": 15230.8,
+          "ecpm": 22.15,
+          "thousandRequestValue": 0.85,
+          "requests": 168000,
+          "responses": 95200,
+          "responseRate": 56.67,
+          "bidWins": 42100,
+          "bidWinRate": 44.21,
+          "revenuePerThousand": 0.09,
+          "impressions": 65000,
+          "winImpressionRate": 100,
+          "clicks": 3250,
+          "ctr": 5,
+          "cpc": 1.85,
+          "lastUpdated": "2024-01-15 10:30",
+          "platforms": [
+            "iOS"
+          ],
+          "codeId": "10011",
+          "dspSources": [
+            "mintegral"
+          ]
+        },
+        {
+          "id": "src-1780998277813-iaa4bz",
+          "name": "快手-开屏iOS",
+          "status": "enabled",
+          "pricingType": "bidding",
+          "price": 15.2,
+          "estimatedRevenue": 7850.25,
+          "ecpm": 15.6,
+          "thousandRequestValue": 0.58,
+          "requests": 88000,
+          "responses": 50300,
+          "responseRate": 57.16,
+          "bidWins": 18200,
+          "bidWinRate": 36.2,
+          "revenuePerThousand": 0.07,
+          "impressions": 38000,
+          "winImpressionRate": 100,
+          "clicks": 1520,
+          "ctr": 4,
+          "cpc": 1.02,
+          "lastUpdated": "2024-01-15 10:30",
+          "platforms": [
+            "iOS"
+          ],
+          "codeId": "10013",
+          "dspSources": [
+            "kuaishou"
+          ]
+        }
+      ]
     }
   ]
 }
