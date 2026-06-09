@@ -158,8 +158,6 @@ function CreateABTestContent() {
   const [pidMinVersion, setPidMinVersion] = useState('');
   const [pidMaxVersion, setPidMaxVersion] = useState('');
   const [pidStatus, setPidStatus] = useState('enabled');
-  const [pidPriceA, setPidPriceA] = useState('0');
-  const [pidPriceB, setPidPriceB] = useState('0');
   const [isSdkSource, setIsSdkSource] = useState(false);
   const [hoveredSource, setHoveredSource] = useState<AdSource | null>(null);
   const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
@@ -184,8 +182,21 @@ function CreateABTestContent() {
 
   const currentGroup = groups.find(g => g.id === selectedGroupId);
 
-  const enabledSources = currentGroup?.adSources?.filter(s => s.status === 'enabled') || [];
-  const disabledSources = currentGroup?.adSources?.filter(s => s.status !== 'enabled') || [];
+  // Auto-populate A/B test config with group's DSP sources when group changes
+  useEffect(() => {
+    if (currentGroup?.adSources && currentGroup.adSources.length > 0) {
+      setAbTestConfig({
+        enabledSources: currentGroup.adSources.map(s => ({
+          ...s,
+          priceA: s.priceA ?? s.price,
+          priceB: s.priceB ?? s.price,
+        }))
+      });
+    }
+  }, [selectedGroupId]);
+
+  const enabledSources = abTestConfig.enabledSources?.filter(s => s.status === 'enabled') || [];
+  const disabledSources = abTestConfig.enabledSources?.filter(s => s.status !== 'enabled') || [];
 
   const handleAddPidSource = () => {
     if (!newSourceName || !pidCodeId || !selectedGroupId) {
@@ -198,9 +209,9 @@ function CreateABTestContent() {
       name: DSP_SOURCE_NAMES[newSourceName] || newSourceName,
       status: pidStatus === 'enabled' ? 'enabled' : 'disabled',
       pricingType: 'bidding',
-      price: parseFloat(pidPriceA) || 0,
-      priceA: parseFloat(pidPriceA) || 0,
-      priceB: parseFloat(pidPriceB) || 0,
+      price: 0,
+      priceA: 0,
+      priceB: 0,
       estimatedRevenue: 0,
       ecpm: 0,
       thousandRequestValue: 0,
@@ -248,8 +259,6 @@ function CreateABTestContent() {
     setPidMinVersion('');
     setPidMaxVersion('');
     setPidStatus('enabled');
-    setPidPriceA('0');
-    setPidPriceB('0');
     setSourceError('');
   };
 
@@ -264,9 +273,9 @@ function CreateABTestContent() {
               ...s,
               name: DSP_SOURCE_NAMES[newSourceName] || newSourceName,
               status: pidStatus === 'enabled' ? 'enabled' : 'disabled',
-              price: parseFloat(pidPriceA) || 0,
-              priceA: parseFloat(pidPriceA) || 0,
-              priceB: parseFloat(pidPriceB) || 0,
+              price: 0,
+              priceA: 0,
+              priceB: 0,
               codeId: pidCodeId,
               dspSources: [newSourceName],
               connectType: DSP_CONNECT_TYPE_MAP.get(newSourceName) || '接入我方API',
@@ -284,8 +293,6 @@ function CreateABTestContent() {
     setPidMinVersion('');
     setPidMaxVersion('');
     setPidStatus('enabled');
-    setPidPriceA('0');
-    setPidPriceB('0');
   };
 
   // 鼠标悬停显示详情
@@ -301,7 +308,6 @@ function CreateABTestContent() {
 
   const handleLaunch = async () => {
     try {
-      const currentGroup = groups.find(g => g.id === selectedGroupId);
       await fetch('/api/groups', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -309,7 +315,7 @@ function CreateABTestContent() {
           id: selectedGroupId,
           hasABTest: true,
           abTestStarted: true,
-          adSources: currentGroup?.adSources || [],
+          adSources: abTestConfig.enabledSources || [],
         }),
       });
     } catch (e) {
@@ -549,7 +555,7 @@ function CreateABTestContent() {
               <Button className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white" onClick={handleLaunch}>开始测试</Button>
             </div>
           </div>
-      <Dialog open={showAddPidDialog} onOpenChange={(v) => { if (!v) { setShowAddPidDialog(false); setNewSourceName(''); setPidCodeId(''); setPidMinVersion(''); setPidMaxVersion(''); setPidStatus('enabled'); setPidPriceA('0'); setPidPriceB('0'); setSourceError(''); } }}>
+      <Dialog open={showAddPidDialog} onOpenChange={(v) => { if (!v) { setShowAddPidDialog(false); setNewSourceName(''); setPidCodeId(''); setPidMinVersion(''); setPidMaxVersion(''); setPidStatus('enabled'); setSourceError(''); } }}>
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
             <DialogTitle className="text-base font-semibold">添加PID</DialogTitle>
@@ -668,48 +674,6 @@ function CreateABTestContent() {
               </div>
             )}
 
-            <div className="border-t border-[#E5E6EB] pt-4">
-              <label className="block text-sm font-medium mb-3">
-                <span className="text-red-500">*</span> 价格(元)
-              </label>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-[#F6FFED] border border-[#B7EB8F] rounded-lg p-3">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-4 h-4 rounded-full bg-[#52C41A] flex items-center justify-center text-white text-[10px] font-bold">A</div>
-                    <span className="text-xs font-medium text-[#1D2129]">对照组</span>
-                  </div>
-                  <div className="relative">
-                    <Input
-                      type="number"
-                      value={pidPriceA}
-                      onChange={(e) => setPidPriceA(e.target.value)}
-                      className="pl-6 pr-2 h-8 text-sm"
-                      step="0.01"
-                      min="0"
-                    />
-                    <span className="absolute left-2 top-1/2 -translate-y-1/2 text-sm text-[#86909C]">¥</span>
-                  </div>
-                </div>
-                <div className="bg-[#FFF7E6] border border-[#FFE58F] rounded-lg p-3">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-4 h-4 rounded-full bg-[#FA8C16] flex items-center justify-center text-white text-[10px] font-bold">B</div>
-                    <span className="text-xs font-medium text-[#1D2129]">测试组</span>
-                  </div>
-                  <div className="relative">
-                    <Input
-                      type="number"
-                      value={pidPriceB}
-                      onChange={(e) => setPidPriceB(e.target.value)}
-                      className="pl-6 pr-2 h-8 text-sm"
-                      step="0.01"
-                      min="0"
-                    />
-                    <span className="absolute left-2 top-1/2 -translate-y-1/2 text-sm text-[#86909C]">¥</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
             {/* 状态 */}
             <div className="flex items-center">
               <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0">状态</label>
@@ -759,7 +723,7 @@ function CreateABTestContent() {
       )}
 
       {/* 编辑PID弹窗 */}
-      <Dialog open={!!editingSource} onOpenChange={(v) => { if (!v) { setEditingSource(null); setNewSourceName(''); setPidCodeId(''); setPidMinVersion(''); setPidMaxVersion(''); setPidStatus('enabled'); setPidPriceA('0'); setPidPriceB('0'); setSourceError(''); } }}>
+      <Dialog open={!!editingSource} onOpenChange={(v) => { if (!v) { setEditingSource(null); setNewSourceName(''); setPidCodeId(''); setPidMinVersion(''); setPidMaxVersion(''); setPidStatus('enabled'); setSourceError(''); } }}>
         <DialogContent className="max-w-[700px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>编辑PID</DialogTitle>
@@ -860,35 +824,6 @@ function CreateABTestContent() {
                 </div>
               </div>
             )}
-
-            {/* 价格 */}
-            <div className="border-t border-[#E5E6EB] pt-4">
-              <label className="block text-sm font-medium mb-3">
-                <span className="text-red-500">*</span> 价格(元)
-              </label>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-[#F6FFED] border border-[#B7EB8F] rounded-lg p-3">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-4 h-4 rounded-full bg-[#52C41A] flex items-center justify-center text-white text-[10px] font-bold">A</div>
-                    <span className="text-xs font-medium text-[#1D2129]">对照组</span>
-                  </div>
-                  <div className="relative">
-                    <Input type="number" value={pidPriceA} onChange={(e) => setPidPriceA(e.target.value)} className="pl-6 pr-2 h-8 text-sm" step="0.01" min="0" />
-                    <span className="absolute left-2 top-1/2 -translate-y-1/2 text-sm text-[#86909C]">¥</span>
-                  </div>
-                </div>
-                <div className="bg-[#FFF7E6] border border-[#FFE58F] rounded-lg p-3">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-4 h-4 rounded-full bg-[#FA8C16] flex items-center justify-center text-white text-[10px] font-bold">B</div>
-                    <span className="text-xs font-medium text-[#1D2129]">测试组</span>
-                  </div>
-                  <div className="relative">
-                    <Input type="number" value={pidPriceB} onChange={(e) => setPidPriceB(e.target.value)} className="pl-6 pr-2 h-8 text-sm" step="0.01" min="0" />
-                    <span className="absolute left-2 top-1/2 -translate-y-1/2 text-sm text-[#86909C]">¥</span>
-                  </div>
-                </div>
-              </div>
-            </div>
 
             {/* 状态 */}
             <div className="flex items-center">

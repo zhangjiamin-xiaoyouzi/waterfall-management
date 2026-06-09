@@ -2394,7 +2394,7 @@ function WaterfallManagementPageContent() {
                     <TableHead>DSP来源</TableHead>
                     <TableHead className="w-20">状态</TableHead>
                     <TableHead className="w-24">定价方式</TableHead>
-                    <TableHead className="w-20">价格</TableHead>
+                    <TableHead className="w-20">底价</TableHead>
                     <TableHead className="w-20">千人均收益</TableHead>
                     <TableHead className="w-24">预估收入</TableHead>
                     <TableHead className="w-20">eCPM</TableHead>
@@ -2505,7 +2505,7 @@ function WaterfallManagementPageContent() {
                     <TableHead>DSP来源</TableHead>
                     <TableHead className="w-20">状态</TableHead>
                     <TableHead className="w-24">定价方式</TableHead>
-                    <TableHead className="w-20">价格</TableHead>
+                    <TableHead className="w-20">底价</TableHead>
                     <TableHead className="w-20">千人均收益</TableHead>
                     <TableHead className="w-24">预估收入</TableHead>
                     <TableHead className="w-20">eCPM</TableHead>
@@ -2817,7 +2817,7 @@ function SourceTable({
           <TableHead className="w-20">状态</TableHead>
           <TableHead className="w-20">
             <div className="flex items-center gap-1">
-              价格
+              底价
               <Tooltip>
                 <TooltipTrigger>
                   <Info className="w-3 h-3 text-[#86909C]" />

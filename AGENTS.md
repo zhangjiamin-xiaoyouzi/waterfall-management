@@ -25,12 +25,17 @@
 │   ├── app/
 │   │   ├── page.tsx           # 瀑布流管理主页面
 │   │   ├── layout.tsx         # 根布局
-│   │   └── globals.css        # 全局样式
+│   │   ├── globals.css        # 全局样式
+│   │   ├── api/groups/route.ts  # 分组API（CRUD）
+│   │   └── ab-test/create/page.tsx  # A/B测试创建页面
 │   ├── components/ui/         # Shadcn UI 组件库
 │   └── lib/
 │       ├── utils.ts           # 通用工具函数
+│       ├── db.ts              # 数据库操作（JSON文件持久化）
 │       └── waterfall-types.ts  # 瀑布流管理类型定义
 ├── public/                    # 静态资源
+│   └── waterfall-management.html  # 独立HTML部署版本
+├── data/                      # 运行时数据
 └── .coze                      # 项目配置
 ```
 
