@@ -889,15 +889,23 @@ function WaterfallManagementPageContent() {
       setSourceError('请选择DSP来源');
       return;
     }
-    if (!newSourceCodeId.trim()) {
-      setSourceError('请输入PID');
-      return;
-    }
-    // SDK类型DSP来源时，版本配置必填
-    if (SDK_SOURCE_VALUES.has(newSourceName)) {
-      if (!newSourceMinVersion.trim() && !newSourceMaxVersion.trim()) {
-        setSourceError('SDK类型DSP来源时，请填写最小版本或最大版本');
+    if (overrideMode) {
+      const invalidEntries = overrideEntries.filter(e => !e.codeId.trim());
+      if (overrideEntries.length === 0 || invalidEntries.length > 0) {
+        setSourceError('请输入PID');
         return;
+      }
+    } else {
+      if (!newSourceCodeId.trim()) {
+        setSourceError('请输入PID');
+        return;
+      }
+      // SDK类型DSP来源时，版本配置必填
+      if (SDK_SOURCE_VALUES.has(newSourceName)) {
+        if (!newSourceMinVersion.trim() && !newSourceMaxVersion.trim()) {
+          setSourceError('SDK类型DSP来源时，请填写最小版本或最大版本');
+          return;
+        }
       }
     }
     setSourceError('');

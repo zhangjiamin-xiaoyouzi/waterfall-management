@@ -212,9 +212,21 @@ const [pidCustomSize, setPidCustomSize] = useState('');
   const disabledSources = abTestConfig.enabledSources?.filter(s => s.status !== 'enabled') || [];
 
   const handleAddPidSource = () => {
-    if (!newSourceName || !pidCodeId || !selectedGroupId) {
+    if (!newSourceName || !selectedGroupId) {
       setSourceError('请填写必填项');
       return;
+    }
+    if (overrideMode) {
+      const invalidEntries = overrideEntries.filter(e => !e.codeId.trim());
+      if (overrideEntries.length === 0 || invalidEntries.length > 0) {
+        setSourceError('请输入PID');
+        return;
+      }
+    } else {
+      if (!pidCodeId) {
+        setSourceError('请填写必填项');
+        return;
+      }
     }
 
     const newSource: AdSource = {
