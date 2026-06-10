@@ -852,6 +852,27 @@ const [pidCustomSize, setPidCustomSize] = useState('');
                 <span className="text-[#1D2129]">{hoveredSource.minVersion || '-'} ~ {hoveredSource.maxVersion || '-'}</span>
               </div>
             )}
+            {hoveredSource.dspSources?.some(dsp => SDK_SOURCE_VALUES.has(dsp)) && hoveredSource.overrideMode && hoveredSource.overridePids && (() => {
+              try {
+                const pids = JSON.parse(hoveredSource.overridePids || '[]');
+                return Array.isArray(pids) && pids.length > 0 && (
+                  <div className="border-t border-[#E5E6EB] pt-2 mt-2">
+                    {pids.map((pid: {codeId?: string; minVersion?: string; maxVersion?: string}, i: number) => (
+                      <div key={i} className="bg-[#F7F8FA] rounded px-2 py-1.5 mb-1.5 last:mb-0">
+                        <div className="flex justify-between text-xs">
+                          <span className="text-[#4E5969]">PID #{i + 1}</span>
+                          <span className="text-[#1D2129] font-medium">{pid.codeId}</span>
+                        </div>
+                        <div className="flex justify-between text-xs mt-0.5">
+                          <span className="text-[#4E5969]">版本</span>
+                          <span className="text-[#1D2129]">{pid.minVersion || '-'} ~ {pid.maxVersion || '-'}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                );
+              } catch { return null; }
+            })()}
             <div className="flex justify-between">
               <span className="text-[#86909C]">尺寸</span>
               <span className="text-[#1D2129]">{hoveredSource.dimension || '全尺寸'}</span>
