@@ -626,6 +626,7 @@ function WaterfallManagementPageContent() {
     ecpm: enabledSources.reduce((sum, s) => sum + (s.ecpm || 0), 0),
     revenuePerThousandRequests: enabledSources.reduce((sum, s) => sum + (s.revenuePerThousand || 0), 0),
     requests: enabledSources.reduce((sum, s) => sum + (s.requests || 0), 0),
+    responses: enabledSources.reduce((sum, s) => sum + (s.responses || 0), 0),
     responseRate: enabledSources.length > 0 
       ? enabledSources.reduce((sum, s) => sum + (s.responseRate || 0), 0) / enabledSources.length 
       : 0,
@@ -2408,6 +2409,7 @@ function WaterfallManagementPageContent() {
                     <TableHead className="w-20">eCPM</TableHead>
                     <TableHead className="w-24">千次请求价值</TableHead>
                     <TableHead className="w-20">请求量</TableHead>
+                    <TableHead className="w-20">返回量</TableHead>
                     <TableHead className="w-20">返回率</TableHead>
                     <TableHead className="w-20">竞价成功数</TableHead>
                     <TableHead className="w-24">竞价成功率</TableHead>
@@ -2470,6 +2472,7 @@ function WaterfallManagementPageContent() {
                       <TableCell className="text-xs text-right">¥{(source.ecpm || 0).toFixed(2)}</TableCell>
                       <TableCell className="text-xs text-right">¥{(source.thousandRequestValue || 0).toFixed(2)}</TableCell>
                       <TableCell className="text-xs text-right">{(source.requests || 0) >= 10000 ? `${(source.requests / 10000).toFixed(1)}万` : source.requests || 0}</TableCell>
+                      <TableCell className="text-xs text-right">{(source.responses || 0) >= 10000 ? `${(source.responses / 10000).toFixed(1)}万` : source.responses || 0}</TableCell>
                       <TableCell className="text-xs text-right">{(source.responseRate || 0).toFixed(1)}%</TableCell>
                       <TableCell className="text-xs text-right">{(source.bidWins || 0) >= 10000 ? `${(source.bidWins / 10000).toFixed(1)}万` : source.bidWins || 0}</TableCell>
                       <TableCell className="text-xs text-right">{(source.bidWinRate || 0).toFixed(1)}%</TableCell>
@@ -2481,7 +2484,7 @@ function WaterfallManagementPageContent() {
                   ))}
                   {abTestConfig.enabledSources.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={18} className="text-center text-[#86909C] py-4 text-xs">
+                      <TableCell colSpan={19} className="text-center text-[#86909C] py-4 text-xs">
                         暂无已启用DSP来源，请点击上方「添加PID」按钮添加
                       </TableCell></TableRow>
                   )}
@@ -2519,6 +2522,7 @@ function WaterfallManagementPageContent() {
                     <TableHead className="w-20">eCPM</TableHead>
                     <TableHead className="w-24">千次请求价值</TableHead>
                     <TableHead className="w-20">请求量</TableHead>
+                    <TableHead className="w-20">返回量</TableHead>
                     <TableHead className="w-20">返回率</TableHead>
                     <TableHead className="w-20">竞价成功数</TableHead>
                     <TableHead className="w-24">竞价成功率</TableHead>
@@ -2601,7 +2605,7 @@ function WaterfallManagementPageContent() {
                   ))}
                   {abTestConfig.disabledSources.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={18} className="text-center text-[#86909C] py-4 text-xs">
+                      <TableCell colSpan={19} className="text-center text-[#86909C] py-4 text-xs">
                         暂无未启用DSP来源
                       </TableCell></TableRow>
                   )}
@@ -2663,6 +2667,7 @@ function WaterfallManagementPageContent() {
                   <TableHead className="text-right">eCPM</TableHead>
                   <TableHead className="text-right">千次请求价值</TableHead>
                   <TableHead className="text-right">请求量</TableHead>
+                  <TableHead className="text-right">返回量</TableHead>
                   <TableHead className="text-right">返回率</TableHead>
                   <TableHead className="text-right">竞价成功数</TableHead>
                   <TableHead className="text-right">竞价成功率</TableHead>
@@ -2768,6 +2773,7 @@ interface SourceTableProps {
     ecpm: number;
     revenuePerThousandRequests: number;
     requests: number;
+    responses: number;
     responseRate: number;
     bidWins: number;
     bidWinRate: number;
@@ -2889,6 +2895,7 @@ function SourceTable({
             </div>
           </TableHead>
           <TableHead className="w-20">请求量</TableHead>
+          <TableHead className="w-20">返回量</TableHead>
           <TableHead className="w-20">
             <div className="flex items-center gap-1">
               返回率
@@ -2972,7 +2979,7 @@ function SourceTable({
       </TableHeader>
       <TableBody>
         {summaryData && (
-        <TableRow className="bg-[#FEF3F7] font-medium"><TableCell></TableCell><TableCell className="text-[#1D2129]">{sources.length}个DSP来源已启用</TableCell><TableCell></TableCell><TableCell></TableCell><TableCell className="text-[#1D2129]">{summaryData?.estimatedRevenue.toLocaleString('zh-CN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</TableCell><TableCell className="text-[#1D2129]">¥{summaryData?.revenuePerThousand?.toFixed(2) || '-'}</TableCell><TableCell className="text-[#1D2129]">¥{summaryData?.ecpm?.toFixed(2) || '-'}</TableCell><TableCell className="text-[#1D2129]">¥{summaryData?.revenuePerThousandRequests?.toFixed(2) || '-'}</TableCell><TableCell className="text-[#1D2129]">{formatNumber(summaryData?.requests || 0)}</TableCell><TableCell className="text-[#1D2129]">{summaryData?.responseRate?.toFixed(1) || '0.0'}%</TableCell><TableCell className="text-[#1D2129]">{formatNumber(summaryData?.bidWins || 0)}</TableCell><TableCell className="text-[#1D2129]">{`${summaryData?.bidWinRate?.toFixed(1) || '0.0'}%`}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.impressions ?? 0) > 0 ? formatNumber(summaryData?.impressions || 0) : '-'}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.winImpressionRate ?? 0) > 0 ? `${summaryData?.winImpressionRate?.toFixed(1)}%` : '-'}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.ctr ?? 0) > 0 ? `${summaryData?.ctr?.toFixed(1)}%` : '-'}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.cpc ?? 0) > 0 ? `¥${summaryData?.cpc?.toFixed(2)}` : '-'}</TableCell></TableRow>
+        <TableRow className="bg-[#FEF3F7] font-medium"><TableCell></TableCell><TableCell className="text-[#1D2129]">{sources.length}个DSP来源已启用</TableCell><TableCell></TableCell><TableCell></TableCell><TableCell className="text-[#1D2129]">{summaryData?.estimatedRevenue.toLocaleString('zh-CN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</TableCell><TableCell className="text-[#1D2129]">¥{summaryData?.revenuePerThousand?.toFixed(2) || '-'}</TableCell><TableCell className="text-[#1D2129]">¥{summaryData?.ecpm?.toFixed(2) || '-'}</TableCell><TableCell className="text-[#1D2129]">¥{summaryData?.revenuePerThousandRequests?.toFixed(2) || '-'}</TableCell><TableCell className="text-[#1D2129]">{formatNumber(summaryData?.requests || 0)}</TableCell><TableCell className="text-[#1D2129]">{formatNumber(summaryData?.responses || 0)}</TableCell><TableCell className="text-[#1D2129]">{summaryData?.responseRate?.toFixed(1) || '0.0'}%</TableCell><TableCell className="text-[#1D2129]">{formatNumber(summaryData?.bidWins || 0)}</TableCell><TableCell className="text-[#1D2129]">{`${summaryData?.bidWinRate?.toFixed(1) || '0.0'}%`}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.impressions ?? 0) > 0 ? formatNumber(summaryData?.impressions || 0) : '-'}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.winImpressionRate ?? 0) > 0 ? `${summaryData?.winImpressionRate?.toFixed(1)}%` : '-'}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.ctr ?? 0) > 0 ? `${summaryData?.ctr?.toFixed(1)}%` : '-'}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.cpc ?? 0) > 0 ? `¥${summaryData?.cpc?.toFixed(2)}` : '-'}</TableCell></TableRow>
         )}
         {sources.map((source) => {
           const colors = getSourceColor(source.name);
@@ -3069,6 +3076,8 @@ function SourceTable({
                 ¥{source.thousandRequestValue.toFixed(2)}
               </TableCell><TableCell className="text-[#1D2129]">
                 {formatNumber(source.requests)}
+              </TableCell><TableCell className="text-[#1D2129]">
+                {formatNumber(source.responses)}
               </TableCell><TableCell className="text-[#1D2129]">
                 {source.responseRate.toFixed(1)}%
               </TableCell><TableCell className="text-[#1D2129]">
