@@ -223,6 +223,31 @@
           "dspSources": [
             "kuaishou"
           ]
+        },
+        {
+          "id": "source-1781088419441",
+          "name": "穿山甲",
+          "status": "enabled",
+          "pricingType": "bidding",
+          "price": 0,
+          "estimatedRevenue": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "requests": 0,
+          "responses": 0,
+          "responseRate": 0,
+          "bidWins": 0,
+          "bidWinRate": 0,
+          "lastUpdated": "2026/6/10 18:46:59",
+          "platforms": [
+            "Android"
+          ],
+          "codeId": "",
+          "subPositions": [],
+          "dspSources": [
+            "dsp_1"
+          ],
+          "dimension": "全尺寸"
         }
       ],
       "hasABTest": true,
@@ -942,21 +967,25 @@
           "clicks": 3250,
           "ctr": 5,
           "cpc": 1.85,
-          "lastUpdated": "2024-01-15 10:30",
+          "lastUpdated": "2026/6/10 18:47:24",
           "platforms": [
             "iOS"
           ],
-          "codeId": "10011",
+          "codeId": "10011,102121",
           "dspSources": [
-            "mintegral"
+            "dsp_1"
           ],
           "priceA": 18.5,
-          "priceB": 18.5
+          "priceB": 18.5,
+          "subPositions": [],
+          "dimension": "全尺寸",
+          "overrideMode": true,
+          "overridePids": "[{\"codeId\":\"10011\",\"minVersion\":\"9.01\"},{\"codeId\":\"102121\",\"minVersion\":\"9.02.1\"}]"
         },
         {
           "id": "src-1780998277813-iaa4bz",
           "name": "快手-开屏iOS",
-          "status": "enabled",
+          "status": "disabled",
           "pricingType": "bidding",
           "price": 15.2,
           "estimatedRevenue": 7850.25,
