@@ -89,6 +89,7 @@ interface AdSource {
   connectType?: string;
   minVersion?: string;
   maxVersion?: string;
+  dimension?: string;
 }
 
 interface Group {
@@ -757,6 +758,10 @@ const [pidCustomSize, setPidCustomSize] = useState('');
                 <span className="text-[#1D2129]">{hoveredSource.minVersion || '-'} ~ {hoveredSource.maxVersion || '-'}</span>
               </div>
             )}
+            <div className="flex justify-between">
+              <span className="text-[#86909C]">尺寸</span>
+              <span className="text-[#1D2129]">{hoveredSource.dimension || '全尺寸'}</span>
+            </div>
           </div>
         </div>
       )}
