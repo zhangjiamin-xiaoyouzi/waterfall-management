@@ -104,6 +104,7 @@ export interface AdSource {
   dspSources?: string[]; // 关联的多个DSP来源
   minVersion?: string; // SDK最小版本
   maxVersion?: string; // SDK最大版本
+  dimension?: string; // 尺寸（全尺寸 或 自定义尺寸如 "1080*1555"）
 }
 
 export interface AdGroup {

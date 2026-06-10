@@ -375,6 +375,8 @@ function WaterfallManagementPageContent() {
   const [sourceError, setSourceError] = useState('');
   const [newSourceMinVersion, setNewSourceMinVersion] = useState('');
   const [newSourceMaxVersion, setNewSourceMaxVersion] = useState('');
+  const [newSourceSizeType, setNewSourceSizeType] = useState<'full' | 'custom'>('full');
+  const [newSourceCustomSize, setNewSourceCustomSize] = useState('');
   const [dspSelectOpen, setDspSelectOpen] = useState(false);
   
   // 编辑DSP来源
@@ -405,6 +407,14 @@ function WaterfallManagementPageContent() {
     setNewSourceSubPositions(source.subPositions || []);
     setNewSourceMinVersion(source.minVersion || '');
     setNewSourceMaxVersion(source.maxVersion || '');
+    const sourceDimension = source.dimension;
+    if (sourceDimension && sourceDimension !== '全尺寸') {
+      setNewSourceSizeType('custom');
+      setNewSourceCustomSize(sourceDimension);
+    } else {
+      setNewSourceSizeType('full');
+      setNewSourceCustomSize('');
+    }
     setShowAddSourceDialog(true);
     setSourceError('');
   };
@@ -419,6 +429,8 @@ function WaterfallManagementPageContent() {
     setNewSourceSubPositions([]);
     setNewSourceMinVersion('');
     setNewSourceMaxVersion('');
+    setNewSourceSizeType('full');
+    setNewSourceCustomSize('');
     setSourceError('');
     setEditingSource(null);
   };
@@ -883,6 +895,7 @@ function WaterfallManagementPageContent() {
         subPositions: newSourceSubPositions,
         minVersion: newSourceMinVersion || undefined,
         maxVersion: newSourceMaxVersion || undefined,
+        dimension: newSourceSizeType === 'custom' ? (newSourceCustomSize || undefined) : '全尺寸',
         lastUpdated: new Date().toLocaleString('zh-CN'),
       };
       try {
@@ -925,6 +938,7 @@ function WaterfallManagementPageContent() {
         dspSources: [newSourceName],
         minVersion: newSourceMinVersion || undefined,
         maxVersion: newSourceMaxVersion || undefined,
+        dimension: newSourceSizeType === 'custom' ? (newSourceCustomSize || undefined) : '全尺寸',
       };
       
       if (addSourceFromABTest) {
@@ -958,7 +972,7 @@ function WaterfallManagementPageContent() {
     resetSourceForm();
     setAddSourceFromABTest(false);
     setShowAddSourceDialog(false);
-  }, [newSourceName, newSourcePlatform, newSourceCodeId, newSourceStatus, newSourceSubPositions, selectedGroupId, addSourceFromABTest, editingSource, resetSourceForm, setAdGroups, setAbTestConfig, setAddSourceFromABTest, setShowAddSourceDialog, newSourceMinVersion, newSourceMaxVersion]);
+  }, [newSourceName, newSourcePlatform, newSourceCodeId, newSourceStatus, newSourceSubPositions, selectedGroupId, addSourceFromABTest, editingSource, resetSourceForm, setAdGroups, setAbTestConfig, setAddSourceFromABTest, setShowAddSourceDialog, newSourceMinVersion, newSourceMaxVersion, newSourceSizeType, newSourceCustomSize]);
 
   // 鼠标悬停显示详情
   const handleMouseEnterSource = useCallback((source: AdSource, e: React.MouseEvent) => {
@@ -2306,6 +2320,33 @@ function WaterfallManagementPageContent() {
                 placeholder="请输入PID"
                 className="w-64"
               />
+            </div>
+
+            {/* 尺寸 */}
+            <div className="flex items-start">
+              <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0 pt-1">尺寸</label>
+              <div className="flex-1">
+                <div className="flex items-center gap-6 mb-2">
+                  <label className="flex items-center gap-2 text-sm cursor-pointer">
+                    <input type="radio" name="sourceSize" checked={newSourceSizeType === 'full'}
+                      onChange={() => setNewSourceSizeType('full')} className="accent-[#FF4D88]" />
+                    全尺寸
+                  </label>
+                  <label className="flex items-center gap-2 text-sm cursor-pointer">
+                    <input type="radio" name="sourceSize" checked={newSourceSizeType === 'custom'}
+                      onChange={() => setNewSourceSizeType('custom')} className="accent-[#FF4D88]" />
+                    自定义
+                  </label>
+                </div>
+                {newSourceSizeType === 'custom' && (
+                  <Input
+                    value={newSourceCustomSize}
+                    onChange={(e) => setNewSourceCustomSize(e.target.value)}
+                    placeholder="如1080*1555"
+                    className="w-64"
+                  />
+                )}
+              </div>
             </div>
 
             {/* SDK版本配置 - 仅在选择SDK类型DSP来源时显示 */}

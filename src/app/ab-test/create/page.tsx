@@ -158,6 +158,8 @@ function CreateABTestContent() {
   const [pidMinVersion, setPidMinVersion] = useState('');
   const [pidMaxVersion, setPidMaxVersion] = useState('');
   const [pidStatus, setPidStatus] = useState('enabled');
+const [pidSizeType, setPidSizeType] = useState<'full' | 'custom'>('full');
+const [pidCustomSize, setPidCustomSize] = useState('');
   const [isSdkSource, setIsSdkSource] = useState(false);
   const [hoveredSource, setHoveredSource] = useState<AdSource | null>(null);
   const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
@@ -265,6 +267,8 @@ function CreateABTestContent() {
     setPidMinVersion('');
     setPidMaxVersion('');
     setPidStatus('enabled');
+    setPidSizeType('full');
+    setPidCustomSize('');
     setSourceError('');
   };
 
@@ -285,6 +289,7 @@ function CreateABTestContent() {
               codeId: pidCodeId,
               dspSources: [newSourceName],
               connectType: DSP_CONNECT_TYPE_MAP.get(newSourceName) || '接入我方API',
+              dimension: pidSizeType === 'custom' ? (pidCustomSize || undefined) : '全尺寸',
               ...(SDK_SOURCE_VALUES.has(newSourceName) ? {
                 minVersion: pidMinVersion,
                 maxVersion: pidMaxVersion,
@@ -298,6 +303,8 @@ function CreateABTestContent() {
     setPidCodeId('');
     setPidMinVersion('');
     setPidMaxVersion('');
+    setPidSizeType('full');
+    setPidCustomSize('');
     setPidStatus('enabled');
   };
 
@@ -561,7 +568,7 @@ function CreateABTestContent() {
               <Button className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white" onClick={handleLaunch}>开始测试</Button>
             </div>
           </div>
-      <Dialog open={showAddPidDialog} onOpenChange={(v) => { if (!v) { setShowAddPidDialog(false); setNewSourceName(''); setPidCodeId(''); setPidMinVersion(''); setPidMaxVersion(''); setPidStatus('enabled'); setSourceError(''); } }}>
+      <Dialog open={showAddPidDialog} onOpenChange={(v) => { if (!v) { setShowAddPidDialog(false); setNewSourceName(''); setPidCodeId(''); setPidMinVersion(''); setPidMaxVersion(''); setPidStatus('enabled'); setPidSizeType('full'); setPidCustomSize(''); setSourceError(''); } }}>
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
             <DialogTitle className="text-base font-semibold">添加PID</DialogTitle>
@@ -654,6 +661,33 @@ function CreateABTestContent() {
               />
             </div>
 
+            {/* 尺寸 */}
+            <div className="flex items-start">
+              <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0 pt-1">尺寸</label>
+              <div className="flex-1">
+                <div className="flex items-center gap-6 mb-2">
+                  <label className="flex items-center gap-2 text-sm cursor-pointer">
+                    <input type="radio" name="pidSize" checked={pidSizeType === 'full'}
+                      onChange={() => setPidSizeType('full')} className="accent-[#FF4D88]" />
+                    全尺寸
+                  </label>
+                  <label className="flex items-center gap-2 text-sm cursor-pointer">
+                    <input type="radio" name="pidSize" checked={pidSizeType === 'custom'}
+                      onChange={() => setPidSizeType('custom')} className="accent-[#FF4D88]" />
+                    自定义
+                  </label>
+                </div>
+                {pidSizeType === 'custom' && (
+                  <Input
+                    value={pidCustomSize}
+                    onChange={(e) => setPidCustomSize(e.target.value)}
+                    placeholder="如1080*1555"
+                    className="w-64"
+                  />
+                )}
+              </div>
+            </div>
+
             {/* SDK版本配置 - 仅在选择SDK类型DSP来源时显示 */}
             {SDK_SOURCE_VALUES.has(newSourceName) && (
               <div className="border border-[#E5E6EB] rounded-lg p-4 space-y-3">
@@ -728,7 +762,7 @@ function CreateABTestContent() {
       )}
 
       {/* 编辑PID弹窗 */}
-      <Dialog open={!!editingSource} onOpenChange={(v) => { if (!v) { setEditingSource(null); setNewSourceName(''); setPidCodeId(''); setPidMinVersion(''); setPidMaxVersion(''); setPidStatus('enabled'); setSourceError(''); } }}>
+      <Dialog open={!!editingSource} onOpenChange={(v) => { if (!v) { setEditingSource(null); setNewSourceName(''); setPidCodeId(''); setPidMinVersion(''); setPidMaxVersion(''); setPidStatus('enabled'); setPidSizeType('full'); setPidCustomSize(''); setSourceError(''); } }}>
         <DialogContent className="max-w-[700px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>编辑PID</DialogTitle>
@@ -811,6 +845,30 @@ function CreateABTestContent() {
                 onChange={(e) => setPidCodeId(e.target.value)}
                 placeholder="请输入代码位Id"
               />
+            </div>
+
+            {/* 尺寸 */}
+            <div>
+              <label className="block text-sm font-medium mb-2">尺寸</label>
+              <div className="flex items-center gap-6 mb-2">
+                <label className="flex items-center gap-2 text-sm cursor-pointer">
+                  <input type="radio" name="editPidSize" checked={pidSizeType === 'full'}
+                    onChange={() => setPidSizeType('full')} className="accent-[#FF4D88]" />
+                  全尺寸
+                </label>
+                <label className="flex items-center gap-2 text-sm cursor-pointer">
+                  <input type="radio" name="editPidSize" checked={pidSizeType === 'custom'}
+                    onChange={() => setPidSizeType('custom')} className="accent-[#FF4D88]" />
+                  自定义
+                </label>
+              </div>
+              {pidSizeType === 'custom' && (
+                <Input
+                  value={pidCustomSize}
+                  onChange={(e) => setPidCustomSize(e.target.value)}
+                  placeholder="如1080*1555"
+                />
+              )}
             </div>
 
             {/* SDK版本配置 */}
