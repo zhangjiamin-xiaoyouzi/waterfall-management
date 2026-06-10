@@ -661,7 +661,7 @@ const [pidCustomSize, setPidCustomSize] = useState('');
                 </div>
             </div>
 
-            {/* 覆盖配置 */}
+            {SDK_SOURCE_VALUES.has(newSourceName) && (
             <div className="flex items-center gap-3">
               <label className="text-sm font-medium text-[#1D2129] shrink-0">PID覆盖配置</label>
               <Switch
@@ -675,6 +675,7 @@ const [pidCustomSize, setPidCustomSize] = useState('');
               />
               <span className="text-xs text-[#86909C]">开启后可添加多个PID与美柚APP版本配置</span>
             </div>
+            )}
 
             {overrideMode ? (
               <div className="space-y-3">
@@ -938,23 +939,25 @@ const [pidCustomSize, setPidCustomSize] = useState('');
               <label className="block text-sm font-medium mb-1">
                 <span className="text-red-500">*</span> PID
               </label>
-              {/* 覆盖配置 */}
-              <div className="flex items-center gap-3 mb-3">
-                <Switch
-                  checked={overrideMode}
-                  onCheckedChange={(v) => {
-                    setOverrideMode(v);
-                    if (v && pidCodeId) {
-                      setOverrideEntries([{codeId: pidCodeId, minVersion: pidMinVersion, maxVersion: pidMaxVersion}]);
-                    } else if (!v && overrideEntries.length > 0) {
-                      setPidCodeId(overrideEntries[0].codeId);
-                      setPidMinVersion(overrideEntries[0].minVersion || '');
-                      setPidMaxVersion(overrideEntries[0].maxVersion || '');
-                    }
-                  }}
-                />
-                <span className="text-xs text-[#86909C]">PID覆盖配置</span>
-              </div>
+              {/* PID覆盖配置 - 仅SDK来源 */}
+              {SDK_SOURCE_VALUES.has(newSourceName) && (
+                <div className="flex items-center gap-3 mb-3">
+                  <Switch
+                    checked={overrideMode}
+                    onCheckedChange={(v) => {
+                      setOverrideMode(v);
+                      if (v && pidCodeId) {
+                        setOverrideEntries([{codeId: pidCodeId, minVersion: pidMinVersion, maxVersion: pidMaxVersion}]);
+                      } else if (!v && overrideEntries.length > 0) {
+                        setPidCodeId(overrideEntries[0].codeId);
+                        setPidMinVersion(overrideEntries[0].minVersion || '');
+                        setPidMaxVersion(overrideEntries[0].maxVersion || '');
+                      }
+                    }}
+                  />
+                  <span className="text-xs text-[#86909C]">PID覆盖配置</span>
+                </div>
+              )}
               {overrideMode ? (
                 <div className="space-y-3">
                   {overrideEntries.map((entry, idx) => (

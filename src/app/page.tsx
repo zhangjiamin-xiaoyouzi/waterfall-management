@@ -2361,7 +2361,7 @@ function WaterfallManagementPageContent() {
               </div>
             </div>
 
-            {/* 覆盖配置 */}
+            {SDK_SOURCE_VALUES.has(newSourceName) && (
             <div className="flex items-center gap-3">
               <label className="text-sm font-medium text-[#1D2129] shrink-0">PID覆盖配置</label>
               <Switch
@@ -2375,6 +2375,7 @@ function WaterfallManagementPageContent() {
               />
               <span className="text-xs text-[#86909C]">开启后可添加多个PID与美柚APP版本配置</span>
             </div>
+            )}
 
             {overrideMode ? (
               /* 覆盖配置 - 多PID列表 */
