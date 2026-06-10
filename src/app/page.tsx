@@ -2363,7 +2363,7 @@ function WaterfallManagementPageContent() {
 
             {/* 覆盖配置 */}
             <div className="flex items-center gap-3">
-              <label className="text-sm font-medium text-[#1D2129] shrink-0">覆盖配置</label>
+              <label className="text-sm font-medium text-[#1D2129] shrink-0">PID覆盖配置</label>
               <Switch
                 checked={overrideMode}
                 onCheckedChange={(v) => {

@@ -663,7 +663,7 @@ const [pidCustomSize, setPidCustomSize] = useState('');
 
             {/* 覆盖配置 */}
             <div className="flex items-center gap-3">
-              <label className="text-sm font-medium text-[#1D2129] shrink-0">覆盖配置</label>
+              <label className="text-sm font-medium text-[#1D2129] shrink-0">PID覆盖配置</label>
               <Switch
                 checked={overrideMode}
                 onCheckedChange={(v) => {
@@ -953,7 +953,7 @@ const [pidCustomSize, setPidCustomSize] = useState('');
                     }
                   }}
                 />
-                <span className="text-xs text-[#86909C]">覆盖配置</span>
+                <span className="text-xs text-[#86909C]">PID覆盖配置</span>
               </div>
               {overrideMode ? (
                 <div className="space-y-3">
