@@ -90,6 +90,8 @@ interface AdSource {
   minVersion?: string;
   maxVersion?: string;
   dimension?: string;
+  overrideMode?: boolean;
+  overridePids?: string;
 }
 
 interface Group {
@@ -161,6 +163,8 @@ function CreateABTestContent() {
   const [pidStatus, setPidStatus] = useState('enabled');
 const [pidSizeType, setPidSizeType] = useState<'full' | 'custom'>('full');
 const [pidCustomSize, setPidCustomSize] = useState('');
+  const [overrideMode, setOverrideMode] = useState(false);
+  const [overrideEntries, setOverrideEntries] = useState<{codeId: string; minVersion: string; maxVersion: string}[]>([{codeId: '', minVersion: '', maxVersion: ''}]);
   const [isSdkSource, setIsSdkSource] = useState(false);
   const [hoveredSource, setHoveredSource] = useState<AdSource | null>(null);
   const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
@@ -237,13 +241,19 @@ const [pidCustomSize, setPidCustomSize] = useState('');
       cpc: 0,
       lastUpdated: new Date().toISOString().slice(0, 16).replace('T', ' '),
       platforms: [],
-      codeId: pidCodeId,
       dspSources: [newSourceName],
       connectType: DSP_CONNECT_TYPE_MAP.get(newSourceName) || '接入我方API',
-      ...(SDK_SOURCE_VALUES.has(newSourceName) ? {
-        minVersion: pidMinVersion,
-        maxVersion: pidMaxVersion,
-      } : {})
+      codeId: overrideMode ? (overrideEntries[0]?.codeId || pidCodeId) : pidCodeId,
+      minVersion: overrideMode ? (overrideEntries[0]?.minVersion || '') : pidMinVersion,
+      maxVersion: overrideMode ? (overrideEntries[0]?.maxVersion || '') : pidMaxVersion,
+      overrideMode,
+      overridePids: overrideMode ? JSON.stringify(
+        overrideEntries.map(entry => ({
+          codeId: entry.codeId,
+          minVersion: entry.minVersion,
+          maxVersion: entry.maxVersion,
+        }))
+      ) : undefined,
     };
 
     setAbTestConfig(prev => ({
@@ -569,7 +579,7 @@ const [pidCustomSize, setPidCustomSize] = useState('');
               <Button className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white" onClick={handleLaunch}>开始测试</Button>
             </div>
           </div>
-      <Dialog open={showAddPidDialog} onOpenChange={(v) => { if (!v) { setShowAddPidDialog(false); setNewSourceName(''); setPidCodeId(''); setPidMinVersion(''); setPidMaxVersion(''); setPidStatus('enabled'); setPidSizeType('full'); setPidCustomSize(''); setSourceError(''); } }}>
+      <Dialog open={showAddPidDialog} onOpenChange={(v) => { if (!v) { setShowAddPidDialog(false); setNewSourceName(''); setPidCodeId(''); setPidMinVersion(''); setPidMaxVersion(''); setPidStatus('enabled'); setPidSizeType('full'); setPidCustomSize(''); setOverrideMode(false); setOverrideEntries([]); setSourceError(''); } }}>
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
             <DialogTitle className="text-base font-semibold">添加PID</DialogTitle>
@@ -651,67 +661,150 @@ const [pidCustomSize, setPidCustomSize] = useState('');
                 </div>
             </div>
 
-            {/* PID - 必填，手动输入 */}
-            <div className="flex items-center">
-              <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0"><span className="text-red-500">*</span> PID</label>
-              <Input
-                value={pidCodeId}
-                onChange={(e) => setPidCodeId(e.target.value)}
-                placeholder="请输入PID"
-                className="w-64"
+            {/* 覆盖配置 */}
+            <div className="flex items-center gap-3">
+              <label className="text-sm font-medium text-[#1D2129] shrink-0">覆盖配置</label>
+              <Switch
+                checked={overrideMode}
+                onCheckedChange={(v) => {
+                  setOverrideMode(v);
+                  if (!v) {
+                    setOverrideEntries([{codeId: pidCodeId, minVersion: pidMinVersion, maxVersion: pidMaxVersion}]);
+                  }
+                }}
               />
+              <span className="text-xs text-[#86909C]">开启后可添加多个PID与美柚APP版本配置</span>
             </div>
 
-            {/* 尺寸 */}
-            <div className="flex items-start">
-              <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0 pt-1">尺寸</label>
-              <div className="flex-1">
-                <div className="flex items-center gap-6 mb-2">
-                  <label className="flex items-center gap-2 text-sm cursor-pointer">
-                    <input type="radio" name="pidSize" checked={pidSizeType === 'full'}
-                      onChange={() => setPidSizeType('full')} className="accent-[#FF4D88]" />
-                    全尺寸
-                  </label>
-                  <label className="flex items-center gap-2 text-sm cursor-pointer">
-                    <input type="radio" name="pidSize" checked={pidSizeType === 'custom'}
-                      onChange={() => setPidSizeType('custom')} className="accent-[#FF4D88]" />
-                    自定义
-                  </label>
-                </div>
-                {pidSizeType === 'custom' && (
+            {overrideMode ? (
+              <div className="space-y-3">
+                {overrideEntries.map((entry, idx) => (
+                  <div key={idx} className="border border-[#E5E6EB] rounded-lg p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-[#86909C] font-medium">PID #{idx + 1}</span>
+                      {overrideEntries.length > 1 && (
+                        <button
+                          onClick={() => setOverrideEntries(prev => prev.filter((_, i) => i !== idx))}
+                          className="text-xs text-red-500 hover:text-red-600"
+                        >删除</button>
+                      )}
+                    </div>
+                    <Input
+                      value={entry.codeId}
+                      onChange={(e) => {
+                        const newEntries = [...overrideEntries];
+                        newEntries[idx] = {...newEntries[idx], codeId: e.target.value};
+                        setOverrideEntries(newEntries);
+                      }}
+                      placeholder="请输入PID"
+                    />
+                    {SDK_SOURCE_VALUES.has(newSourceName) && (
+                      <div className="space-y-2">
+                        <div className="text-xs text-[#86909C] font-medium">美柚APP版本配置</div>
+                        <div className="flex items-center gap-4">
+                          <div className="flex-1">
+                            <label className="text-xs text-[#4E5969] mb-1 block">最小版本</label>
+                            <Input
+                              value={entry.minVersion}
+                              onChange={(e) => {
+                                const newEntries = [...overrideEntries];
+                                newEntries[idx] = {...newEntries[idx], minVersion: e.target.value};
+                                setOverrideEntries(newEntries);
+                              }}
+                              placeholder="如 9.01.0"
+                            />
+                          </div>
+                          <div className="flex-1">
+                            <label className="text-xs text-[#4E5969] mb-1 block">最大版本</label>
+                            <Input
+                              value={entry.maxVersion}
+                              onChange={(e) => {
+                                const newEntries = [...overrideEntries];
+                                newEntries[idx] = {...newEntries[idx], maxVersion: e.target.value};
+                                setOverrideEntries(newEntries);
+                              }}
+                              placeholder="如 9.01.0"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setOverrideEntries(prev => [...prev, {codeId: '', minVersion: '', maxVersion: ''}])}
+                  className="w-full"
+                >
+                  + 添加PID
+                </Button>
+              </div>
+            ) : (
+              <>
+                {/* PID - 必填，手动输入 */}
+                <div className="flex items-center">
+                  <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0"><span className="text-red-500">*</span> PID</label>
                   <Input
-                    value={pidCustomSize}
-                    onChange={(e) => setPidCustomSize(e.target.value)}
-                    placeholder="如1080*1555"
+                    value={pidCodeId}
+                    onChange={(e) => setPidCodeId(e.target.value)}
+                    placeholder="请输入PID"
                     className="w-64"
                   />
-                )}
-              </div>
-            </div>
+                </div>
 
-            {/* SDK版本配置 - 仅在选择SDK类型DSP来源时显示 */}
-            {SDK_SOURCE_VALUES.has(newSourceName) && (
-              <div className="border border-[#E5E6EB] rounded-lg p-4 space-y-3">
-                <div className="text-xs text-[#86909C] font-medium">美柚APP版本配置</div>
-                <div className="flex items-center gap-4">
+                {/* 尺寸 */}
+                <div className="flex items-start">
+                  <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0 pt-1">尺寸</label>
                   <div className="flex-1">
-                    <label className="text-xs text-[#4E5969] mb-1 block">最小版本</label>
-                    <Input
-                      value={pidMinVersion}
-                      onChange={(e) => setPidMinVersion(e.target.value)}
-                      placeholder="如 9.01.0"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <label className="text-xs text-[#4E5969] mb-1 block">最大版本</label>
-                    <Input
-                      value={pidMaxVersion}
-                      onChange={(e) => setPidMaxVersion(e.target.value)}
-                      placeholder="如 9.01.0"
-                    />
+                    <div className="flex items-center gap-6 mb-2">
+                      <label className="flex items-center gap-2 text-sm cursor-pointer">
+                        <input type="radio" name="pidSize" checked={pidSizeType === 'full'}
+                          onChange={() => setPidSizeType('full')} className="accent-[#FF4D88]" />
+                        全尺寸
+                      </label>
+                      <label className="flex items-center gap-2 text-sm cursor-pointer">
+                        <input type="radio" name="pidSize" checked={pidSizeType === 'custom'}
+                          onChange={() => setPidSizeType('custom')} className="accent-[#FF4D88]" />
+                        自定义
+                      </label>
+                    </div>
+                    {pidSizeType === 'custom' && (
+                      <Input
+                        value={pidCustomSize}
+                        onChange={(e) => setPidCustomSize(e.target.value)}
+                        placeholder="如1080*1555"
+                        className="w-64"
+                      />
+                    )}
                   </div>
                 </div>
-              </div>
+
+                {/* SDK版本配置 - 仅在选择SDK类型DSP来源时显示 */}
+                {SDK_SOURCE_VALUES.has(newSourceName) && (
+                  <div className="border border-[#E5E6EB] rounded-lg p-4 space-y-3">
+                    <div className="text-xs text-[#86909C] font-medium">美柚APP版本配置</div>
+                    <div className="flex items-center gap-4">
+                      <div className="flex-1">
+                        <label className="text-xs text-[#4E5969] mb-1 block">最小版本</label>
+                        <Input
+                          value={pidMinVersion}
+                          onChange={(e) => setPidMinVersion(e.target.value)}
+                          placeholder="如 9.01.0"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <label className="text-xs text-[#4E5969] mb-1 block">最大版本</label>
+                        <Input
+                          value={pidMaxVersion}
+                          onChange={(e) => setPidMaxVersion(e.target.value)}
+                          placeholder="如 9.01.0"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </>
             )}
 
             {/* 状态 */}
@@ -767,7 +860,7 @@ const [pidCustomSize, setPidCustomSize] = useState('');
       )}
 
       {/* 编辑PID弹窗 */}
-      <Dialog open={!!editingSource} onOpenChange={(v) => { if (!v) { setEditingSource(null); setNewSourceName(''); setPidCodeId(''); setPidMinVersion(''); setPidMaxVersion(''); setPidStatus('enabled'); setPidSizeType('full'); setPidCustomSize(''); setSourceError(''); } }}>
+      <Dialog open={!!editingSource} onOpenChange={(v) => { if (!v) { setEditingSource(null); setNewSourceName(''); setPidCodeId(''); setPidMinVersion(''); setPidMaxVersion(''); setPidStatus('enabled'); setPidSizeType('full'); setPidCustomSize(''); setOverrideMode(false); setOverrideEntries([]); setSourceError(''); } }}>
         <DialogContent className="max-w-[700px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>编辑PID</DialogTitle>
@@ -845,53 +938,91 @@ const [pidCustomSize, setPidCustomSize] = useState('');
               <label className="block text-sm font-medium mb-1">
                 <span className="text-red-500">*</span> PID
               </label>
-              <Input
-                value={pidCodeId}
-                onChange={(e) => setPidCodeId(e.target.value)}
-                placeholder="请输入代码位Id"
-              />
-            </div>
-
-            {/* 尺寸 */}
-            <div>
-              <label className="block text-sm font-medium mb-2">尺寸</label>
-              <div className="flex items-center gap-6 mb-2">
-                <label className="flex items-center gap-2 text-sm cursor-pointer">
-                  <input type="radio" name="editPidSize" checked={pidSizeType === 'full'}
-                    onChange={() => setPidSizeType('full')} className="accent-[#FF4D88]" />
-                  全尺寸
-                </label>
-                <label className="flex items-center gap-2 text-sm cursor-pointer">
-                  <input type="radio" name="editPidSize" checked={pidSizeType === 'custom'}
-                    onChange={() => setPidSizeType('custom')} className="accent-[#FF4D88]" />
-                  自定义
-                </label>
-              </div>
-              {pidSizeType === 'custom' && (
-                <Input
-                  value={pidCustomSize}
-                  onChange={(e) => setPidCustomSize(e.target.value)}
-                  placeholder="如1080*1555"
+              {/* 覆盖配置 */}
+              <div className="flex items-center gap-3 mb-3">
+                <Switch
+                  checked={overrideMode}
+                  onCheckedChange={(v) => {
+                    setOverrideMode(v);
+                    if (v && pidCodeId) {
+                      setOverrideEntries([{codeId: pidCodeId, minVersion: pidMinVersion, maxVersion: pidMaxVersion}]);
+                    } else if (!v && overrideEntries.length > 0) {
+                      setPidCodeId(overrideEntries[0].codeId);
+                      setPidMinVersion(overrideEntries[0].minVersion || '');
+                      setPidMaxVersion(overrideEntries[0].maxVersion || '');
+                    }
+                  }}
                 />
+                <span className="text-xs text-[#86909C]">覆盖配置</span>
+              </div>
+              {overrideMode ? (
+                <div className="space-y-3">
+                  {overrideEntries.map((entry, idx) => (
+                    <div key={idx} className="border border-[#E5E6EB] rounded-lg p-3 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-[#86909C] font-medium">PID #{idx + 1}</span>
+                        {overrideEntries.length > 1 && (
+                          <button onClick={() => setOverrideEntries(prev => prev.filter((_, i) => i !== idx))}
+                            className="text-xs text-red-500 hover:text-red-600">删除</button>
+                        )}
+                      </div>
+                      <Input value={entry.codeId} onChange={(e) => { const ne = [...overrideEntries]; ne[idx] = {...ne[idx], codeId: e.target.value}; setOverrideEntries(ne); }} placeholder="请输入代码位Id" />
+                      {SDK_SOURCE_VALUES.has(newSourceName) && (
+                        <div className="bg-[#FFFBF0] border border-[#FFE58F] rounded-lg p-3">
+                          <label className="text-xs font-medium mb-2 block">美柚APP版本配置</label>
+                          <div className="flex gap-2">
+                            <div className="flex-1"><Input value={entry.minVersion || ''} onChange={(e) => { const ne = [...overrideEntries]; ne[idx] = {...ne[idx], minVersion: e.target.value}; setOverrideEntries(ne); }} placeholder="最小版本 如 8.12.0" /></div>
+                            <div className="flex-1"><Input value={entry.maxVersion || ''} onChange={(e) => { const ne = [...overrideEntries]; ne[idx] = {...ne[idx], maxVersion: e.target.value}; setOverrideEntries(ne); }} placeholder="最大版本 如 9.01.0" /></div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                  <Button variant="outline" size="sm" onClick={() => setOverrideEntries([...overrideEntries, {codeId: '', minVersion: '', maxVersion: ''}])}>
+                    <Plus className="w-3 h-3 mr-1" /> 添加PID
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <Input value={pidCodeId} onChange={(e) => setPidCodeId(e.target.value)} placeholder="请输入代码位Id" />
+                  {/* 尺寸 */}
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium mb-2">尺寸</label>
+                    <div className="flex items-center gap-6 mb-2">
+                      <label className="flex items-center gap-2 text-sm cursor-pointer">
+                        <input type="radio" name="editPidSize" checked={pidSizeType === 'full'}
+                          onChange={() => setPidSizeType('full')} className="accent-[#FF4D88]" />
+                        全尺寸
+                      </label>
+                      <label className="flex items-center gap-2 text-sm cursor-pointer">
+                        <input type="radio" name="editPidSize" checked={pidSizeType === 'custom'}
+                          onChange={() => setPidSizeType('custom')} className="accent-[#FF4D88]" />
+                        自定义
+                      </label>
+                    </div>
+                    {pidSizeType === 'custom' && (
+                      <Input value={pidCustomSize} onChange={(e) => setPidCustomSize(e.target.value)} placeholder="如1080*1555" />
+                    )}
+                  </div>
+                  {/* 美柚APP版本配置 */}
+                  {SDK_SOURCE_VALUES.has(newSourceName) && (
+                    <div className="mt-4 bg-[#FFFBF0] border border-[#FFE58F] rounded-lg p-3">
+                      <label className="block text-sm font-medium mb-2">美柚APP版本配置</label>
+                      <div className="flex gap-3">
+                        <div className="flex-1">
+                          <label className="text-xs text-[#4E5969] mb-1 block">最小版本</label>
+                          <Input value={pidMinVersion} onChange={(e) => setPidMinVersion(e.target.value)} placeholder="如 8.12.0" />
+                        </div>
+                        <div className="flex-1">
+                          <label className="text-xs text-[#4E5969] mb-1 block">最大版本</label>
+                          <Input value={pidMaxVersion} onChange={(e) => setPidMaxVersion(e.target.value)} placeholder="如 9.01.0" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
             </div>
-
-            {/* SDK版本配置 */}
-            {SDK_SOURCE_VALUES.has(newSourceName) && (
-              <div className="bg-[#FFFBF0] border border-[#FFE58F] rounded-lg p-3">
-                <label className="block text-sm font-medium mb-2">美柚APP版本配置</label>
-                <div className="flex gap-3">
-                  <div className="flex-1">
-                    <label className="text-xs text-[#4E5969] mb-1 block">最小版本</label>
-                    <Input value={pidMinVersion} onChange={(e) => setPidMinVersion(e.target.value)} placeholder="如 8.12.0" />
-                  </div>
-                  <div className="flex-1">
-                    <label className="text-xs text-[#4E5969] mb-1 block">最大版本</label>
-                    <Input value={pidMaxVersion} onChange={(e) => setPidMaxVersion(e.target.value)} placeholder="如 9.01.0" />
-                  </div>
-                </div>
-              </div>
-            )}
 
             {/* 状态 */}
             <div className="flex items-center">

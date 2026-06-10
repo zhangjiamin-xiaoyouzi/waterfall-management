@@ -105,6 +105,8 @@ export interface AdSource {
   minVersion?: string; // SDK最小版本
   maxVersion?: string; // SDK最大版本
   dimension?: string; // 尺寸（全尺寸 或 自定义尺寸如 "1080*1555"）
+  overrideMode?: boolean; // 是否开启覆盖配置
+  overridePids?: string; // 覆盖配置下的多PID列表，JSON数组 [{codeId, minVersion?, maxVersion?}]
 }
 
 export interface AdGroup {

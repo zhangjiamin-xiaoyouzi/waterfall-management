@@ -377,6 +377,8 @@ function WaterfallManagementPageContent() {
   const [newSourceMaxVersion, setNewSourceMaxVersion] = useState('');
   const [newSourceSizeType, setNewSourceSizeType] = useState<'full' | 'custom'>('full');
   const [newSourceCustomSize, setNewSourceCustomSize] = useState('');
+  const [overrideMode, setOverrideMode] = useState(false);
+  const [overrideEntries, setOverrideEntries] = useState<{codeId: string; minVersion: string; maxVersion: string}[]>([{codeId: '', minVersion: '', maxVersion: ''}]);
   const [dspSelectOpen, setDspSelectOpen] = useState(false);
   
   // 编辑DSP来源
@@ -415,6 +417,19 @@ function WaterfallManagementPageContent() {
       setNewSourceSizeType('full');
       setNewSourceCustomSize('');
     }
+    if (source.overrideMode && source.overridePids) {
+      try {
+        const parsed = JSON.parse(source.overridePids);
+        setOverrideMode(true);
+        setOverrideEntries(Array.isArray(parsed) ? parsed.map((e: {codeId?: string; minVersion?: string; maxVersion?: string}) => ({codeId: e.codeId || '', minVersion: e.minVersion || '', maxVersion: e.maxVersion || ''})) : [{codeId: source.codeId || '', minVersion: '', maxVersion: ''}]);
+      } catch {
+        setOverrideMode(false);
+        setOverrideEntries([{codeId: source.codeId || '', minVersion: '', maxVersion: ''}]);
+      }
+    } else {
+      setOverrideMode(false);
+      setOverrideEntries([{codeId: source.codeId || '', minVersion: '', maxVersion: ''}]);
+    }
     setShowAddSourceDialog(true);
     setSourceError('');
   };
@@ -431,6 +446,8 @@ function WaterfallManagementPageContent() {
     setNewSourceMaxVersion('');
     setNewSourceSizeType('full');
     setNewSourceCustomSize('');
+    setOverrideMode(false);
+    setOverrideEntries([{codeId: '', minVersion: '', maxVersion: ''}]);
     setSourceError('');
     setEditingSource(null);
   };
@@ -891,11 +908,13 @@ function WaterfallManagementPageContent() {
         dspSources: [newSourceName],
         status: newSourceStatus ? 'enabled' : 'disabled',
         platforms: newSourcePlatform as ('Android' | 'iOS')[],
-        codeId: newSourceCodeId,
+        codeId: overrideMode ? overrideEntries.map(e => e.codeId).filter(Boolean).join(',') : newSourceCodeId,
         subPositions: newSourceSubPositions,
         minVersion: newSourceMinVersion || undefined,
         maxVersion: newSourceMaxVersion || undefined,
         dimension: newSourceSizeType === 'custom' ? (newSourceCustomSize || undefined) : '全尺寸',
+        overrideMode: overrideMode || undefined,
+        overridePids: overrideMode ? JSON.stringify(overrideEntries.filter(e => e.codeId).map(e => ({ codeId: e.codeId, minVersion: e.minVersion || undefined, maxVersion: e.maxVersion || undefined }))) : undefined,
         lastUpdated: new Date().toLocaleString('zh-CN'),
       };
       try {
@@ -972,7 +991,7 @@ function WaterfallManagementPageContent() {
     resetSourceForm();
     setAddSourceFromABTest(false);
     setShowAddSourceDialog(false);
-  }, [newSourceName, newSourcePlatform, newSourceCodeId, newSourceStatus, newSourceSubPositions, selectedGroupId, addSourceFromABTest, editingSource, resetSourceForm, setAdGroups, setAbTestConfig, setAddSourceFromABTest, setShowAddSourceDialog, newSourceMinVersion, newSourceMaxVersion, newSourceSizeType, newSourceCustomSize]);
+  }, [newSourceName, newSourcePlatform, newSourceCodeId, newSourceStatus, newSourceSubPositions, selectedGroupId, addSourceFromABTest, editingSource, resetSourceForm, setAdGroups, setAbTestConfig, setAddSourceFromABTest, setShowAddSourceDialog, newSourceMinVersion, newSourceMaxVersion, newSourceSizeType, newSourceCustomSize, overrideMode, overrideEntries]);
 
   // 鼠标悬停显示详情
   const handleMouseEnterSource = useCallback((source: AdSource, e: React.MouseEvent) => {
@@ -2315,17 +2334,6 @@ function WaterfallManagementPageContent() {
                 </div>
             </div>
 
-            {/* PID - 必填，手动输入 */}
-            <div className="flex items-center">
-              <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0"><span className="text-red-500">*</span> PID</label>
-              <Input
-                value={newSourceCodeId}
-                onChange={(e) => setNewSourceCodeId(e.target.value)}
-                placeholder="请输入PID"
-                className="w-64"
-              />
-            </div>
-
             {/* 尺寸 */}
             <div className="flex items-start">
               <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0 pt-1">尺寸</label>
@@ -2353,29 +2361,124 @@ function WaterfallManagementPageContent() {
               </div>
             </div>
 
-            {/* SDK版本配置 - 仅在选择SDK类型DSP来源时显示 */}
-            {SDK_SOURCE_VALUES.has(newSourceName) && (
-              <div className="border border-[#E5E6EB] rounded-lg p-4 space-y-3">
-                <div className="text-xs text-[#86909C] font-medium">美柚APP版本配置</div>
-                <div className="flex items-center gap-4">
-                  <div className="flex-1">
-                    <label className="text-xs text-[#4E5969] mb-1 block">最小版本</label>
+            {/* 覆盖配置 */}
+            <div className="flex items-center gap-3">
+              <label className="text-sm font-medium text-[#1D2129] shrink-0">覆盖配置</label>
+              <Switch
+                checked={overrideMode}
+                onCheckedChange={(v) => {
+                  setOverrideMode(v);
+                  if (!v) {
+                    setOverrideEntries([{codeId: newSourceCodeId, minVersion: newSourceMinVersion, maxVersion: newSourceMaxVersion}]);
+                  }
+                }}
+              />
+              <span className="text-xs text-[#86909C]">开启后可添加多个PID与美柚APP版本配置</span>
+            </div>
+
+            {overrideMode ? (
+              /* 覆盖配置 - 多PID列表 */
+              <div className="space-y-3">
+                {overrideEntries.map((entry, idx) => (
+                  <div key={idx} className="border border-[#E5E6EB] rounded-lg p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-[#86909C] font-medium">PID #{idx + 1}</span>
+                      {overrideEntries.length > 1 && (
+                        <button
+                          onClick={() => setOverrideEntries(prev => prev.filter((_, i) => i !== idx))}
+                          className="text-xs text-red-500 hover:text-red-600"
+                        >删除</button>
+                      )}
+                    </div>
                     <Input
-                      value={newSourceMinVersion}
-                      onChange={(e) => setNewSourceMinVersion(e.target.value)}
-                      placeholder="如 9.01.0"
+                      value={entry.codeId}
+                      onChange={(e) => {
+                        const newEntries = [...overrideEntries];
+                        newEntries[idx] = {...newEntries[idx], codeId: e.target.value};
+                        setOverrideEntries(newEntries);
+                      }}
+                      placeholder="请输入PID"
                     />
+                    {SDK_SOURCE_VALUES.has(newSourceName) && (
+                      <div className="space-y-2">
+                        <div className="text-xs text-[#86909C] font-medium">美柚APP版本配置</div>
+                        <div className="flex items-center gap-4">
+                          <div className="flex-1">
+                            <label className="text-xs text-[#4E5969] mb-1 block">最小版本</label>
+                            <Input
+                              value={entry.minVersion}
+                              onChange={(e) => {
+                                const newEntries = [...overrideEntries];
+                                newEntries[idx] = {...newEntries[idx], minVersion: e.target.value};
+                                setOverrideEntries(newEntries);
+                              }}
+                              placeholder="如 9.01.0"
+                            />
+                          </div>
+                          <div className="flex-1">
+                            <label className="text-xs text-[#4E5969] mb-1 block">最大版本</label>
+                            <Input
+                              value={entry.maxVersion}
+                              onChange={(e) => {
+                                const newEntries = [...overrideEntries];
+                                newEntries[idx] = {...newEntries[idx], maxVersion: e.target.value};
+                                setOverrideEntries(newEntries);
+                              }}
+                              placeholder="如 9.01.0"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  <div className="flex-1">
-                    <label className="text-xs text-[#4E5969] mb-1 block">最大版本</label>
-                    <Input
-                      value={newSourceMaxVersion}
-                      onChange={(e) => setNewSourceMaxVersion(e.target.value)}
-                      placeholder="如 9.01.0"
-                    />
-                  </div>
-                </div>
+                ))}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setOverrideEntries(prev => [...prev, {codeId: '', minVersion: '', maxVersion: ''}])}
+                  className="w-full"
+                >
+                  + 添加PID
+                </Button>
               </div>
+            ) : (
+              <>
+                {/* PID - 必填，手动输入 */}
+                <div className="flex items-center">
+                  <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0"><span className="text-red-500">*</span> PID</label>
+                  <Input
+                    value={newSourceCodeId}
+                    onChange={(e) => setNewSourceCodeId(e.target.value)}
+                    placeholder="请输入PID"
+                    className="w-64"
+                  />
+                </div>
+
+                {/* SDK版本配置 - 仅在选择SDK类型DSP来源时显示 */}
+                {SDK_SOURCE_VALUES.has(newSourceName) && (
+                  <div className="border border-[#E5E6EB] rounded-lg p-4 space-y-3">
+                    <div className="text-xs text-[#86909C] font-medium">美柚APP版本配置</div>
+                    <div className="flex items-center gap-4">
+                      <div className="flex-1">
+                        <label className="text-xs text-[#4E5969] mb-1 block">最小版本</label>
+                        <Input
+                          value={newSourceMinVersion}
+                          onChange={(e) => setNewSourceMinVersion(e.target.value)}
+                          placeholder="如 9.01.0"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <label className="text-xs text-[#4E5969] mb-1 block">最大版本</label>
+                        <Input
+                          value={newSourceMaxVersion}
+                          onChange={(e) => setNewSourceMaxVersion(e.target.value)}
+                          placeholder="如 9.01.0"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </>
             )}
 
             {/* 状态 */}
