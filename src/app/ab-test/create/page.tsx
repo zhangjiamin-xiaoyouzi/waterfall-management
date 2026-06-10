@@ -601,7 +601,7 @@ const [pidCustomSize, setPidCustomSize] = useState('');
                           }}
                         >
                           {dsp.label}
-                          {(dsp as { isSDK?: boolean }).isSDK && <span className="text-[#86909C] text-xs ml-1">SDK</span>}
+                          {(dsp as { isSDK?: boolean }).isSDK && <span className="text-[#86909C] text-xs ml-1">服务端SDK</span>}
                         </CommandItem>
                       ))}
                     </CommandList>
@@ -801,7 +801,7 @@ const [pidCustomSize, setPidCustomSize] = useState('');
                           }}
                         >
                           {dsp.label}
-                          {(dsp as { isSDK?: boolean }).isSDK && <span className="text-[#86909C] text-xs ml-1">SDK</span>}
+                          {(dsp as { isSDK?: boolean }).isSDK && <span className="text-[#86909C] text-xs ml-1">服务端SDK</span>}
                         </CommandItem>
                       ))}
                     </CommandList>

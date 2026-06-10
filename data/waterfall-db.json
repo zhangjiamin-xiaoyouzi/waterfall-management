@@ -949,7 +949,9 @@
           "codeId": "10011",
           "dspSources": [
             "mintegral"
-          ]
+          ],
+          "priceA": 18.5,
+          "priceB": 18.5
         },
         {
           "id": "src-1780998277813-iaa4bz",
@@ -978,9 +980,13 @@
           "codeId": "10013",
           "dspSources": [
             "kuaishou"
-          ]
+          ],
+          "priceA": 15.2,
+          "priceB": 15.2
         }
-      ]
+      ],
+      "hasABTest": true,
+      "abTestStarted": true
     }
   ]
 }

@@ -2269,7 +2269,7 @@ function WaterfallManagementPageContent() {
                           }}
                         >
                           {dsp.label}
-                          {SDK_SOURCE_VALUES.has(dsp.value) && <span className="text-[#86909C] text-xs ml-1">SDK</span>}
+                          {SDK_SOURCE_VALUES.has(dsp.value) && <span className="text-[#86909C] text-xs ml-1">服务端SDK</span>}
                         </CommandItem>
                       ))}
                     </CommandList>
