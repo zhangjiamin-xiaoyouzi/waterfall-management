@@ -473,7 +473,7 @@ const [pidCustomSize, setPidCustomSize] = useState('');
                       <TableHead className="w-20">操作</TableHead>
                       <TableHead className="w-32">DSP来源</TableHead>
                       <TableHead className="w-20">状态</TableHead>
-                      <TableHead className="w-20"><div className="flex items-center gap-1">价格<Tooltip><TooltipTrigger><Info className="w-3 h-3 text-[#86909C]" /></TooltipTrigger><TooltipContent><p>图片和视频价格相同</p></TooltipContent></Tooltip></div></TableHead>
+                      <TableHead className="w-20"><div className="flex items-center gap-1">底价<Tooltip><TooltipTrigger><Info className="w-3 h-3 text-[#86909C]" /></TooltipTrigger><TooltipContent><p>图片和视频价格相同</p></TooltipContent></Tooltip></div></TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -529,7 +529,7 @@ const [pidCustomSize, setPidCustomSize] = useState('');
                           <TableHead className="w-20">操作</TableHead>
                           <TableHead className="w-32">DSP来源</TableHead>
                           <TableHead className="w-20">状态</TableHead>
-                          <TableHead className="w-20"><div className="flex items-center gap-1">价格<Tooltip><TooltipTrigger><Info className="w-3 h-3 text-[#86909C]" /></TooltipTrigger><TooltipContent><p>图片和视频价格相同</p></TooltipContent></Tooltip></div></TableHead>
+                          <TableHead className="w-20"><div className="flex items-center gap-1">底价<Tooltip><TooltipTrigger><Info className="w-3 h-3 text-[#86909C]" /></TooltipTrigger><TooltipContent><p>图片和视频价格相同</p></TooltipContent></Tooltip></div></TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
