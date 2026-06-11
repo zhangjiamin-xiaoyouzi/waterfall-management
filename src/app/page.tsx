@@ -960,12 +960,14 @@ function WaterfallManagementPageContent() {
         bidWinRate: 0,
         lastUpdated: new Date().toLocaleString('zh-CN'),
         platforms: newSourcePlatform as ('Android' | 'iOS')[],
-        codeId: newSourceCodeId,
+        codeId: overrideMode ? overrideEntries.map(e => e.codeId).filter(Boolean).join(',') : newSourceCodeId,
         subPositions: newSourceSubPositions,
         dspSources: [newSourceName],
         minVersion: newSourceMinVersion || undefined,
         maxVersion: newSourceMaxVersion || undefined,
         dimension: newSourceSizeType === 'custom' ? (newSourceCustomSize || undefined) : '全尺寸',
+        overrideMode: overrideMode || undefined,
+        overridePids: overrideMode ? JSON.stringify(overrideEntries.filter(e => e.codeId).map(e => ({ codeId: e.codeId, minVersion: e.minVersion || undefined, maxVersion: e.maxVersion || undefined }))) : undefined,
       };
       
       if (addSourceFromABTest) {

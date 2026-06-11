@@ -753,6 +753,31 @@
           "ecpm": 0,
           "thousandRequestValue": 0,
           "lastUpdated": ""
+        },
+        {
+          "id": "source-1781145837807",
+          "name": "穿山甲",
+          "status": "enabled",
+          "pricingType": "bidding",
+          "price": 0,
+          "estimatedRevenue": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "requests": 0,
+          "responses": 0,
+          "responseRate": 0,
+          "bidWins": 0,
+          "bidWinRate": 0,
+          "lastUpdated": "2026/6/11 10:43:57",
+          "platforms": [
+            "Android"
+          ],
+          "codeId": "",
+          "subPositions": [],
+          "dspSources": [
+            "dsp_1"
+          ],
+          "dimension": "全尺寸"
         }
       ]
     },
