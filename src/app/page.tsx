@@ -1736,6 +1736,10 @@ function WaterfallManagementPageContent() {
               <span className="text-[#86909C]">定价方式</span>
               <span className={`text-[#1D2129] ${hoveredSource.pricingType === 'bidding' ? 'text-blue-500' : 'text-green-500'}`}>{hoveredSource.pricingType === 'bidding' ? '竞价' : '定价'}</span>
             </div>
+            <div className="flex justify-between">
+              <span className="text-[#86909C]">尺寸</span>
+              <span className="text-[#1D2129]">{hoveredSource.dimension || '全尺寸'}</span>
+            </div>
             {hoveredSource.dspSources?.some(dsp => SDK_SOURCE_VALUES.has(dsp)) && !hoveredSource.overrideMode && (
               <div className="flex justify-between">
                 <span className="text-[#86909C]">应用版本</span>
@@ -1761,11 +1765,7 @@ function WaterfallManagementPageContent() {
                 </div>
               );
             })()}
-            <div className="flex justify-between">
-              <span className="text-[#86909C]">尺寸</span>
-              <span className="text-[#1D2129]">{hoveredSource.dimension || '全尺寸'}</span>
             </div>
-          </div>
         </div>
       )}
 
