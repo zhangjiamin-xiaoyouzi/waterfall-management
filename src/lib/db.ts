@@ -9,13 +9,23 @@ interface Database {
   groups: AdGroup[];
 }
 
+const DISABLED_MOCK_SOURCES: AdSource[] = [
+  { id: '', name: '女人通', dspSources: ['nvrentong'], price: 0, pricingType: 'CPM', status: 'disabled', codeId: '', requests: 0, responses: 0, responseRate: 0, bidWins: 0, bidWinRate: 0, impressions: 0, winImpressionRate: 0, clicks: 0, ctr: 0, cpc: 0, estimatedRevenue: 0, revenuePerThousand: 0, ecpm: 0, thousandRequestValue: 0, lastUpdated: '' },
+  { id: '', name: '柚+', dspSources: ['youplus'], price: 0, pricingType: 'CPM', status: 'disabled', codeId: '', requests: 0, responses: 0, responseRate: 0, bidWins: 0, bidWinRate: 0, impressions: 0, winImpressionRate: 0, clicks: 0, ctr: 0, cpc: 0, estimatedRevenue: 0, revenuePerThousand: 0, ecpm: 0, thousandRequestValue: 0, lastUpdated: '' },
+];
+
 function getDefaultDb(): Database {
   const groups: AdGroup[] = JSON.parse(JSON.stringify(MOCK_AD_GROUPS));
   // JSON.stringify converts Infinity to null, restore sentinel value for default group
+  let counter = 0;
   groups.forEach(g => {
     if (g.priority === null) {
       g.priority = 999;
     }
+    // Add two disabled mock sources to every group
+    const src1 = { ...DISABLED_MOCK_SOURCES[0], id: `${g.id}-disabled-${counter++}` };
+    const src2 = { ...DISABLED_MOCK_SOURCES[1], id: `${g.id}-disabled-${counter++}` };
+    g.adSources = [...(g.adSources || []), src1, src2];
   });
   return { groups };
 }

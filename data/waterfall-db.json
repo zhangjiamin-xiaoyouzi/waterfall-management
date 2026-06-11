@@ -73,6 +73,58 @@
           "dspSources": [
             "ylh"
           ]
+        },
+        {
+          "id": "splash-android-default-disabled-0",
+          "name": "女人通",
+          "dspSources": [
+            "nvrentong"
+          ],
+          "price": 0,
+          "pricingType": "CPM",
+          "status": "disabled",
+          "codeId": "",
+          "requests": 0,
+          "responses": 0,
+          "responseRate": 0,
+          "bidWins": 0,
+          "bidWinRate": 0,
+          "impressions": 0,
+          "winImpressionRate": 0,
+          "clicks": 0,
+          "ctr": 0,
+          "cpc": 0,
+          "estimatedRevenue": 0,
+          "revenuePerThousand": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "lastUpdated": ""
+        },
+        {
+          "id": "splash-android-default-disabled-1",
+          "name": "柚+",
+          "dspSources": [
+            "youplus"
+          ],
+          "price": 0,
+          "pricingType": "CPM",
+          "status": "disabled",
+          "codeId": "",
+          "requests": 0,
+          "responses": 0,
+          "responseRate": 0,
+          "bidWins": 0,
+          "bidWinRate": 0,
+          "impressions": 0,
+          "winImpressionRate": 0,
+          "clicks": 0,
+          "ctr": 0,
+          "cpc": 0,
+          "estimatedRevenue": 0,
+          "revenuePerThousand": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "lastUpdated": ""
         }
       ]
     },
@@ -93,62 +145,58 @@
       "floorPrice": 10,
       "adSources": [
         {
-          "id": "source-1779695738471",
-          "name": "Mintegral",
-          "status": "enabled",
-          "pricingType": "bidding",
-          "price": 0,
-          "estimatedRevenue": 0,
-          "ecpm": 0,
-          "thousandRequestValue": 0,
-          "requests": 0,
-          "responses": 0,
-          "responseRate": 0,
-          "bidWins": 0,
-          "bidWinRate": 0,
-          "lastUpdated": "2026/5/25 15:55:38",
-          "platforms": [
-            "Android"
-          ],
-          "codeId": "1112121",
-          "subPositions": [],
+          "id": "splash-android-group1-disabled-2",
+          "name": "女人通",
           "dspSources": [
-            "dsp_5"
-          ]
-        },
-        {
-          "id": "pid-1779695755820",
-          "name": "Vungle",
-          "status": "enabled",
-          "pricingType": "bidding",
-          "price": 1,
-          "priceA": 1,
-          "priceB": 2,
-          "estimatedRevenue": 0,
-          "ecpm": 0,
-          "thousandRequestValue": 0,
+            "nvrentong"
+          ],
+          "price": 0,
+          "pricingType": "CPM",
+          "status": "disabled",
+          "codeId": "",
           "requests": 0,
           "responses": 0,
           "responseRate": 0,
           "bidWins": 0,
           "bidWinRate": 0,
-          "revenuePerThousand": 0,
           "impressions": 0,
           "winImpressionRate": 0,
           "clicks": 0,
           "ctr": 0,
           "cpc": 0,
-          "lastUpdated": "2026-05-25 07:55",
-          "platforms": [],
-          "codeId": "232323",
+          "estimatedRevenue": 0,
+          "revenuePerThousand": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "lastUpdated": ""
+        },
+        {
+          "id": "splash-android-group1-disabled-3",
+          "name": "柚+",
           "dspSources": [
-            "vungle"
+            "youplus"
           ],
-          "connectType": "接入对方API"
+          "price": 0,
+          "pricingType": "CPM",
+          "status": "disabled",
+          "codeId": "",
+          "requests": 0,
+          "responses": 0,
+          "responseRate": 0,
+          "bidWins": 0,
+          "bidWinRate": 0,
+          "impressions": 0,
+          "winImpressionRate": 0,
+          "clicks": 0,
+          "ctr": 0,
+          "cpc": 0,
+          "estimatedRevenue": 0,
+          "revenuePerThousand": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "lastUpdated": ""
         }
-      ],
-      "hasABTest": true,
-      "abTestStarted": true
+      ]
     },
     {
       "id": "splash-ios-default",
@@ -225,33 +273,58 @@
           ]
         },
         {
-          "id": "source-1781088419441",
-          "name": "穿山甲",
-          "status": "enabled",
-          "pricingType": "bidding",
+          "id": "splash-ios-default-disabled-4",
+          "name": "女人通",
+          "dspSources": [
+            "nvrentong"
+          ],
           "price": 0,
-          "estimatedRevenue": 0,
-          "ecpm": 0,
-          "thousandRequestValue": 0,
+          "pricingType": "CPM",
+          "status": "disabled",
+          "codeId": "",
           "requests": 0,
           "responses": 0,
           "responseRate": 0,
           "bidWins": 0,
           "bidWinRate": 0,
-          "lastUpdated": "2026/6/10 18:46:59",
-          "platforms": [
-            "Android"
-          ],
-          "codeId": "",
-          "subPositions": [],
+          "impressions": 0,
+          "winImpressionRate": 0,
+          "clicks": 0,
+          "ctr": 0,
+          "cpc": 0,
+          "estimatedRevenue": 0,
+          "revenuePerThousand": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "lastUpdated": ""
+        },
+        {
+          "id": "splash-ios-default-disabled-5",
+          "name": "柚+",
           "dspSources": [
-            "dsp_1"
+            "youplus"
           ],
-          "dimension": "全尺寸"
+          "price": 0,
+          "pricingType": "CPM",
+          "status": "disabled",
+          "codeId": "",
+          "requests": 0,
+          "responses": 0,
+          "responseRate": 0,
+          "bidWins": 0,
+          "bidWinRate": 0,
+          "impressions": 0,
+          "winImpressionRate": 0,
+          "clicks": 0,
+          "ctr": 0,
+          "cpc": 0,
+          "estimatedRevenue": 0,
+          "revenuePerThousand": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "lastUpdated": ""
         }
-      ],
-      "hasABTest": true,
-      "abTestStarted": true
+      ]
     },
     {
       "id": "interstitial-android-default",
@@ -327,6 +400,58 @@
           "dspSources": [
             "mintegral"
           ]
+        },
+        {
+          "id": "interstitial-android-default-disabled-6",
+          "name": "女人通",
+          "dspSources": [
+            "nvrentong"
+          ],
+          "price": 0,
+          "pricingType": "CPM",
+          "status": "disabled",
+          "codeId": "",
+          "requests": 0,
+          "responses": 0,
+          "responseRate": 0,
+          "bidWins": 0,
+          "bidWinRate": 0,
+          "impressions": 0,
+          "winImpressionRate": 0,
+          "clicks": 0,
+          "ctr": 0,
+          "cpc": 0,
+          "estimatedRevenue": 0,
+          "revenuePerThousand": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "lastUpdated": ""
+        },
+        {
+          "id": "interstitial-android-default-disabled-7",
+          "name": "柚+",
+          "dspSources": [
+            "youplus"
+          ],
+          "price": 0,
+          "pricingType": "CPM",
+          "status": "disabled",
+          "codeId": "",
+          "requests": 0,
+          "responses": 0,
+          "responseRate": 0,
+          "bidWins": 0,
+          "bidWinRate": 0,
+          "impressions": 0,
+          "winImpressionRate": 0,
+          "clicks": 0,
+          "ctr": 0,
+          "cpc": 0,
+          "estimatedRevenue": 0,
+          "revenuePerThousand": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "lastUpdated": ""
         }
       ]
     },
@@ -440,6 +565,58 @@
           "dspSources": [
             "unity"
           ]
+        },
+        {
+          "id": "interstitial-android-group1-disabled-8",
+          "name": "女人通",
+          "dspSources": [
+            "nvrentong"
+          ],
+          "price": 0,
+          "pricingType": "CPM",
+          "status": "disabled",
+          "codeId": "",
+          "requests": 0,
+          "responses": 0,
+          "responseRate": 0,
+          "bidWins": 0,
+          "bidWinRate": 0,
+          "impressions": 0,
+          "winImpressionRate": 0,
+          "clicks": 0,
+          "ctr": 0,
+          "cpc": 0,
+          "estimatedRevenue": 0,
+          "revenuePerThousand": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "lastUpdated": ""
+        },
+        {
+          "id": "interstitial-android-group1-disabled-9",
+          "name": "柚+",
+          "dspSources": [
+            "youplus"
+          ],
+          "price": 0,
+          "pricingType": "CPM",
+          "status": "disabled",
+          "codeId": "",
+          "requests": 0,
+          "responses": 0,
+          "responseRate": 0,
+          "bidWins": 0,
+          "bidWinRate": 0,
+          "impressions": 0,
+          "winImpressionRate": 0,
+          "clicks": 0,
+          "ctr": 0,
+          "cpc": 0,
+          "estimatedRevenue": 0,
+          "revenuePerThousand": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "lastUpdated": ""
         }
       ]
     },
@@ -524,6 +701,58 @@
           "dspSources": [
             "tencent"
           ]
+        },
+        {
+          "id": "interstitial-android-group2-disabled-10",
+          "name": "女人通",
+          "dspSources": [
+            "nvrentong"
+          ],
+          "price": 0,
+          "pricingType": "CPM",
+          "status": "disabled",
+          "codeId": "",
+          "requests": 0,
+          "responses": 0,
+          "responseRate": 0,
+          "bidWins": 0,
+          "bidWinRate": 0,
+          "impressions": 0,
+          "winImpressionRate": 0,
+          "clicks": 0,
+          "ctr": 0,
+          "cpc": 0,
+          "estimatedRevenue": 0,
+          "revenuePerThousand": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "lastUpdated": ""
+        },
+        {
+          "id": "interstitial-android-group2-disabled-11",
+          "name": "柚+",
+          "dspSources": [
+            "youplus"
+          ],
+          "price": 0,
+          "pricingType": "CPM",
+          "status": "disabled",
+          "codeId": "",
+          "requests": 0,
+          "responses": 0,
+          "responseRate": 0,
+          "bidWins": 0,
+          "bidWinRate": 0,
+          "impressions": 0,
+          "winImpressionRate": 0,
+          "clicks": 0,
+          "ctr": 0,
+          "cpc": 0,
+          "estimatedRevenue": 0,
+          "revenuePerThousand": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "lastUpdated": ""
         }
       ]
     },
@@ -601,6 +830,58 @@
           "dspSources": [
             "tencent"
           ]
+        },
+        {
+          "id": "interstitial-ios-default-disabled-12",
+          "name": "女人通",
+          "dspSources": [
+            "nvrentong"
+          ],
+          "price": 0,
+          "pricingType": "CPM",
+          "status": "disabled",
+          "codeId": "",
+          "requests": 0,
+          "responses": 0,
+          "responseRate": 0,
+          "bidWins": 0,
+          "bidWinRate": 0,
+          "impressions": 0,
+          "winImpressionRate": 0,
+          "clicks": 0,
+          "ctr": 0,
+          "cpc": 0,
+          "estimatedRevenue": 0,
+          "revenuePerThousand": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "lastUpdated": ""
+        },
+        {
+          "id": "interstitial-ios-default-disabled-13",
+          "name": "柚+",
+          "dspSources": [
+            "youplus"
+          ],
+          "price": 0,
+          "pricingType": "CPM",
+          "status": "disabled",
+          "codeId": "",
+          "requests": 0,
+          "responses": 0,
+          "responseRate": 0,
+          "bidWins": 0,
+          "bidWinRate": 0,
+          "impressions": 0,
+          "winImpressionRate": 0,
+          "clicks": 0,
+          "ctr": 0,
+          "cpc": 0,
+          "estimatedRevenue": 0,
+          "revenuePerThousand": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "lastUpdated": ""
         }
       ]
     },
@@ -619,7 +900,60 @@
       "rules": [],
       "status": "enabled",
       "floorPrice": 8,
-      "adSources": []
+      "adSources": [
+        {
+          "id": "interstitial-ios-group1-disabled-14",
+          "name": "女人通",
+          "dspSources": [
+            "nvrentong"
+          ],
+          "price": 0,
+          "pricingType": "CPM",
+          "status": "disabled",
+          "codeId": "",
+          "requests": 0,
+          "responses": 0,
+          "responseRate": 0,
+          "bidWins": 0,
+          "bidWinRate": 0,
+          "impressions": 0,
+          "winImpressionRate": 0,
+          "clicks": 0,
+          "ctr": 0,
+          "cpc": 0,
+          "estimatedRevenue": 0,
+          "revenuePerThousand": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "lastUpdated": ""
+        },
+        {
+          "id": "interstitial-ios-group1-disabled-15",
+          "name": "柚+",
+          "dspSources": [
+            "youplus"
+          ],
+          "price": 0,
+          "pricingType": "CPM",
+          "status": "disabled",
+          "codeId": "",
+          "requests": 0,
+          "responses": 0,
+          "responseRate": 0,
+          "bidWins": 0,
+          "bidWinRate": 0,
+          "impressions": 0,
+          "winImpressionRate": 0,
+          "clicks": 0,
+          "ctr": 0,
+          "cpc": 0,
+          "estimatedRevenue": 0,
+          "revenuePerThousand": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "lastUpdated": ""
+        }
+      ]
     },
     {
       "id": "search-android-default",
@@ -636,7 +970,60 @@
       "rules": [],
       "status": "enabled",
       "floorPrice": 0,
-      "adSources": []
+      "adSources": [
+        {
+          "id": "search-android-default-disabled-16",
+          "name": "女人通",
+          "dspSources": [
+            "nvrentong"
+          ],
+          "price": 0,
+          "pricingType": "CPM",
+          "status": "disabled",
+          "codeId": "",
+          "requests": 0,
+          "responses": 0,
+          "responseRate": 0,
+          "bidWins": 0,
+          "bidWinRate": 0,
+          "impressions": 0,
+          "winImpressionRate": 0,
+          "clicks": 0,
+          "ctr": 0,
+          "cpc": 0,
+          "estimatedRevenue": 0,
+          "revenuePerThousand": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "lastUpdated": ""
+        },
+        {
+          "id": "search-android-default-disabled-17",
+          "name": "柚+",
+          "dspSources": [
+            "youplus"
+          ],
+          "price": 0,
+          "pricingType": "CPM",
+          "status": "disabled",
+          "codeId": "",
+          "requests": 0,
+          "responses": 0,
+          "responseRate": 0,
+          "bidWins": 0,
+          "bidWinRate": 0,
+          "impressions": 0,
+          "winImpressionRate": 0,
+          "clicks": 0,
+          "ctr": 0,
+          "cpc": 0,
+          "estimatedRevenue": 0,
+          "revenuePerThousand": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "lastUpdated": ""
+        }
+      ]
     },
     {
       "id": "search-ios-default",
@@ -653,7 +1040,60 @@
       "rules": [],
       "status": "enabled",
       "floorPrice": 0,
-      "adSources": []
+      "adSources": [
+        {
+          "id": "search-ios-default-disabled-18",
+          "name": "女人通",
+          "dspSources": [
+            "nvrentong"
+          ],
+          "price": 0,
+          "pricingType": "CPM",
+          "status": "disabled",
+          "codeId": "",
+          "requests": 0,
+          "responses": 0,
+          "responseRate": 0,
+          "bidWins": 0,
+          "bidWinRate": 0,
+          "impressions": 0,
+          "winImpressionRate": 0,
+          "clicks": 0,
+          "ctr": 0,
+          "cpc": 0,
+          "estimatedRevenue": 0,
+          "revenuePerThousand": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "lastUpdated": ""
+        },
+        {
+          "id": "search-ios-default-disabled-19",
+          "name": "柚+",
+          "dspSources": [
+            "youplus"
+          ],
+          "price": 0,
+          "pricingType": "CPM",
+          "status": "disabled",
+          "codeId": "",
+          "requests": 0,
+          "responses": 0,
+          "responseRate": 0,
+          "bidWins": 0,
+          "bidWinRate": 0,
+          "impressions": 0,
+          "winImpressionRate": 0,
+          "clicks": 0,
+          "ctr": 0,
+          "cpc": 0,
+          "estimatedRevenue": 0,
+          "revenuePerThousand": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "lastUpdated": ""
+        }
+      ]
     },
     {
       "id": "feed-android-default",
@@ -730,6 +1170,58 @@
           "dspSources": [
             "kuaishou"
           ]
+        },
+        {
+          "id": "feed-android-default-disabled-20",
+          "name": "女人通",
+          "dspSources": [
+            "nvrentong"
+          ],
+          "price": 0,
+          "pricingType": "CPM",
+          "status": "disabled",
+          "codeId": "",
+          "requests": 0,
+          "responses": 0,
+          "responseRate": 0,
+          "bidWins": 0,
+          "bidWinRate": 0,
+          "impressions": 0,
+          "winImpressionRate": 0,
+          "clicks": 0,
+          "ctr": 0,
+          "cpc": 0,
+          "estimatedRevenue": 0,
+          "revenuePerThousand": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "lastUpdated": ""
+        },
+        {
+          "id": "feed-android-default-disabled-21",
+          "name": "柚+",
+          "dspSources": [
+            "youplus"
+          ],
+          "price": 0,
+          "pricingType": "CPM",
+          "status": "disabled",
+          "codeId": "",
+          "requests": 0,
+          "responses": 0,
+          "responseRate": 0,
+          "bidWins": 0,
+          "bidWinRate": 0,
+          "impressions": 0,
+          "winImpressionRate": 0,
+          "clicks": 0,
+          "ctr": 0,
+          "cpc": 0,
+          "estimatedRevenue": 0,
+          "revenuePerThousand": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "lastUpdated": ""
         }
       ]
     },
@@ -779,243 +1271,60 @@
           "dspSources": [
             "gdt"
           ]
-        }
-      ]
-    },
-    {
-      "id": "group-1780997722617",
-      "name": "开屏高价分组 - 副本",
-      "priority": 3,
-      "platforms": [
-        "Android"
-      ],
-      "adSlots": [
-        "1000"
-      ],
-      "scene": "splash",
-      "platform": "Android",
-      "rules": [],
-      "status": "enabled",
-      "floorPrice": 0,
-      "adSources": [
-        {
-          "id": "source-1780998005282",
-          "name": "穿山甲",
-          "status": "enabled",
-          "pricingType": "bidding",
-          "price": 0,
-          "estimatedRevenue": 0,
-          "ecpm": 0,
-          "thousandRequestValue": 0,
-          "requests": 0,
-          "responses": 0,
-          "responseRate": 0,
-          "bidWins": 0,
-          "bidWinRate": 0,
-          "lastUpdated": "2026/6/9 17:40:05",
-          "platforms": [
-            "Android"
-          ],
-          "codeId": "11212121",
-          "subPositions": [],
-          "dspSources": [
-            "dsp_1"
-          ],
-          "minVersion": "9.01"
-        }
-      ]
-    },
-    {
-      "id": "group-1780997859526",
-      "name": "默认分组 - 副本",
-      "priority": 4,
-      "platforms": [
-        "Android"
-      ],
-      "adSlots": [
-        "1120",
-        "1601",
-        "1602"
-      ],
-      "scene": "feed",
-      "platform": "Android",
-      "rules": [],
-      "status": "enabled",
-      "floorPrice": 0,
-      "adSources": []
-    },
-    {
-      "id": "group-1780997864007",
-      "name": "默认分组 - 副本",
-      "priority": 5,
-      "platforms": [
-        "Android"
-      ],
-      "adSlots": [
-        "1120",
-        "1601",
-        "1602"
-      ],
-      "scene": "feed",
-      "platform": "Android",
-      "rules": [],
-      "status": "enabled",
-      "floorPrice": 0,
-      "adSources": [
-        {
-          "id": "source-1780997889426",
-          "name": "穿山甲",
-          "status": "enabled",
-          "pricingType": "bidding",
-          "price": 0,
-          "estimatedRevenue": 0,
-          "ecpm": 0,
-          "thousandRequestValue": 0,
-          "requests": 0,
-          "responses": 0,
-          "responseRate": 0,
-          "bidWins": 0,
-          "bidWinRate": 0,
-          "lastUpdated": "2026/6/9 17:38:09",
-          "platforms": [
-            "Android"
-          ],
-          "codeId": "100000",
-          "subPositions": [],
-          "dspSources": [
-            "dsp_1"
-          ],
-          "minVersion": "9.01"
-        }
-      ]
-    },
-    {
-      "id": "group-1780998070904",
-      "name": "默认分组 - 副本",
-      "priority": 6,
-      "platforms": [
-        "iOS"
-      ],
-      "adSlots": [
-        "1000"
-      ],
-      "scene": "splash",
-      "platform": "iOS",
-      "rules": [],
-      "status": "enabled",
-      "floorPrice": 0,
-      "adSources": [
-        {
-          "id": "source-1780998116727",
-          "name": "Mintegral",
-          "status": "enabled",
-          "pricingType": "bidding",
-          "price": 0,
-          "estimatedRevenue": 0,
-          "ecpm": 0,
-          "thousandRequestValue": 0,
-          "requests": 0,
-          "responses": 0,
-          "responseRate": 0,
-          "bidWins": 0,
-          "bidWinRate": 0,
-          "lastUpdated": "2026/6/9 17:41:56",
-          "platforms": [
-            "Android"
-          ],
-          "codeId": "121212",
-          "subPositions": [],
-          "dspSources": [
-            "dsp_5"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "group-1780998279885",
-      "name": "默认分组 - 副本",
-      "priority": 7,
-      "platforms": [
-        "iOS"
-      ],
-      "adSlots": [
-        "1000"
-      ],
-      "scene": "splash",
-      "platform": "iOS",
-      "rules": [],
-      "status": "enabled",
-      "floorPrice": 0,
-      "adSources": [
-        {
-          "id": "src-1780998277813-lfks93",
-          "name": "穿山甲-开屏iOS",
-          "status": "enabled",
-          "pricingType": "bidding",
-          "price": 18.5,
-          "estimatedRevenue": 15230.8,
-          "ecpm": 22.15,
-          "thousandRequestValue": 0.85,
-          "requests": 168000,
-          "responses": 95200,
-          "responseRate": 56.67,
-          "bidWins": 42100,
-          "bidWinRate": 44.21,
-          "revenuePerThousand": 0.09,
-          "impressions": 65000,
-          "winImpressionRate": 100,
-          "clicks": 3250,
-          "ctr": 5,
-          "cpc": 1.85,
-          "lastUpdated": "2026/6/10 18:47:24",
-          "platforms": [
-            "iOS"
-          ],
-          "codeId": "10011,102121",
-          "dspSources": [
-            "dsp_1"
-          ],
-          "priceA": 18.5,
-          "priceB": 18.5,
-          "subPositions": [],
-          "dimension": "全尺寸",
-          "overrideMode": true,
-          "overridePids": "[{\"codeId\":\"10011\",\"minVersion\":\"9.01\"},{\"codeId\":\"102121\",\"minVersion\":\"9.02.1\"}]"
         },
         {
-          "id": "src-1780998277813-iaa4bz",
-          "name": "快手-开屏iOS",
-          "status": "disabled",
-          "pricingType": "bidding",
-          "price": 15.2,
-          "estimatedRevenue": 7850.25,
-          "ecpm": 15.6,
-          "thousandRequestValue": 0.58,
-          "requests": 88000,
-          "responses": 50300,
-          "responseRate": 57.16,
-          "bidWins": 18200,
-          "bidWinRate": 36.2,
-          "revenuePerThousand": 0.07,
-          "impressions": 38000,
-          "winImpressionRate": 100,
-          "clicks": 1520,
-          "ctr": 4,
-          "cpc": 1.02,
-          "lastUpdated": "2024-01-15 10:30",
-          "platforms": [
-            "iOS"
-          ],
-          "codeId": "10013",
+          "id": "feed-ios-default-disabled-22",
+          "name": "女人通",
           "dspSources": [
-            "kuaishou"
+            "nvrentong"
           ],
-          "priceA": 15.2,
-          "priceB": 15.2
+          "price": 0,
+          "pricingType": "CPM",
+          "status": "disabled",
+          "codeId": "",
+          "requests": 0,
+          "responses": 0,
+          "responseRate": 0,
+          "bidWins": 0,
+          "bidWinRate": 0,
+          "impressions": 0,
+          "winImpressionRate": 0,
+          "clicks": 0,
+          "ctr": 0,
+          "cpc": 0,
+          "estimatedRevenue": 0,
+          "revenuePerThousand": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "lastUpdated": ""
+        },
+        {
+          "id": "feed-ios-default-disabled-23",
+          "name": "柚+",
+          "dspSources": [
+            "youplus"
+          ],
+          "price": 0,
+          "pricingType": "CPM",
+          "status": "disabled",
+          "codeId": "",
+          "requests": 0,
+          "responses": 0,
+          "responseRate": 0,
+          "bidWins": 0,
+          "bidWinRate": 0,
+          "impressions": 0,
+          "winImpressionRate": 0,
+          "clicks": 0,
+          "ctr": 0,
+          "cpc": 0,
+          "estimatedRevenue": 0,
+          "revenuePerThousand": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "lastUpdated": ""
         }
-      ],
-      "hasABTest": true,
-      "abTestStarted": true
+      ]
     }
   ]
 }
