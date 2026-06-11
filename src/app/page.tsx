@@ -1006,7 +1006,19 @@ function WaterfallManagementPageContent() {
   // 鼠标悬停显示详情
   const handleMouseEnterSource = useCallback((source: AdSource, e: React.MouseEvent) => {
     const rect = (e.target as HTMLElement).getBoundingClientRect();
-    setHoverPosition({ x: rect.right + 10, y: rect.top });
+    const estimatedCardHeight = window.innerHeight * 0.6;
+    const cardWidth = 288; // w-72 = 288px
+    // 垂直方向：如果卡片超出视口底部，上移
+    let y = rect.top;
+    if (y + estimatedCardHeight > window.innerHeight) {
+      y = Math.max(10, window.innerHeight - estimatedCardHeight - 10);
+    }
+    // 水平方向：如果卡片超出视口右侧，在左侧显示
+    let x = rect.right + 10;
+    if (x + cardWidth > window.innerWidth) {
+      x = Math.max(10, rect.left - cardWidth - 10);
+    }
+    setHoverPosition({ x, y });
     setHoveredSource(source);
   }, []);
 
