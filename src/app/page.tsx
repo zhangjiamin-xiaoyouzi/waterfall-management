@@ -1903,11 +1903,12 @@ function WaterfallManagementPageContent() {
                       ) : rule.ruleType === 'device_id' ? (
                         <textarea
                           className="w-full min-h-[80px] px-3 py-2 text-sm border border-[#E5E6EB] rounded-lg focus:outline-none focus:border-[#FF4D88] resize-none"
-                          placeholder={selectedPlatform === 'iOS' ? '请输入idfa，每行一个' : '请输入oid，每行一个'}
+                          placeholder={selectedPlatform === 'iOS' ? '请输入idfa，最多100个，用换行分隔' : '请输入oid，最多100个，用换行分隔'}
                           value={rule.values.join('\n')}
                           onChange={(e) => {
                             const updated = [...newGroupRules];
-                            updated[index].values = e.target.value.split('\n').filter(v => v.trim());
+                            const lines = e.target.value.split('\n').filter(v => v.trim());
+                            updated[index].values = lines.slice(0, 100);
                             setNewGroupRules(updated);
                           }}
                         />
