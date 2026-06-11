@@ -1292,11 +1292,16 @@ function WaterfallManagementPageContent() {
                                 return `${DAY_NAMES[day] || day} ${hour.padStart(2, '0')}:00-${String(Number(hour) + 1).padStart(2, '0')}:00`;
                               }).join('、');
                             }
+                            if (rule.ruleType === 'device_id') {
+                              const displayItems = rule.values.slice(0, 3);
+                              const remaining = rule.values.length - 3;
+                              return displayItems.join('、') + (remaining > 0 ? ` 等${rule.values.length}个设备` : '');
+                            }
                             return rule.values.join('、');
                           };
                           return (
                             <Badge key={index} variant="secondary" className="bg-[#F2F3F5] text-[#1D2129] border border-[#E5E6EB]">
-                              {RULE_VALUES[rule.ruleType]?.label || rule.ruleType}{rule.ruleType !== 'time_period' ? ` ${rule.matchType === 'include' ? '包含' : '不包含'} ` : '：'}{getDisplayValues()}
+                              {RULE_VALUES[rule.ruleType]?.label || rule.ruleType}{rule.ruleType !== 'time_period' && rule.ruleType !== 'device_id' ? ` ${rule.matchType === 'include' ? '包含' : '不包含'} ` : '：'}{getDisplayValues()}
                             </Badge>
                           );
                         })}
@@ -1868,7 +1873,7 @@ function WaterfallManagementPageContent() {
                           ))}
                         </SelectContent>
                       </Select>
-                      {rule.ruleType !== 'time_period' && (
+                      {rule.ruleType !== 'time_period' && rule.ruleType !== 'device_id' && (
                       <Select
                         value={rule.matchType}
                         onValueChange={(val: MatchType) => {
@@ -1892,6 +1897,17 @@ function WaterfallManagementPageContent() {
                           onChange={(values) => {
                             const updated = [...newGroupRules];
                             updated[index].values = values;
+                            setNewGroupRules(updated);
+                          }}
+                        />
+                      ) : rule.ruleType === 'device_id' ? (
+                        <textarea
+                          className="w-full min-h-[80px] px-3 py-2 text-sm border border-[#E5E6EB] rounded-lg focus:outline-none focus:border-[#FF4D88] resize-none"
+                          placeholder={selectedPlatform === 'iOS' ? '请输入idfa，每行一个' : '请输入oid，每行一个'}
+                          value={rule.values.join('\n')}
+                          onChange={(e) => {
+                            const updated = [...newGroupRules];
+                            updated[index].values = e.target.value.split('\n').filter(v => v.trim());
                             setNewGroupRules(updated);
                           }}
                         />

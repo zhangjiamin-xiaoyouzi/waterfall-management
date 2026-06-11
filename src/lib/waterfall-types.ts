@@ -7,7 +7,7 @@ export type PricingType = 'CPM' | 'CPC' | 'CPA' | 'CPS' | 'bidding';
 export type Platform = 'Android' | 'iOS';
 
 // 分组规则类型
-export type RuleType = 'app_version' | 'region' | 'identity' | 'phone_brand' | 'time_period' | 'sub_position';
+export type RuleType = 'app_version' | 'region' | 'identity' | 'phone_brand' | 'time_period' | 'sub_position' | 'device_id';
 
 export type MatchType = 'include' | 'exclude';
 
@@ -62,6 +62,10 @@ export const RULE_VALUES: Record<RuleType, { label: string; values: string[] }> 
   sub_position: {
     label: '子位',
     values: ['246'], // 默认子位值
+  },
+  device_id: {
+    label: '设备ID',
+    values: [],
   },
 };
 
