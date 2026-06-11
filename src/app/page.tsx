@@ -2417,7 +2417,7 @@ function WaterfallManagementPageContent() {
                   }
                 }}
               />
-              <span className="text-xs text-[#86909C]">开启后可添加多个PID与美柚APP版本配置</span>
+              <span className="text-xs text-[#86909C]">开启后可添加多个PID与应用版本</span>
             </div>
             )}
 
@@ -2446,7 +2446,7 @@ function WaterfallManagementPageContent() {
                     />
                     {SDK_SOURCE_VALUES.has(newSourceName) && (
                       <div className="space-y-2">
-                        <div className="text-xs text-[#86909C] font-medium">美柚APP版本配置</div>
+                        <div className="text-xs text-[#86909C] font-medium">应用版本</div>
                         <div className="flex items-center gap-4">
                           <div className="flex-1">
                             <label className="text-xs text-[#4E5969] mb-1 block">最小版本</label>
@@ -2502,7 +2502,7 @@ function WaterfallManagementPageContent() {
                 {/* SDK版本配置 - 仅在选择SDK类型DSP来源时显示 */}
                 {SDK_SOURCE_VALUES.has(newSourceName) && (
                   <div className="border border-[#E5E6EB] rounded-lg p-4 space-y-3">
-                    <div className="text-xs text-[#86909C] font-medium">美柚APP版本配置</div>
+                    <div className="text-xs text-[#86909C] font-medium">应用版本</div>
                     <div className="flex items-center gap-4">
                       <div className="flex-1">
                         <label className="text-xs text-[#4E5969] mb-1 block">最小版本</label>
