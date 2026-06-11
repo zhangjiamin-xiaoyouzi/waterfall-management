@@ -841,7 +841,7 @@ const [pidCustomSize, setPidCustomSize] = useState('');
       {/* 悬停详情卡片 */}
       {hoveredSource && (
         <div
-          className="fixed z-50 bg-white rounded-lg shadow-lg border border-[#E5E6EB] p-4 w-64"
+          className="fixed z-50 bg-white rounded-lg shadow-lg border border-[#E5E6EB] p-4 w-72 max-h-[60vh] overflow-y-auto"
           style={{ left: hoverPosition.x, top: hoverPosition.y }}
         >
           <h4 className="font-medium text-[#1D2129] mb-3">{hoveredSource.name}</h4>
