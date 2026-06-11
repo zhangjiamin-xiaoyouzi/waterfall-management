@@ -323,6 +323,60 @@
           "ecpm": 0,
           "thousandRequestValue": 0,
           "lastUpdated": ""
+        },
+        {
+          "id": "source-1781146128184",
+          "name": "穿山甲",
+          "status": "enabled",
+          "pricingType": "bidding",
+          "price": 0,
+          "estimatedRevenue": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "requests": 0,
+          "responses": 0,
+          "responseRate": 0,
+          "bidWins": 0,
+          "bidWinRate": 0,
+          "lastUpdated": "2026/6/11 10:48:48",
+          "platforms": [
+            "Android"
+          ],
+          "codeId": "1212121",
+          "subPositions": [],
+          "dspSources": [
+            "dsp_1"
+          ],
+          "dimension": "全尺寸",
+          "overrideMode": true,
+          "overridePids": "[{\"codeId\":\"1212121\"}]"
+        },
+        {
+          "id": "source-1781147349071",
+          "name": "穿山甲",
+          "status": "enabled",
+          "pricingType": "bidding",
+          "price": 0,
+          "estimatedRevenue": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "requests": 0,
+          "responses": 0,
+          "responseRate": 0,
+          "bidWins": 0,
+          "bidWinRate": 0,
+          "lastUpdated": "2026/6/11 11:09:09",
+          "platforms": [
+            "Android"
+          ],
+          "codeId": "121212,1213131",
+          "subPositions": [],
+          "dspSources": [
+            "dsp_1"
+          ],
+          "dimension": "全尺寸",
+          "overrideMode": true,
+          "overridePids": "[{\"codeId\":\"121212\",\"minVersion\":\"9.01.0\"},{\"codeId\":\"1213131\",\"minVersion\":\"9.01.0\"}]"
         }
       ]
     },

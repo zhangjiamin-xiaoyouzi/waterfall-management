@@ -2307,7 +2307,7 @@ function WaterfallManagementPageContent() {
           <DialogHeader>
             <DialogTitle>{editingSource ? '编辑DSP来源' : '添加PID'}</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-4">
+          <div className="space-y-4 py-4 max-h-[55vh] overflow-y-auto pr-1">
             {/* DSP来源名称 - 单选 */}
             <div className="flex items-center">
               <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0"><span className="text-red-500">*</span> DSP来源</label>
