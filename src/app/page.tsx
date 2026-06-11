@@ -1726,8 +1726,8 @@ function WaterfallManagementPageContent() {
             </div>
             {hoveredSource.dspSources?.some(dsp => SDK_SOURCE_VALUES.has(dsp)) && (
               <div className="flex justify-between">
-                <span className="text-[#86909C]">版本配置</span>
-                <span className="text-[#1D2129]">{hoveredSource.minVersion || '-'} ~ {hoveredSource.maxVersion || '-'}</span>
+                <span className="text-[#86909C]">应用版本</span>
+                <span className="text-[#1D2129]">{hoveredSource.minVersion || hoveredSource.maxVersion ? `${hoveredSource.minVersion || '-'} ~ ${hoveredSource.maxVersion || '-'}` : '未设置'}</span>
               </div>
             )}
             {hoveredSource.dspSources?.some(dsp => SDK_SOURCE_VALUES.has(dsp)) && hoveredSource.overrideMode && hoveredSource.overridePids && (() => {
@@ -1741,8 +1741,8 @@ function WaterfallManagementPageContent() {
                         <span className="text-[#1D2129] font-medium">{pid.codeId}</span>
                       </div>
                       <div className="flex justify-between text-xs mt-0.5">
-                        <span className="text-[#4E5969]">版本</span>
-                        <span className="text-[#1D2129]">{pid.minVersion || '-'} ~ {pid.maxVersion || '-'}</span>
+                        <span className="text-[#4E5969]">应用版本</span>
+                        <span className="text-[#1D2129]">{pid.minVersion || pid.maxVersion ? `${pid.minVersion || '-'} ~ ${pid.maxVersion || '-'}` : '未设置'}</span>
                       </div>
                     </div>
                   ))}
