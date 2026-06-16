@@ -120,11 +120,8 @@ const getSourceColor = (name: string) => {
   return SOURCE_COLORS['default'];
 };
 
-// 格式化大数字
+// 格式化数字（千分位）
 const formatNumber = (num: number) => {
-  if (num >= 10000) {
-    return (num / 10000).toFixed(1) + '万';
-  }
   return num.toLocaleString();
 };
 
@@ -2758,14 +2755,14 @@ function WaterfallManagementPageContent() {
                       <TableCell className="text-xs text-right">¥{(source.estimatedRevenue || 0).toLocaleString()}</TableCell>
                       <TableCell className="text-xs text-right">¥{(source.ecpm || 0).toFixed(2)}</TableCell>
                       <TableCell className="text-xs text-right">¥{(source.thousandRequestValue || 0).toFixed(2)}</TableCell>
-                      <TableCell className="text-xs text-right">{(source.requests || 0) >= 10000 ? `${(source.requests / 10000).toFixed(1)}万` : source.requests || 0}</TableCell>
-                      <TableCell className="text-xs text-right">{(source.responses || 0) >= 10000 ? `${(source.responses / 10000).toFixed(1)}万` : source.responses || 0}</TableCell>
+                      <TableCell className="text-xs text-right">{(source.requests || 0).toLocaleString()}</TableCell>
+                      <TableCell className="text-xs text-right">{(source.responses || 0).toLocaleString()}</TableCell>
                       <TableCell className="text-xs text-right">{(source.responseRate || 0).toFixed(1)}%</TableCell>
-                      <TableCell className="text-xs text-right">{(source.bidWins || 0) >= 10000 ? `${(source.bidWins / 10000).toFixed(1)}万` : source.bidWins || 0}</TableCell>
+                      <TableCell className="text-xs text-right">{(source.bidWins || 0).toLocaleString()}</TableCell>
                       <TableCell className="text-xs text-right">{(source.bidWinRate || 0).toFixed(1)}%</TableCell>
-                      <TableCell className="text-xs text-right">{(source.impressions ?? 0) >= 10000 ? `${((source.impressions ?? 0) / 10000).toFixed(1)}万` : source.impressions ?? 0}</TableCell>
+                      <TableCell className="text-xs text-right">{(source.impressions ?? 0).toLocaleString()}</TableCell>
                       <TableCell className="text-xs text-right">{(source.winImpressionRate ?? 0).toFixed(1)}%</TableCell>
-                      <TableCell className="text-xs text-right">{(source.clicks ?? 0) >= 10000 ? `${((source.clicks ?? 0) / 10000).toFixed(1)}万` : source.clicks ?? 0}</TableCell>
+                      <TableCell className="text-xs text-right">{(source.clicks ?? 0).toLocaleString()}</TableCell>
                       <TableCell className="text-xs text-right">{(source.ctr || 0).toFixed(1)}%</TableCell>
                       <TableCell className="text-xs text-right">¥{(source.cpc || 0).toFixed(2)}</TableCell></TableRow>
                   ))}
