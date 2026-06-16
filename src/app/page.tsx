@@ -1297,13 +1297,14 @@ function WaterfallManagementPageContent() {
                               return rule.values.join('、');
                             }
                             if (rule.ruleType === 'time_period') {
-                              // 时段规则：显示包含/排除 + 星期 + 时间段数量
+                              // 时段规则：显示包含/排除 + 已选星期 + 时段数量
                               const opLabel = rule.matchType === 'include' ? '包含' : '排除';
-                              const weekdays = rule.values.filter(v => ['周一','周二','周三','周四','周五','周六','周日'].includes(v));
-                              const timeSlots = rule.values.filter(v => !['周一','周二','周三','周四','周五','周六','周日'].includes(v));
+                              const DAYKEY_TO_WEEKDAY: Record<string, string> = { mon: '周一', tue: '周二', wed: '周三', thu: '周四', fri: '周五', sat: '周六', sun: '周日' };
+                              const selectedDays = new Set(rule.values.map(v => v.split('-')[0]));
+                              const weekdayLabels = [...selectedDays].map(dk => DAYKEY_TO_WEEKDAY[dk] || dk).filter(Boolean);
                               const parts: string[] = [];
-                              if (weekdays.length > 0) parts.push(weekdays.join('、'));
-                              if (timeSlots.length > 0) parts.push(`${timeSlots.length}个时段`);
+                              if (weekdayLabels.length > 0) parts.push(weekdayLabels.join('、'));
+                              if (rule.values.length > 0) parts.push(`${rule.values.length}个时段`);
                               return `${opLabel} ${parts.join('，')}`;
                             }
                             if (rule.ruleType === 'device_id') {
@@ -1921,24 +1922,40 @@ function WaterfallManagementPageContent() {
                       {rule.ruleType === 'time_period' ? (
                         <div className="space-y-2 flex-1">
                           <MultipleSelect
-                            value={rule.values.filter(v => ['周一','周二','周三','周四','周五','周六','周日'].includes(v))}
-                            onChange={(values) => {
+                            value={(() => {
+                              // 从已选时段中推导出哪些天被选中（天有任意时段被选中即视为该天被选中）
+                              const WEEKDAY_TO_DAYKEY: Record<string, string> = { '周一': 'mon', '周二': 'tue', '周三': 'wed', '周四': 'thu', '周五': 'fri', '周六': 'sat', '周日': 'sun' };
+                              const selectedDayKeys = new Set(rule.values.map(v => v.split('-')[0]));
+                              return RULE_VALUES.time_period.values.filter(wd => selectedDayKeys.has(WEEKDAY_TO_DAYKEY[wd] || ''));
+                            })()}
+                            onChange={(weekdayValues) => {
                               const updated = [...newGroupRules];
-                              // 保留图表选择的时间段，只替换星期选择
-                              const timeSlots = updated[index].values.filter(v => !['周一','周二','周三','周四','周五','周六','周日'].includes(v));
-                              updated[index].values = [...timeSlots, ...values];
+                              const WEEKDAY_TO_DAYKEY: Record<string, string> = { '周一': 'mon', '周二': 'tue', '周三': 'wed', '周四': 'thu', '周五': 'fri', '周六': 'sat', '周日': 'sun' };
+                              const newSelectedDayKeys = new Set(weekdayValues.map((wd: string) => WEEKDAY_TO_DAYKEY[wd] || ''));
+                              // 保留不在新选择范围内的天的时段
+                              const preservedSlots = updated[index].values.filter(v => !newSelectedDayKeys.has(v.split('-')[0]));
+                              // 为新选中的天添加全部24小时时段
+                              const newSlots: string[] = [];
+                              for (const wd of weekdayValues) {
+                                const dayKey = WEEKDAY_TO_DAYKEY[wd];
+                                if (dayKey) {
+                                  for (let h = 0; h < 24; h++) {
+                                    const key = `${dayKey}-${h}`;
+                                    if (!preservedSlots.includes(key)) newSlots.push(key);
+                                  }
+                                }
+                              }
+                              updated[index].values = [...preservedSlots, ...newSlots];
                               setNewGroupRules(updated);
                             }}
                             options={RULE_VALUES.time_period.values.map((val) => ({ label: val, value: val }))}
-                            placeholder="快捷选择星期"
+                            placeholder="快捷选择星期（选中=全天投放）"
                           />
                           <TimeSlotPicker
-                            value={rule.values.filter(v => !['周一','周二','周三','周四','周五','周六','周日'].includes(v))}
+                            value={rule.values}
                             onChange={(timeSlots) => {
                               const updated = [...newGroupRules];
-                              // 保留星期选择，只替换图表选择的时间段
-                              const weekdays = updated[index].values.filter(v => ['周一','周二','周三','周四','周五','周六','周日'].includes(v));
-                              updated[index].values = [...weekdays, ...timeSlots];
+                              updated[index].values = timeSlots;
                               setNewGroupRules(updated);
                             }}
                           />
