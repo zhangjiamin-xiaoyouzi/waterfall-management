@@ -98,6 +98,11 @@ import {
   generateSubPositionOptions,
 } from '@/lib/waterfall-types';
 
+/** 判断是否为默认分组（优先级固定为1，名称为"默认分组"） */
+function isDefaultGroup(g: AdGroup): boolean {
+  return g.priority === 1 && g.name === '默认分组';
+}
+
 // DSP来源颜色标识配置
 const SOURCE_COLORS: Record<string, { bg: string; text: string; dot: string }> = {
   '穿山甲': { bg: '#E8FFEA', text: '#00B42A', dot: '#52C41A' },
@@ -337,7 +342,7 @@ function WaterfallManagementPageContent() {
 
   // 新建分组表单状态
   const [newGroupName, setNewGroupName] = useState('');
-  const [newGroupPriority, setNewGroupPriority] = useState(0);
+  const [newGroupPriority, setNewGroupPriority] = useState(2);
   const [newGroupSlots, setNewGroupSlots] = useState<string[]>([]);
   const [newGroupRules, setNewGroupRules] = useState<GroupRule[]>([]);
   // 复制分组时暂存源分组的adSources，用于新建时带入
@@ -345,7 +350,7 @@ function WaterfallManagementPageContent() {
 
   // 计算非默认分组的最大优先级，用于新建分组时自动分配
   const maxNonDefaultPriority = useMemo(() =>
-    Math.max(...adGroups.filter(g => g.priority < 999).map(g => g.priority), 0),
+    Math.max(...adGroups.filter(g => !isDefaultGroup(g)).map(g => g.priority), 1),
     [adGroups]
   );
 
@@ -606,13 +611,13 @@ function WaterfallManagementPageContent() {
       const existsInView = !!selectedGroupId && filteredAdGroups.some((g) => g.id === selectedGroupId);
       // 如果当前选中已不存在、不可见、或选中的是默认分组但存在非默认分组，则需要重新选择
       const selectedGroup = selectedGroupId ? adGroups.find((g) => g.id === selectedGroupId) : undefined;
-      const isDefaultSelected = !!selectedGroup && selectedGroup.priority >= 999;
-      const hasNonDefaultVisible = filteredAdGroups.some((g) => g.priority < 999);
+      const isDefaultSelected = !!selectedGroup && isDefaultGroup(selectedGroup);
+      const hasNonDefaultVisible = filteredAdGroups.some((g) => !isDefaultGroup(g));
 
       if (!existsInData || !existsInView || (isDefaultSelected && hasNonDefaultVisible)) {
         // 优先从当前场景可见的分组中选第一个非默认分组
         const firstVisible = filteredAdGroups
-          .filter((g) => g.priority < 999)
+          .filter((g) => !isDefaultGroup(g))
           .sort((a, b) => b.priority - a.priority)[0];
         if (firstVisible) {
           setSelectedGroupId(firstVisible.id);
@@ -620,7 +625,7 @@ function WaterfallManagementPageContent() {
         }
         // 退而求其次，从全部分组中选第一个非默认分组
         const firstFromAll = adGroups
-          .filter((g) => g.priority < 999)
+          .filter((g) => !isDefaultGroup(g))
           .sort((a, b) => b.priority - a.priority)[0];
         if (firstFromAll) {
           setSelectedGroupId(firstFromAll.id);
@@ -635,7 +640,7 @@ function WaterfallManagementPageContent() {
       const stillExists = filteredAdGroups.some((g) => g.id === selectedGroupId);
       if (!stillExists) {
         const firstGroup = filteredAdGroups
-          .filter((g) => g.priority < 999)
+          .filter((g) => !isDefaultGroup(g))
           .sort((a, b) => b.priority - a.priority)[0];
         setSelectedGroupId(firstGroup?.id || filteredAdGroups[0]?.id || '');
       }
@@ -644,7 +649,7 @@ function WaterfallManagementPageContent() {
 
   // 获取当前选中的分组（从筛选后的分组中选），优先选非默认分组
   const currentGroup = filteredAdGroups.find((g) => g.id === selectedGroupId) 
-    || filteredAdGroups.filter(g => g.priority < 999).sort((a, b) => b.priority - a.priority)[0] 
+    || filteredAdGroups.filter(g => !isDefaultGroup(g)).sort((a, b) => b.priority - a.priority)[0] 
     || filteredAdGroups[0] 
     || adGroups[0];
   const enabledSources = currentGroup?.adSources.filter((s) => s.status === 'enabled') || [];
@@ -869,7 +874,7 @@ function WaterfallManagementPageContent() {
 
   // 复制分组 - 打开添加弹窗并填充配置（含分组下所有PID）
   const handleCopyGroup = useCallback((group: AdGroup) => {
-    const maxPriority = Math.max(...adGroups.filter(g => g.priority < 999).map(g => g.priority), 0);
+    const maxPriority = Math.max(...adGroups.filter(g => !isDefaultGroup(g)).map(g => g.priority), 1);
     setNewGroupName(`${group.name} - 副本`);
     setNewGroupPriority(maxPriority + 1);
     setNewGroupSlots([...group.adSlots]);
@@ -1201,8 +1206,8 @@ function WaterfallManagementPageContent() {
               {filteredAdGroups
                 .sort((a, b) => {
                   // 默认分组固定在最右
-                  if (a.priority >= 999) return 1;
-                  if (b.priority >= 999) return -1;
+                  if (isDefaultGroup(a)) return 1;
+                  if (isDefaultGroup(b)) return -1;
                   // 其他按优先级降序排列（数值越大优先级越高）
                   return b.priority - a.priority;
                 })
@@ -1216,7 +1221,7 @@ function WaterfallManagementPageContent() {
                         : 'text-[#1D2129] hover:text-[#86909C]'
                     }`}
                   >
-                    {group.priority >= 999 ? group.name : `${group.priority}-${group.name}`}
+                    {isDefaultGroup(group) ? group.name : `${group.priority}-${group.name}`}
                     {group.abTestStarted && (
                       <span className="px-1 py-0.5 text-[10px] font-bold bg-[#FF4D88] text-white rounded">
                         AB
@@ -1238,7 +1243,7 @@ function WaterfallManagementPageContent() {
                         <DropdownMenuItem onClick={() => {
                           setEditingGroup(group);
                           setNewGroupName(group.name);
-                          setNewGroupPriority(group.priority >= 999 ? 0 : group.priority);
+                          setNewGroupPriority(isDefaultGroup(group) ? 1 : group.priority);
                           setNewGroupRules([...group.rules]);
                           setShowAddGroupDialog(true);
                         }}>
@@ -1594,7 +1599,7 @@ function WaterfallManagementPageContent() {
                             <div className="flex flex-wrap gap-1">
                               {boundGroups.map((group, index) => (
                                 <span key={group.id} className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-[#FFF7ED] text-[#EA580C]">
-                                  {group.priority >= 999 ? '默认' : `${group.priority} - ${group.name}`}
+                                  {isDefaultGroup(group) ? '默认' : `${group.priority} - ${group.name}`}
                                 </span>
                               ))}
                             </div>
@@ -1810,13 +1815,17 @@ function WaterfallManagementPageContent() {
               <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0">
                 <span className="text-red-500">*</span> 优先级
               </label>
-              <Input
-                type="number"
-                value={newGroupPriority}
-                onChange={(e) => setNewGroupPriority(Number(e.target.value))}
-                className="w-48"
-                min={0}
-              />
+              {editingGroup && isDefaultGroup(editingGroup) ? (
+                <span className="text-sm text-[#86909C] bg-[#F5F5F5] px-3 py-1.5 rounded">1（默认分组，不可更改）</span>
+              ) : (
+                <Input
+                  type="number"
+                  value={newGroupPriority}
+                  onChange={(e) => setNewGroupPriority(Number(e.target.value))}
+                  className="w-48"
+                  min={2}
+                />
+              )}
             </div>
 
             {/* 广告场景 - 只读 */}

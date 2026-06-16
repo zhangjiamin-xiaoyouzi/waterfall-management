@@ -121,7 +121,7 @@ export interface AdSource {
 export interface AdGroup {
   id: string;
   name: string;
-  priority: number; // 优先级，数字越小优先级越低，默认分组 priority 为 Infinity
+  priority: number; // 优先级，数字越大优先级越高；默认分组 priority 固定为 1
   platforms: Platform[];
   adSlots: string[];
   scene: AdScene;          // 所属广告场景
@@ -163,7 +163,7 @@ export const MOCK_AD_GROUPS: AdGroup[] = [
   {
     id: 'splash-android-default',
     name: '默认分组',
-    priority: Infinity,
+    priority: 1,
     platforms: ['Android'],
     adSlots: ['1000'],
     scene: 'splash',
@@ -191,7 +191,7 @@ export const MOCK_AD_GROUPS: AdGroup[] = [
   {
     id: 'splash-android-group1',
     name: '开屏高价分组',
-    priority: 1,
+    priority: 2,
     platforms: ['Android'],
     adSlots: ['1000'],
     scene: 'splash',
@@ -205,7 +205,7 @@ export const MOCK_AD_GROUPS: AdGroup[] = [
   {
     id: 'splash-ios-default',
     name: '默认分组',
-    priority: Infinity,
+    priority: 1,
     platforms: ['iOS'],
     adSlots: ['1000'],
     scene: 'splash',
@@ -234,7 +234,7 @@ export const MOCK_AD_GROUPS: AdGroup[] = [
   {
     id: 'interstitial-android-default',
     name: '默认分组',
-    priority: Infinity,
+    priority: 1,
     platforms: ['Android'],
     adSlots: ['2101', '2514'],
     scene: 'interstitial',
@@ -262,7 +262,7 @@ export const MOCK_AD_GROUPS: AdGroup[] = [
   {
     id: 'interstitial-android-group1',
     name: '分组测试1',
-    priority: 1,
+    priority: 2,
     platforms: ['Android'],
     adSlots: ['2101'],
     scene: 'interstitial',
@@ -297,7 +297,7 @@ export const MOCK_AD_GROUPS: AdGroup[] = [
   {
     id: 'interstitial-android-group2',
     name: '分组测试2',
-    priority: 2,
+    priority: 3,
     platforms: ['Android'],
     adSlots: ['2514'],
     scene: 'interstitial',
@@ -326,7 +326,7 @@ export const MOCK_AD_GROUPS: AdGroup[] = [
   {
     id: 'interstitial-ios-default',
     name: '默认分组',
-    priority: Infinity,
+    priority: 1,
     platforms: ['iOS'],
     adSlots: ['2101', '2514'],
     scene: 'interstitial',
@@ -354,7 +354,7 @@ export const MOCK_AD_GROUPS: AdGroup[] = [
   {
     id: 'interstitial-ios-group1',
     name: '插屏iOS高价组',
-    priority: 1,
+    priority: 2,
     platforms: ['iOS'],
     adSlots: ['2101'],
     scene: 'interstitial',
@@ -368,7 +368,7 @@ export const MOCK_AD_GROUPS: AdGroup[] = [
   {
     id: 'search-android-default',
     name: '默认分组',
-    priority: Infinity,
+    priority: 1,
     platforms: ['Android'],
     adSlots: ['4001'],
     scene: 'search',
@@ -382,7 +382,7 @@ export const MOCK_AD_GROUPS: AdGroup[] = [
   {
     id: 'search-ios-default',
     name: '默认分组',
-    priority: Infinity,
+    priority: 1,
     platforms: ['iOS'],
     adSlots: ['4001'],
     scene: 'search',
@@ -396,7 +396,7 @@ export const MOCK_AD_GROUPS: AdGroup[] = [
   {
     id: 'feed-android-default',
     name: '默认分组',
-    priority: Infinity,
+    priority: 1,
     platforms: ['Android'],
     adSlots: ['1120', '1601', '1602'],
     scene: 'feed',
@@ -425,7 +425,7 @@ export const MOCK_AD_GROUPS: AdGroup[] = [
   {
     id: 'feed-ios-default',
     name: '默认分组',
-    priority: Infinity,
+    priority: 1,
     platforms: ['iOS'],
     adSlots: ['1120', '1601', '1602'],
     scene: 'feed',

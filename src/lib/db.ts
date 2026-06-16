@@ -108,7 +108,7 @@ function groupToInsert(group: AdGroup): typeof adGroups.$inferInsert {
   const insert: Record<string, unknown> = {
     id: group.id,
     name: group.name,
-    priority: group.priority === Infinity ? 999 : group.priority,
+    priority: group.priority === Infinity ? 1 : group.priority,
     platforms: group.platforms,
     adSlots: group.adSlots,
     scene: group.scene,
@@ -234,7 +234,7 @@ export async function updateGroup(id: string, updates: Partial<AdGroup>): Promis
 
   const dbUpdates: Record<string, unknown> = {};
   if (groupUpdates.name !== undefined) dbUpdates.name = groupUpdates.name;
-  if (groupUpdates.priority !== undefined) dbUpdates.priority = groupUpdates.priority === Infinity ? 999 : groupUpdates.priority;
+  if (groupUpdates.priority !== undefined) dbUpdates.priority = groupUpdates.priority === Infinity ? 1 : groupUpdates.priority;
   if (groupUpdates.platforms !== undefined) dbUpdates.platforms = groupUpdates.platforms;
   if (groupUpdates.adSlots !== undefined) dbUpdates.adSlots = groupUpdates.adSlots;
   if (groupUpdates.scene !== undefined) dbUpdates.scene = groupUpdates.scene;
