@@ -119,15 +119,9 @@ export function TimeSlotPicker({ value, onChange }: TimeSlotPickerProps) {
             清空
           </button>
         </div>
-        <div className="flex items-center gap-3 text-xs text-[#86909C]">
-          <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded-sm bg-[#0B7CFF]" />
-            <span>投放时间</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded-sm border border-[#E5E6EB]" />
-            <span>不投放时间</span>
-          </div>
+        <div className="flex items-center gap-1 text-xs text-[#86909C]">
+          <div className="w-3 h-3 rounded-sm bg-[#0B7CFF]" />
+          <span>已选时段</span>
         </div>
       </div>
 
