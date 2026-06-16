@@ -1301,9 +1301,10 @@ function WaterfallManagementPageContent() {
                               return `${opLabel} ${rule.values.join('、')}`;
                             }
                             if (rule.ruleType === 'device_id') {
+                              const opLabel = rule.matchType === 'include' ? '包含' : '排除';
                               const displayItems = rule.values.slice(0, 3);
                               const remaining = rule.values.length - 3;
-                              return displayItems.join('、') + (remaining > 0 ? ` 等${rule.values.length}个设备` : '');
+                              return `${opLabel} ${displayItems.join('、')}` + (remaining > 0 ? ` 等${rule.values.length}个设备` : '');
                             }
                             if (rule.ruleType === 'app_version') {
                               const opLabels: Record<string, string> = { '>=': '≥', '>': '>', '=': '=', '<=': '≤', '<': '<' };
@@ -1893,7 +1894,7 @@ function WaterfallManagementPageContent() {
                           ))}
                         </SelectContent>
                       </Select>
-                      {rule.ruleType !== 'device_id' && rule.ruleType !== 'app_version' && (
+                      {rule.ruleType !== 'app_version' && (
                       <Select
                         value={rule.matchType}
                         onValueChange={(val: MatchType) => {
@@ -1906,8 +1907,8 @@ function WaterfallManagementPageContent() {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="include">{rule.ruleType === 'time_period' ? '包含' : '包含'}</SelectItem>
-                          <SelectItem value="exclude">{rule.ruleType === 'time_period' ? '排除' : '不包含'}</SelectItem>
+                          <SelectItem value="include">{rule.ruleType === 'time_period' || rule.ruleType === 'device_id' ? '包含' : '包含'}</SelectItem>
+                          <SelectItem value="exclude">{rule.ruleType === 'time_period' || rule.ruleType === 'device_id' ? '排除' : '不包含'}</SelectItem>
                         </SelectContent>
                       </Select>
                       )}
