@@ -1074,6 +1074,31 @@
           "ecpm": 0,
           "thousandRequestValue": 0,
           "lastUpdated": ""
+        },
+        {
+          "id": "source-1781589328864",
+          "name": "腾讯广告",
+          "status": "enabled",
+          "pricingType": "bidding",
+          "price": 0,
+          "estimatedRevenue": 0,
+          "ecpm": 0,
+          "thousandRequestValue": 0,
+          "requests": 0,
+          "responses": 0,
+          "responseRate": 0,
+          "bidWins": 0,
+          "bidWinRate": 0,
+          "lastUpdated": "2026/6/16 13:55:28",
+          "platforms": [
+            "Android"
+          ],
+          "codeId": "1111111",
+          "subPositions": [],
+          "dspSources": [
+            "dsp_3"
+          ],
+          "dimension": "全尺寸"
         }
       ]
     },

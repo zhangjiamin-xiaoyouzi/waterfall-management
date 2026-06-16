@@ -190,23 +190,21 @@ const [pidCustomSize, setPidCustomSize] = useState('');
   const currentGroup = groups.find(g => g.id === selectedGroupId);
 
   // Auto-populate A/B test config with group's DSP sources when group data loads
+  // 当 selectedGroupId 变化时（用户切换分组或首次加载），始终重新填充 DSP 来源
   useEffect(() => {
-    if (currentGroup?.adSources && currentGroup.adSources.length > 0) {
-      setAbTestConfig(prev => {
-        // Only auto-populate when currently empty (initial load or group switch)
-        if (prev.enabledSources.length === 0) {
-          return {
-            enabledSources: currentGroup.adSources.map(s => ({
-              ...s,
-              priceA: s.priceA ?? s.price,
-              priceB: s.priceB ?? s.price,
-            }))
-          };
-        }
-        return prev;
+    if (currentGroup?.adSources) {
+      setAbTestConfig({
+        enabledSources: currentGroup.adSources.map(s => ({
+          ...s,
+          priceA: s.priceA ?? s.price,
+          priceB: s.priceB ?? s.price,
+        }))
       });
+    } else {
+      // No group data yet, clear config
+      setAbTestConfig({ enabledSources: [] });
     }
-  }, [currentGroup]);
+  }, [selectedGroupId, currentGroup?.id]);
 
   const enabledSources = abTestConfig.enabledSources?.filter(s => s.status === 'enabled') || [];
   const disabledSources = abTestConfig.enabledSources?.filter(s => s.status !== 'enabled') || [];
