@@ -1588,7 +1588,7 @@ function WaterfallManagementPageContent() {
                             <div className="flex flex-wrap gap-1">
                               {boundGroups.map((group, index) => (
                                 <span key={group.id} className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-[#FFF7ED] text-[#EA580C]">
-                                  {group.priority === Infinity ? '默认' : `${group.priority} - ${group.name}`}
+                                  {group.priority >= 999 ? '默认' : `${group.priority} - ${group.name}`}
                                 </span>
                               ))}
                             </div>

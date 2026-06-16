@@ -197,13 +197,7 @@ export async function getAllGroups(): Promise<AdGroup[]> {
     sourceMap.set(s.groupId, list);
   }
 
-  // restore priority sentinel: Infinity -> we use 999 to represent it in DB
-  return rows.map(r => {
-    const group = rowToGroup(r, sourceMap.get(r.id) || []);
-    // priority 999 in DB means Infinity (default group)
-    if (group.priority === 999) group.priority = Infinity;
-    return group;
-  });
+  return rows.map(r => rowToGroup(r, sourceMap.get(r.id) || []));
 }
 
 export async function getGroupById(id: string): Promise<AdGroup | undefined> {
@@ -214,7 +208,6 @@ export async function getGroupById(id: string): Promise<AdGroup | undefined> {
   if (rows.length === 0) return undefined;
   const sources = await db.select().from(adSources).where(eq(adSources.groupId, id));
   const group = rowToGroup(rows[0], sources.map(rowToSource));
-  if (group.priority === 999) group.priority = Infinity;
   return group;
 }
 
