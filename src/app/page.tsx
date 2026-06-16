@@ -2,7 +2,6 @@
 
 import React, { useState, useCallback, useEffect, useMemo, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { TimeSlotPicker } from '@/components/time-slot-picker';
 import {
   Tv,
   RectangleHorizontal,
@@ -1300,12 +1299,9 @@ function WaterfallManagementPageContent() {
                               }).join('、');
                             }
                             if (rule.ruleType === 'time_period') {
-                              // 时段规则：转换为可读描述
-                              const DAY_NAMES: Record<string, string> = { mon: '周一', tue: '周二', wed: '周三', thu: '周四', fri: '周五', sat: '周六', sun: '周日' };
-                              return rule.values.map(val => {
-                                const [day, hour] = val.split('-');
-                                return `${DAY_NAMES[day] || day} ${hour.padStart(2, '0')}:00-${String(Number(hour) + 1).padStart(2, '0')}:00`;
-                              }).join('、');
+                              // 时段规则：显示包含/排除 + 星期
+                              const opLabel = rule.matchType === 'include' ? '包含' : '排除';
+                              return `${opLabel} ${rule.values.join('、')}`;
                             }
                             if (rule.ruleType === 'device_id') {
                               const displayItems = rule.values.slice(0, 3);
@@ -1883,6 +1879,9 @@ function WaterfallManagementPageContent() {
                           } else {
                             delete updated[index].operator;
                           }
+                          if (val === 'time_period') {
+                            updated[index].matchType = 'include';
+                          }
                           setNewGroupRules(updated);
                         }}
                       >
@@ -1897,7 +1896,7 @@ function WaterfallManagementPageContent() {
                           ))}
                         </SelectContent>
                       </Select>
-                      {rule.ruleType !== 'time_period' && rule.ruleType !== 'device_id' && rule.ruleType !== 'app_version' && (
+                      {rule.ruleType !== 'device_id' && rule.ruleType !== 'app_version' && (
                       <Select
                         value={rule.matchType}
                         onValueChange={(val: MatchType) => {
@@ -1910,19 +1909,21 @@ function WaterfallManagementPageContent() {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="include">包含</SelectItem>
-                          <SelectItem value="exclude">不包含</SelectItem>
+                          <SelectItem value="include">{rule.ruleType === 'time_period' ? '包含' : '包含'}</SelectItem>
+                          <SelectItem value="exclude">{rule.ruleType === 'time_period' ? '排除' : '不包含'}</SelectItem>
                         </SelectContent>
                       </Select>
                       )}
                       {rule.ruleType === 'time_period' ? (
-                        <TimeSlotPicker
+                        <MultipleSelect
                           value={rule.values}
                           onChange={(values) => {
                             const updated = [...newGroupRules];
                             updated[index].values = values;
                             setNewGroupRules(updated);
                           }}
+                          options={RULE_VALUES.time_period.values.map((val) => ({ label: val, value: val }))}
+                          placeholder="请选择星期"
                         />
                       ) : rule.ruleType === 'device_id' ? (
                         <textarea

@@ -60,7 +60,7 @@ export const RULE_VALUES: Record<RuleType, { label: string; values: string[] }> 
   },
   time_period: {
     label: '时段',
-    values: ['00:00-06:00', '06:00-09:00', '09:00-12:00', '12:00-14:00', '14:00-18:00', '18:00-21:00', '21:00-24:00'],
+    values: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
   },
   sub_position: {
     label: '子位',
