@@ -15,30 +15,31 @@ export type MatchType = 'include' | 'exclude';
 export type VersionOperator = '>=' | '>' | '=' | '<=' | '<';
 
 // 广告位对应的子位配置
-export const SLOT_SUB_POSITIONS: Record<string, { id: string; name: string }[]> = {
-  '1000': [
-    { id: '10001', name: '开屏子位1' },
-    { id: '10002', name: '开屏子位2' },
-  ],
-  '2101': [
-    { id: '21011', name: '首页插屏子位1' },
-    { id: '21012', name: '首页插屏子位2' },
-  ],
-  '2514': [
-    { id: '25141', name: '爱爱记录插屏子位1' },
-  ],
-  '1120': [
-    { id: '11201', name: '首页feeds流子位1' },
-    { id: '11202', name: '首页feeds流子位2' },
-  ],
-  '1601': [
-    { id: '16011', name: '帖子详情楼间广告子位1' },
-  ],
-  '1602': [
-    { id: '16021', name: '帖子详情信息流子位1' },
-    { id: '16022', name: '帖子详情信息流子位2' },
-  ],
+// 每个广告位有固定子位（1~N）和长尾开始位（N+1 起的起始编号）
+export const SLOT_SUB_POSITIONS: Record<string, { fixedCount: number; longTailStart: number }> = {
+  '1000': { fixedCount: 2, longTailStart: 3 },
+  '2101': { fixedCount: 2, longTailStart: 3 },
+  '2514': { fixedCount: 1, longTailStart: 2 },
+  '1120': { fixedCount: 2, longTailStart: 21 },
+  '1601': { fixedCount: 1, longTailStart: 2 },
+  '1602': { fixedCount: 2, longTailStart: 3 },
 };
+
+// 生成子位选项列表（用于多选下拉）
+export function generateSubPositionOptions(slotId: string, slotName: string): { label: string; value: string }[] {
+  const config = SLOT_SUB_POSITIONS[slotId];
+  if (!config) return [];
+  const options: { label: string; value: string }[] = [];
+  // 固定子位
+  for (let i = 1; i <= config.fixedCount; i++) {
+    const value = `${slotId}-${slotName}-固定子位-${i}`;
+    options.push({ label: value, value });
+  }
+  // 长尾开始位
+  const longTailValue = `${slotId}-${slotName}-长尾开始位-${config.longTailStart}`;
+  options.push({ label: longTailValue, value: longTailValue });
+  return options;
+}
 
 // 规则类型对应枚举值
 export const RULE_VALUES: Record<RuleType, { label: string; values: string[] }> = {

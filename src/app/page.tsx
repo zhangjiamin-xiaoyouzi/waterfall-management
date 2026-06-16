@@ -94,6 +94,7 @@ import {
   type VersionOperator,
   RULE_VALUES,
   SLOT_SUB_POSITIONS,
+  generateSubPositionOptions,
 } from '@/lib/waterfall-types';
 
 // DSP来源颜色标识配置
@@ -1291,12 +1292,8 @@ function WaterfallManagementPageContent() {
                           // 获取规则值的显示文本
                           const getDisplayValues = () => {
                             if (rule.ruleType === 'sub_position') {
-                              // 子位规则：显示ID和名称
-                              const allSubPositions = Object.values(SLOT_SUB_POSITIONS).flat();
-                              return rule.values.map(val => {
-                                const sp = allSubPositions.find(s => s.id === val);
-                                return sp ? `${sp.id} - ${sp.name}` : val;
-                              }).join('、');
+                              // 子位规则：直接显示完整标签（如 1120-首页feeds流-固定子位-2）
+                              return rule.values.join('、');
                             }
                             if (rule.ruleType === 'time_period') {
                               // 时段规则：显示包含/排除 + 星期
@@ -1980,17 +1977,10 @@ function WaterfallManagementPageContent() {
                           options={
                             rule.ruleType === 'sub_position'
                               ? (() => {
-                                  // 根据选择的广告位获取子位
+                                  // 根据选择的广告位生成子位选项（固定子位 + 长尾开始位）
                                   const subPositionOptions = newGroupSlots.flatMap(slotId => 
-                                    (SLOT_SUB_POSITIONS[slotId] || []).map(sp => ({
-                                      label: `${sp.id} - ${sp.name}`,
-                                      value: sp.id,
-                                    }))
+                                    generateSubPositionOptions(slotId, SLOT_NAME_MAP[slotId] || slotId)
                                   );
-                                  // 如果没有选择广告位或没有子位配置，使用默认值
-                                  if (subPositionOptions.length === 0) {
-                                    return RULE_VALUES[rule.ruleType]?.values?.map((val) => ({ label: val, value: val })) || [];
-                                  }
                                   return subPositionOptions;
                                 })()
                               : RULE_VALUES[rule.ruleType]?.values?.map((val) => ({ label: val, value: val })) || []
