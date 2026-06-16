@@ -92,6 +92,7 @@ import {
   type RuleType,
   type GroupRule,
   type MatchType,
+  type VersionOperator,
   RULE_VALUES,
   SLOT_SUB_POSITIONS,
 } from '@/lib/waterfall-types';
@@ -1311,11 +1312,15 @@ function WaterfallManagementPageContent() {
                               const remaining = rule.values.length - 3;
                               return displayItems.join('、') + (remaining > 0 ? ` 等${rule.values.length}个设备` : '');
                             }
+                            if (rule.ruleType === 'app_version') {
+                              const opLabels: Record<string, string> = { '>=': '≥', '>': '>', '=': '=', '<=': '≤', '<': '<' };
+                              return `${opLabels[rule.operator || '>='] || '≥'} ${rule.values[0] || ''}`;
+                            }
                             return rule.values.join('、');
                           };
                           return (
                             <Badge key={index} variant="secondary" className="bg-[#F2F3F5] text-[#1D2129] border border-[#E5E6EB]">
-                              {RULE_VALUES[rule.ruleType]?.label || rule.ruleType}{rule.ruleType !== 'time_period' && rule.ruleType !== 'device_id' ? ` ${rule.matchType === 'include' ? '包含' : '不包含'} ` : '：'}{getDisplayValues()}
+                              {RULE_VALUES[rule.ruleType]?.label || rule.ruleType}{rule.ruleType !== 'time_period' && rule.ruleType !== 'device_id' && rule.ruleType !== 'app_version' ? ` ${rule.matchType === 'include' ? '包含' : '不包含'} ` : '：'}{getDisplayValues()}
                             </Badge>
                           );
                         })}
@@ -1873,6 +1878,11 @@ function WaterfallManagementPageContent() {
                           const updated = [...newGroupRules];
                           updated[index].ruleType = val;
                           updated[index].values = [];
+                          if (val === 'app_version') {
+                            updated[index].operator = '>=';
+                          } else {
+                            delete updated[index].operator;
+                          }
                           setNewGroupRules(updated);
                         }}
                       >
@@ -1887,7 +1897,7 @@ function WaterfallManagementPageContent() {
                           ))}
                         </SelectContent>
                       </Select>
-                      {rule.ruleType !== 'time_period' && rule.ruleType !== 'device_id' && (
+                      {rule.ruleType !== 'time_period' && rule.ruleType !== 'device_id' && rule.ruleType !== 'app_version' && (
                       <Select
                         value={rule.matchType}
                         onValueChange={(val: MatchType) => {
@@ -1926,6 +1936,38 @@ function WaterfallManagementPageContent() {
                             setNewGroupRules(updated);
                           }}
                         />
+                      ) : rule.ruleType === 'app_version' ? (
+                        <div className="flex items-center gap-2 flex-1">
+                          <Select
+                            value={rule.operator || '>='}
+                            onValueChange={(val: VersionOperator) => {
+                              const updated = [...newGroupRules];
+                              updated[index].operator = val;
+                              setNewGroupRules(updated);
+                            }}
+                          >
+                            <SelectTrigger className="w-28">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value=">=">大于等于</SelectItem>
+                              <SelectItem value=">">大于</SelectItem>
+                              <SelectItem value="=">等于</SelectItem>
+                              <SelectItem value="<=">小于等于</SelectItem>
+                              <SelectItem value="<">小于</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <Input
+                            className="flex-1"
+                            placeholder="请输入版本如 9.01.0"
+                            value={rule.values[0] || ''}
+                            onChange={(e) => {
+                              const updated = [...newGroupRules];
+                              updated[index].values = e.target.value ? [e.target.value] : [];
+                              setNewGroupRules(updated);
+                            }}
+                          />
+                        </div>
                       ) : (
                         <MultipleSelect
                           value={rule.values}

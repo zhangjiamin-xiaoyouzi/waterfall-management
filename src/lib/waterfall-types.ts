@@ -11,6 +11,9 @@ export type RuleType = 'app_version' | 'region' | 'identity' | 'phone_brand' | '
 
 export type MatchType = 'include' | 'exclude';
 
+// 应用版本比较运算符
+export type VersionOperator = '>=' | '>' | '=' | '<=' | '<';
+
 // 广告位对应的子位配置
 export const SLOT_SUB_POSITIONS: Record<string, { id: string; name: string }[]> = {
   '1000': [
@@ -41,7 +44,7 @@ export const SLOT_SUB_POSITIONS: Record<string, { id: string; name: string }[]> 
 export const RULE_VALUES: Record<RuleType, { label: string; values: string[] }> = {
   app_version: {
     label: '应用版本',
-    values: ['1.0.0', '1.1.0', '1.2.0', '2.0.0', '2.1.0'],
+    values: [], // 不再使用预定义值，改为运算符+输入框
   },
   region: {
     label: '地区',
@@ -73,6 +76,7 @@ export interface GroupRule {
   ruleType: RuleType;
   matchType: MatchType;
   values: string[];
+  operator?: VersionOperator; // 应用版本比较运算符
 }
 
 export interface AdSource {
