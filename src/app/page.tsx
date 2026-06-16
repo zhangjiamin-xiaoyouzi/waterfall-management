@@ -1320,7 +1320,7 @@ function WaterfallManagementPageContent() {
                           };
                           return (
                             <Badge key={index} variant="secondary" className="bg-[#F2F3F5] text-[#1D2129] border border-[#E5E6EB]">
-                              {RULE_VALUES[rule.ruleType]?.label || rule.ruleType}{rule.ruleType !== 'time_period' && rule.ruleType !== 'device_id' && rule.ruleType !== 'app_version' ? ` ${rule.matchType === 'include' ? '包含' : '不包含'} ` : '：'}{getDisplayValues()}
+                              {RULE_VALUES[rule.ruleType]?.label || rule.ruleType}{rule.ruleType !== 'time_period' && rule.ruleType !== 'device_id' && rule.ruleType !== 'app_version' ? ` ${rule.matchType === 'include' ? '包含' : '排除'} ` : '：'}{getDisplayValues()}
                             </Badge>
                           );
                         })}
@@ -1914,7 +1914,7 @@ function WaterfallManagementPageContent() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="include">{rule.ruleType === 'time_period' || rule.ruleType === 'device_id' ? '包含' : '包含'}</SelectItem>
-                          <SelectItem value="exclude">{rule.ruleType === 'time_period' || rule.ruleType === 'device_id' ? '排除' : '不包含'}</SelectItem>
+                          <SelectItem value="exclude">排除</SelectItem>
                         </SelectContent>
                       </Select>
                       )}
