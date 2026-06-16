@@ -79,6 +79,7 @@ import {
 } from '@/components/ui/tooltip';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Command, CommandInput, CommandList, CommandEmpty, CommandItem } from '@/components/ui/command';
+import { TimeSlotPicker } from '@/components/time-slot-picker';
 import { ChevronDownIcon, ChevronsRightIcon, ChevronsLeftIcon, InboxIcon, SearchIcon } from 'lucide-react';
 import {
   SCENE_NAV_ITEMS,
@@ -1296,9 +1297,14 @@ function WaterfallManagementPageContent() {
                               return rule.values.join('、');
                             }
                             if (rule.ruleType === 'time_period') {
-                              // 时段规则：显示包含/排除 + 星期
+                              // 时段规则：显示包含/排除 + 星期 + 时间段数量
                               const opLabel = rule.matchType === 'include' ? '包含' : '排除';
-                              return `${opLabel} ${rule.values.join('、')}`;
+                              const weekdays = rule.values.filter(v => ['周一','周二','周三','周四','周五','周六','周日'].includes(v));
+                              const timeSlots = rule.values.filter(v => !['周一','周二','周三','周四','周五','周六','周日'].includes(v));
+                              const parts: string[] = [];
+                              if (weekdays.length > 0) parts.push(weekdays.join('、'));
+                              if (timeSlots.length > 0) parts.push(`${timeSlots.length}个时段`);
+                              return `${opLabel} ${parts.join('，')}`;
                             }
                             if (rule.ruleType === 'device_id') {
                               const opLabel = rule.matchType === 'include' ? '包含' : '排除';
@@ -1913,16 +1919,30 @@ function WaterfallManagementPageContent() {
                       </Select>
                       )}
                       {rule.ruleType === 'time_period' ? (
-                        <MultipleSelect
-                          value={rule.values}
-                          onChange={(values) => {
-                            const updated = [...newGroupRules];
-                            updated[index].values = values;
-                            setNewGroupRules(updated);
-                          }}
-                          options={RULE_VALUES.time_period.values.map((val) => ({ label: val, value: val }))}
-                          placeholder="请选择星期"
-                        />
+                        <div className="space-y-2 flex-1">
+                          <MultipleSelect
+                            value={rule.values.filter(v => ['周一','周二','周三','周四','周五','周六','周日'].includes(v))}
+                            onChange={(values) => {
+                              const updated = [...newGroupRules];
+                              // 保留图表选择的时间段，只替换星期选择
+                              const timeSlots = updated[index].values.filter(v => !['周一','周二','周三','周四','周五','周六','周日'].includes(v));
+                              updated[index].values = [...timeSlots, ...values];
+                              setNewGroupRules(updated);
+                            }}
+                            options={RULE_VALUES.time_period.values.map((val) => ({ label: val, value: val }))}
+                            placeholder="快捷选择星期"
+                          />
+                          <TimeSlotPicker
+                            value={rule.values.filter(v => !['周一','周二','周三','周四','周五','周六','周日'].includes(v))}
+                            onChange={(timeSlots) => {
+                              const updated = [...newGroupRules];
+                              // 保留星期选择，只替换图表选择的时间段
+                              const weekdays = updated[index].values.filter(v => ['周一','周二','周三','周四','周五','周六','周日'].includes(v));
+                              updated[index].values = [...weekdays, ...timeSlots];
+                              setNewGroupRules(updated);
+                            }}
+                          />
+                        </div>
                       ) : rule.ruleType === 'device_id' ? (
                         <textarea
                           className="w-full min-h-[80px] px-3 py-2 text-sm border border-[#E5E6EB] rounded-lg focus:outline-none focus:border-[#FF4D88] resize-none"
