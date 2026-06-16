@@ -3,7 +3,7 @@ import { getSourceById, addSourceToGroup, batchUpdateSources, getAllGroups } fro
 
 export async function GET() {
   try {
-    const groups = getAllGroups();
+    const groups = await getAllGroups();
     const allSources = groups.flatMap((g) => g.adSources);
     return NextResponse.json({ success: true, data: allSources });
   } catch (error) {
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    const created = addSourceToGroup(groupId, source);
+    const created = await addSourceToGroup(groupId, source);
     if (!created) {
       return NextResponse.json(
         { success: false, error: '分组不存在' },
@@ -50,7 +50,7 @@ export async function PUT(request: NextRequest) {
         { status: 400 }
       );
     }
-    const count = batchUpdateSources(sourceIds, updates);
+    const count = await batchUpdateSources(sourceIds, updates);
     return NextResponse.json({ success: true, data: { updatedCount: count } });
   } catch (error) {
     return NextResponse.json(

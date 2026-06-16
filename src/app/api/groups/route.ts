@@ -3,7 +3,7 @@ import { getAllGroups, createGroup, updateGroup } from '@/lib/db';
 
 export async function GET() {
   try {
-    const groups = getAllGroups();
+    const groups = await getAllGroups();
     return NextResponse.json({ success: true, data: groups });
   } catch (error) {
     return NextResponse.json(
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    const created = createGroup(group);
+    const created = await createGroup(group);
     return NextResponse.json({ success: true, data: created }, { status: 201 });
   } catch (error) {
     return NextResponse.json(
@@ -43,7 +43,7 @@ export async function PUT(request: NextRequest) {
         { status: 400 }
       );
     }
-    const updated = updateGroup(id, updates);
+    const updated = await updateGroup(id, updates);
     if (!updated) {
       return NextResponse.json(
         { success: false, error: '分组不存在' },

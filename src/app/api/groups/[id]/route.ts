@@ -5,7 +5,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
   try {
     const { id } = await params;
     const body = await request.json();
-    const updated = updateGroup(id, body);
+    const updated = await updateGroup(id, body);
     if (!updated) {
       return NextResponse.json(
         { success: false, error: '分组不存在' },
@@ -24,7 +24,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    const deleted = deleteGroup(id);
+    const deleted = await deleteGroup(id);
     if (!deleted) {
       return NextResponse.json(
         { success: false, error: '分组不存在' },

@@ -5,7 +5,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
   try {
     const { id } = await params;
     const body = await request.json();
-    const updated = updateSource(id, body);
+    const updated = await updateSource(id, body);
     if (!updated) {
       return NextResponse.json(
         { success: false, error: '广告源不存在' },
@@ -24,7 +24,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    const deleted = deleteSource(id);
+    const deleted = await deleteSource(id);
     if (!deleted) {
       return NextResponse.json(
         { success: false, error: '广告源不存在' },

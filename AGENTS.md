@@ -31,12 +31,18 @@
 │   ├── components/ui/         # Shadcn UI 组件库
 │   └── lib/
 │       ├── utils.ts           # 通用工具函数
-│       ├── db.ts              # 数据库操作（JSON文件持久化）
+│       ├── database.ts        # Drizzle ORM 数据库客户端 (Neon/Supabase)
+│       ├── db.ts              # 数据库操作（Supabase/Drizzle ORM）
 │       └── waterfall-types.ts  # 瀑布流管理类型定义
+├── storage/
+│   └── database/
+│       └── shared/
+│           ├── schema.ts      # Drizzle ORM 表定义 (ad_groups, ad_sources)
+│           └── relations.ts   # 表关联定义
 ├── public/                    # 静态资源
-│   └── waterfall-management.html  # 独立HTML部署版本
 ├── data/                      # 运行时数据
-└── .coze                      # 项目配置
+├── .coze                      # 项目配置
+└── netlify.toml               # Netlify 部署配置
 ```
 
 ## 页面布局
@@ -174,3 +180,11 @@ pnpm start
 - 服务端口：5000
 - 开发环境自动热更新
 - 使用 pnpm 作为包管理器（禁止使用 npm/yarn）
+- **数据存储**：已从 JSON 文件迁移至 **Supabase (Neon PostgreSQL)**，通过 Drizzle ORM 操作
+- **环境变量**：
+  - `PGDATABASE_URL` — Neon/PostgreSQL 连接字符串（供 Drizzle ORM 使用）
+  - `COZE_SUPABASE_URL` / `COZE_SUPABASE_ANON_KEY` — Supabase 认证用
+- **数据库表**：`ad_groups`（分组）+ `ad_sources`（广告源），一对多关系，外键级联删除
+- **初始化**：首次启动时自动从 `MOCK_AD_GROUPS` 写入种子数据
+- **禁用源**：每个分组自动附加「女人通」「柚+」两个禁用源
+- 颜色值遵循 admin-design 规范：主色 #FF4D88，背景 #F2F2F5
