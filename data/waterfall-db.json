@@ -241,7 +241,9 @@
           "codeId": "10011",
           "dspSources": [
             "mintegral"
-          ]
+          ],
+          "priceA": 18.5,
+          "priceB": 18.5
         },
         {
           "id": "sp-ios-s2",
@@ -270,7 +272,9 @@
           "codeId": "10013",
           "dspSources": [
             "kuaishou"
-          ]
+          ],
+          "priceA": 15.2,
+          "priceB": 15.2
         },
         {
           "id": "splash-ios-default-disabled-4",
@@ -296,7 +300,9 @@
           "revenuePerThousand": 0,
           "ecpm": 0,
           "thousandRequestValue": 0,
-          "lastUpdated": ""
+          "lastUpdated": "",
+          "priceA": 0,
+          "priceB": 0
         },
         {
           "id": "splash-ios-default-disabled-5",
@@ -322,7 +328,9 @@
           "revenuePerThousand": 0,
           "ecpm": 0,
           "thousandRequestValue": 0,
-          "lastUpdated": ""
+          "lastUpdated": "",
+          "priceA": 0,
+          "priceB": 0
         },
         {
           "id": "source-1781146128184",
@@ -349,7 +357,9 @@
           ],
           "dimension": "全尺寸",
           "overrideMode": true,
-          "overridePids": "[{\"codeId\":\"1212121\"}]"
+          "overridePids": "[{\"codeId\":\"1212121\"}]",
+          "priceA": 0,
+          "priceB": 0
         },
         {
           "id": "source-1781147349071",
@@ -376,7 +386,9 @@
           ],
           "dimension": "全尺寸",
           "overrideMode": true,
-          "overridePids": "[{\"codeId\":\"121212\",\"minVersion\":\"9.01.0\"},{\"codeId\":\"1213131\",\"minVersion\":\"9.01.0\"}]"
+          "overridePids": "[{\"codeId\":\"121212\",\"minVersion\":\"9.01.0\"},{\"codeId\":\"1213131\",\"minVersion\":\"9.01.0\"}]",
+          "priceA": 0,
+          "priceB": 0
         },
         {
           "id": "source-1781147449692",
@@ -403,9 +415,13 @@
           ],
           "dimension": "全尺寸",
           "overrideMode": true,
-          "overridePids": "[{\"codeId\":\"232323\"},{\"codeId\":\"32323\"}]"
+          "overridePids": "[{\"codeId\":\"232323\"},{\"codeId\":\"32323\"}]",
+          "priceA": 0,
+          "priceB": 0
         }
-      ]
+      ],
+      "hasABTest": true,
+      "abTestStarted": true
     },
     {
       "id": "interstitial-android-default",

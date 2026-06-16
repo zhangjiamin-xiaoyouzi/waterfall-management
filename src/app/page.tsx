@@ -2828,13 +2828,29 @@ function WaterfallManagementPageContent() {
             <Button variant="outline" onClick={() => setAbTestStep(0)}>
               取消测试
             </Button>
-            <Button className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white" onClick={() => {
-              // 更新分组状态，标记A/B测试已启动
-              setAdGroups(prev => prev.map(g => g.id === selectedGroupId ? { ...g, hasABTest: true, abTestStarted: true } : g));
-              // 关闭弹窗并显示成功提示
-              setAbTestStep(0);
-              setShowABTestDialog(false);
-              alert('A/B测试创建成功！');
+            <Button className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white" onClick={async () => {
+              // 更新分组状态，标记A/B测试已启动（持久化到后端）
+              try {
+                const res = await fetch('/api/groups', {
+                  method: 'PUT',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    id: selectedGroupId,
+                    hasABTest: true,
+                    abTestStarted: true,
+                  }),
+                });
+                if (res.ok) {
+                  setAdGroups(prev => prev.map(g => g.id === selectedGroupId ? { ...g, hasABTest: true, abTestStarted: true } : g));
+                  setAbTestStep(0);
+                  setShowABTestDialog(false);
+                  alert('A/B测试创建成功！');
+                } else {
+                  alert('A/B测试创建失败，请重试');
+                }
+              } catch {
+                alert('A/B测试创建失败，请重试');
+              }
             }}>
               开启测试
             </Button>
