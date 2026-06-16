@@ -1789,11 +1789,11 @@ function WaterfallManagementPageContent() {
           setNewGroupRules([]);
         }
       }}>
-        <DialogContent className="sm:max-w-[700px]">
+        <DialogContent className="sm:max-w-[700px] flex flex-col max-h-[85vh]">
           <DialogHeader>
             <DialogTitle>{editingGroup ? '编辑分组' : '添加分组'}</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-4">
+          <div className="space-y-4 py-4 overflow-y-auto flex-1 min-h-0">
             {/* 分组名称 */}
             <div className="flex items-center">
               <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0"><span className="text-red-500">*</span> 分组名称</label>
