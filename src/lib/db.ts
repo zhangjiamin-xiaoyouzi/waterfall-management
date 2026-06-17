@@ -22,6 +22,8 @@ function rowToGroup(row: typeof adGroups.$inferSelect, sources: AdSource[]): AdG
     adSources: sources,
     hasABTest: row.hasAbTest ?? undefined,
     abTestStarted: row.abTestStarted ?? undefined,
+    abTestStartedAt: row.abTestStartedAt ?? undefined,
+    abTestEndedAt: row.abTestEndedAt ?? undefined,
     abTestDraftData: row.abTestDraftData as AdGroup['abTestDraftData'] ?? undefined,
   };
 }
@@ -119,6 +121,8 @@ function groupToInsert(group: AdGroup): typeof adGroups.$inferInsert {
   };
   if (group.hasABTest !== undefined) insert.hasAbTest = group.hasABTest;
   if (group.abTestStarted !== undefined) insert.abTestStarted = group.abTestStarted;
+  if (group.abTestStartedAt !== undefined) insert.abTestStartedAt = group.abTestStartedAt;
+  if (group.abTestEndedAt !== undefined) insert.abTestEndedAt = group.abTestEndedAt;
   if (group.abTestDraftData !== undefined) insert.abTestDraftData = group.abTestDraftData;
   return insert as typeof adGroups.$inferInsert;
 }
@@ -244,6 +248,8 @@ export async function updateGroup(id: string, updates: Partial<AdGroup>): Promis
   if (groupUpdates.floorPrice !== undefined) dbUpdates.floorPrice = groupUpdates.floorPrice;
   if (groupUpdates.hasABTest !== undefined) dbUpdates.hasAbTest = groupUpdates.hasABTest;
   if (groupUpdates.abTestStarted !== undefined) dbUpdates.abTestStarted = groupUpdates.abTestStarted;
+  if (groupUpdates.abTestStartedAt !== undefined) dbUpdates.abTestStartedAt = groupUpdates.abTestStartedAt;
+  if (groupUpdates.abTestEndedAt !== undefined) dbUpdates.abTestEndedAt = groupUpdates.abTestEndedAt;
   if (groupUpdates.abTestDraftData !== undefined) dbUpdates.abTestDraftData = groupUpdates.abTestDraftData;
 
   await db.update(adGroups).set(dbUpdates).where(eq(adGroups.id, id));

@@ -125,6 +125,12 @@ const formatNumber = (num: number) => {
   return num.toLocaleString();
 };
 
+const formatDbDate = (dateStr: string) => {
+  const d = new Date(dateStr);
+  const pad = (n: number) => n.toString().padStart(2, '0');
+  return `${d.getFullYear()}/${pad(d.getMonth() + 1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+};
+
 // 获取图标组件
 const getSceneIcon = (iconName: string) => {
   const icons: Record<string, React.ReactNode> = {
@@ -2932,10 +2938,11 @@ function WaterfallManagementPageContent() {
                     id: selectedGroupId,
                     hasABTest: true,
                     abTestStarted: true,
+                    abTestStartedAt: new Date().toISOString(),
                   }),
                 });
                 if (res.ok) {
-                  setAdGroups(prev => prev.map(g => g.id === selectedGroupId ? { ...g, hasABTest: true, abTestStarted: true } : g));
+                  setAdGroups(prev => prev.map(g => g.id === selectedGroupId ? { ...g, hasABTest: true, abTestStarted: true, abTestStartedAt: new Date().toISOString() } : g));
                   setAbTestStep(0);
                   setShowABTestDialog(false);
                   alert('A/B测试创建成功！');
@@ -2963,7 +2970,7 @@ function WaterfallManagementPageContent() {
           <div className="flex items-center justify-between px-4 py-3 bg-[#ECFDF5] rounded-lg">
             <div className="flex items-center gap-6">
               <span className="text-sm text-[#1D2129]">测试名称：<span className="font-medium">{currentGroup?.name}-A/B测试</span></span>
-              <span className="text-sm text-[#86909C]">生效时间：{new Date().toLocaleString()}</span>
+              <span className="text-sm text-[#1D2129]">数据统计周期：<span className="font-medium text-[#86909C]">{currentGroup?.abTestStartedAt ? formatDbDate(currentGroup.abTestStartedAt) : '未开始'} ~ {currentGroup?.abTestEndedAt ? formatDbDate(currentGroup.abTestEndedAt) : '进行中'}</span></span>
 
             </div>
             <div className="flex items-center gap-2">

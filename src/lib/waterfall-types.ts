@@ -132,6 +132,8 @@ export interface AdGroup {
   adSources: AdSource[];
   hasABTest?: boolean; // 是否有A/B测试
   abTestStarted?: boolean; // A/B测试是否已启动
+  abTestStartedAt?: string; // A/B测试启动时间
+  abTestEndedAt?: string; // A/B测试结束时间
   abTestDraftData?: { // A/B测试草稿数据
     name: string;
     groupA: string;

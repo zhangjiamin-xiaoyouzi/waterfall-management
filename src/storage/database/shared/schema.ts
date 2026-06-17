@@ -22,6 +22,8 @@ export const adGroups = pgTable("ad_groups", {
 	hasAbTest: boolean("has_ab_test").default(false),
 	abTestStarted: boolean("ab_test_started").default(false),
 	abTestDraftData: jsonb("ab_test_draft_data"),
+	abTestStartedAt: text("ab_test_started_at"),
+	abTestEndedAt: text("ab_test_ended_at"),
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow(),
 	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }).defaultNow(),
 });
