@@ -381,6 +381,7 @@ function WaterfallManagementPageContent() {
   const [newSourceMaxVersion, setNewSourceMaxVersion] = useState('');
   const [newSourceSizeType, setNewSourceSizeType] = useState<'full' | 'custom'>('full');
   const [newSourceCustomSize, setNewSourceCustomSize] = useState('');
+  const [newSourceFloorPrice, setNewSourceFloorPrice] = useState('');
   const [overrideMode, setOverrideMode] = useState(false);
   const [overrideEntries, setOverrideEntries] = useState<{codeId: string; minVersion: string; maxVersion: string}[]>([{codeId: '', minVersion: '', maxVersion: ''}]);
   const [dspSelectOpen, setDspSelectOpen] = useState(false);
@@ -450,6 +451,7 @@ function WaterfallManagementPageContent() {
     setNewSourceMaxVersion('');
     setNewSourceSizeType('full');
     setNewSourceCustomSize('');
+    setNewSourceFloorPrice('');
     setOverrideMode(false);
     setOverrideEntries([{codeId: '', minVersion: '', maxVersion: ''}]);
     setSourceError('');
@@ -893,6 +895,10 @@ function WaterfallManagementPageContent() {
       setSourceError('请选择DSP来源');
       return;
     }
+    if (!newSourceFloorPrice || parseFloat(newSourceFloorPrice) < 0) {
+      setSourceError('请输入底价');
+      return;
+    }
     if (overrideMode) {
       const invalidEntries = overrideEntries.filter(e => !e.codeId.trim());
       if (overrideEntries.length === 0 || invalidEntries.length > 0) {
@@ -953,7 +959,7 @@ function WaterfallManagementPageContent() {
         name: newSourceName ? (DSP_SOURCE_NAMES[newSourceName] || newSourceName) : '',
         status: newSourceStatus ? 'enabled' : 'disabled',
         pricingType: 'bidding' as const,
-        price: 0,
+        price: parseFloat(newSourceFloorPrice) || 0,
         estimatedRevenue: 0,
         ecpm: 0,
         thousandRequestValue: 0,
@@ -1005,7 +1011,7 @@ function WaterfallManagementPageContent() {
     resetSourceForm();
     setAddSourceFromABTest(false);
     setShowAddSourceDialog(false);
-  }, [newSourceName, newSourcePlatform, newSourceCodeId, newSourceStatus, newSourceSubPositions, selectedGroupId, addSourceFromABTest, editingSource, resetSourceForm, setAdGroups, setAbTestConfig, setAddSourceFromABTest, setShowAddSourceDialog, newSourceMinVersion, newSourceMaxVersion, newSourceSizeType, newSourceCustomSize, overrideMode, overrideEntries]);
+  }, [newSourceName, newSourcePlatform, newSourceCodeId, newSourceStatus, newSourceSubPositions, selectedGroupId, addSourceFromABTest, editingSource, resetSourceForm, setAdGroups, setAbTestConfig, setAddSourceFromABTest, setShowAddSourceDialog, newSourceMinVersion, newSourceMaxVersion, newSourceSizeType, newSourceCustomSize, newSourceFloorPrice, overrideMode, overrideEntries]);
 
   // 鼠标悬停显示详情
   const handleMouseEnterSource = useCallback((source: AdSource, e: React.MouseEvent) => {
@@ -2496,6 +2502,20 @@ function WaterfallManagementPageContent() {
               </div>
             </div>
 
+            {/* 底价 */}
+            <div className="flex items-center">
+              <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0">底价<span className="text-red-500 ml-0.5">*</span></label>
+              <Input
+                type="number"
+                step="0.01"
+                min="0"
+                value={newSourceFloorPrice}
+                onChange={(e) => setNewSourceFloorPrice(e.target.value)}
+                placeholder="请输入底价"
+                className="w-64"
+              />
+            </div>
+
             {SDK_SOURCE_VALUES.has(newSourceName) && (
             <div className="flex items-center gap-3">
               <label className="text-sm font-medium text-[#1D2129] shrink-0">PID覆盖配置</label>
@@ -2688,7 +2708,6 @@ function WaterfallManagementPageContent() {
                     <TableHead className="w-20">状态</TableHead>
                     <TableHead className="w-24">定价方式</TableHead>
                     <TableHead className="w-20">底价</TableHead>
-                    <TableHead className="w-20">千人均收益</TableHead>
                     <TableHead className="w-24">预估收入</TableHead>
                     <TableHead className="w-20">eCPM</TableHead>
                     <TableHead className="w-24">千次请求价值</TableHead>
@@ -2751,7 +2770,6 @@ function WaterfallManagementPageContent() {
                           </div>
                         )}
                       </TableCell>
-                      <TableCell className="text-xs text-right">¥{(source.revenuePerThousand || 0).toFixed(2)}</TableCell>
                       <TableCell className="text-xs text-right">¥{(source.estimatedRevenue || 0).toLocaleString()}</TableCell>
                       <TableCell className="text-xs text-right">¥{(source.ecpm || 0).toFixed(2)}</TableCell>
                       <TableCell className="text-xs text-right">¥{(source.thousandRequestValue || 0).toFixed(2)}</TableCell>
@@ -2801,7 +2819,6 @@ function WaterfallManagementPageContent() {
                     <TableHead className="w-20">状态</TableHead>
                     <TableHead className="w-24">定价方式</TableHead>
                     <TableHead className="w-20">底价</TableHead>
-                    <TableHead className="w-20">千人均收益</TableHead>
                     <TableHead className="w-24">预估收入</TableHead>
                     <TableHead className="w-20">eCPM</TableHead>
                     <TableHead className="w-24">千次请求价值</TableHead>
@@ -2962,7 +2979,6 @@ function WaterfallManagementPageContent() {
                 <TableRow className="bg-[#F7F8FA]">
                   <TableHead className="w-24">组别</TableHead>
                   <TableHead className="text-right">入组DAU</TableHead>
-                  <TableHead className="text-right">千人均收益</TableHead>
                   <TableHead className="text-right">预估收入</TableHead>
                   <TableHead className="text-right">eCPM</TableHead>
                   <TableHead className="text-right">千次请求价值</TableHead>
@@ -3157,19 +3173,6 @@ function SourceTable({
           </TableHead>
           <TableHead className="w-20">
             <div className="flex items-center gap-1">
-              千人均收益
-              <Tooltip>
-                <TooltipTrigger>
-                  <Info className="w-3 h-3 text-[#86909C]" />
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>每千人产生的收益</p>
-                </TooltipContent>
-              </Tooltip>
-            </div>
-          </TableHead>
-          <TableHead className="w-20">
-            <div className="flex items-center gap-1">
               eCPM
               <Tooltip>
                 <TooltipTrigger>
@@ -3279,7 +3282,7 @@ function SourceTable({
       </TableHeader>
       <TableBody>
         {summaryData && (
-        <TableRow className="bg-[#FEF3F7] font-medium"><TableCell></TableCell><TableCell className="text-[#1D2129]">{sources.length}个DSP来源已启用</TableCell><TableCell></TableCell><TableCell></TableCell><TableCell className="text-[#1D2129]">{summaryData?.estimatedRevenue.toLocaleString('zh-CN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</TableCell><TableCell className="text-[#1D2129]">¥{summaryData?.revenuePerThousand?.toFixed(2) || '-'}</TableCell><TableCell className="text-[#1D2129]">¥{summaryData?.ecpm?.toFixed(2) || '-'}</TableCell><TableCell className="text-[#1D2129]">¥{summaryData?.revenuePerThousandRequests?.toFixed(2) || '-'}</TableCell><TableCell className="text-[#1D2129]">{formatNumber(summaryData?.requests || 0)}</TableCell><TableCell className="text-[#1D2129]">{formatNumber(summaryData?.responses || 0)}</TableCell><TableCell className="text-[#1D2129]">{summaryData?.responseRate?.toFixed(1) || '0.0'}%</TableCell><TableCell className="text-[#1D2129]">{formatNumber(summaryData?.bidWins || 0)}</TableCell><TableCell className="text-[#1D2129]">{`${summaryData?.bidWinRate?.toFixed(1) || '0.0'}%`}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.impressions ?? 0) > 0 ? formatNumber(summaryData?.impressions || 0) : '-'}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.winImpressionRate ?? 0) > 0 ? `${summaryData?.winImpressionRate?.toFixed(1)}%` : '-'}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.ctr ?? 0) > 0 ? `${summaryData?.ctr?.toFixed(1)}%` : '-'}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.cpc ?? 0) > 0 ? `¥${summaryData?.cpc?.toFixed(2)}` : '-'}</TableCell></TableRow>
+        <TableRow className="bg-[#FEF3F7] font-medium"><TableCell></TableCell><TableCell className="text-[#1D2129]">{sources.length}个DSP来源已启用</TableCell><TableCell></TableCell><TableCell></TableCell><TableCell className="text-[#1D2129]">{summaryData?.estimatedRevenue.toLocaleString('zh-CN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</TableCell><TableCell className="text-[#1D2129]">¥{summaryData?.ecpm?.toFixed(2) || '-'}</TableCell><TableCell className="text-[#1D2129]">¥{summaryData?.revenuePerThousandRequests?.toFixed(2) || '-'}</TableCell><TableCell className="text-[#1D2129]">{formatNumber(summaryData?.requests || 0)}</TableCell><TableCell className="text-[#1D2129]">{formatNumber(summaryData?.responses || 0)}</TableCell><TableCell className="text-[#1D2129]">{summaryData?.responseRate?.toFixed(1) || '0.0'}%</TableCell><TableCell className="text-[#1D2129]">{formatNumber(summaryData?.bidWins || 0)}</TableCell><TableCell className="text-[#1D2129]">{`${summaryData?.bidWinRate?.toFixed(1) || '0.0'}%`}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.impressions ?? 0) > 0 ? formatNumber(summaryData?.impressions || 0) : '-'}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.winImpressionRate ?? 0) > 0 ? `${summaryData?.winImpressionRate?.toFixed(1)}%` : '-'}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.ctr ?? 0) > 0 ? `${summaryData?.ctr?.toFixed(1)}%` : '-'}</TableCell><TableCell className="text-[#1D2129]">{(summaryData?.cpc ?? 0) > 0 ? `¥${summaryData?.cpc?.toFixed(2)}` : '-'}</TableCell></TableRow>
         )}
         {sources.map((source) => {
           const colors = getSourceColor(source.name);
@@ -3368,8 +3371,6 @@ function SourceTable({
                   minimumFractionDigits: 1,
                   maximumFractionDigits: 1,
                 })}
-              </TableCell><TableCell className="text-[#1D2129]">
-                ¥{source.revenuePerThousand?.toFixed(2) || '-'}
               </TableCell><TableCell className="text-[#1D2129]">
                 ¥{source.ecpm.toFixed(2)}
               </TableCell><TableCell className="text-[#1D2129]">
