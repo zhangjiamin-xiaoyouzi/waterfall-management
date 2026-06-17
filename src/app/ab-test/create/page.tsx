@@ -13,7 +13,7 @@ import { TimeSlotPicker } from '@/components/time-slot-picker';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Command, CommandInput, CommandList, CommandEmpty, CommandItem } from '@/components/ui/command';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 
 const DSP_SOURCE_LIST = [
@@ -150,6 +150,9 @@ function CreateABTestContent() {
   const [testName, setTestName] = useState('');
   const [groupA, setGroupA] = useState('50');
   const [groupB, setGroupB] = useState('50');
+  const [confirmedGroupA, setConfirmedGroupA] = useState('50');
+  const [confirmedGroupB, setConfirmedGroupB] = useState('50');
+  const [showRatioConfirmDialog, setShowRatioConfirmDialog] = useState(false);
   const [copyConfig, setCopyConfig] = useState(true);
   const [testGroup, setTestGroup] = useState<'A' | 'B'>('B');
   const [editingSource, setEditingSource] = useState<{ source: AdSource; group: 'A' | 'B'; type: 'enabled' | 'disabled' } | null>(null);
@@ -441,7 +444,16 @@ const [pidCustomSize, setPidCustomSize] = useState('');
                   <div className="w-6 h-6 rounded-full bg-[#52C41A] flex items-center justify-center text-white text-xs font-bold">A</div>
                   <span className="text-sm text-[#1D2129]">对照组</span>
                   <div className="relative w-20">
-                    <Input type="number" value={groupA} onChange={(e) => setGroupA(e.target.value)} className="pr-8 text-center" />
+                    <Input type="number" value={groupA} onChange={(e) => {
+                      const val = e.target.value;
+                      setGroupA(val);
+                      if (val !== '') {
+                        const num = parseInt(val);
+                        if (!isNaN(num) && num >= 0 && num <= 100) {
+                          setGroupB(String(100 - num));
+                        }
+                      }
+                    }} className="pr-8 text-center" />
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-[#86909C]">%</span>
                   </div>
                 </div>
@@ -449,10 +461,37 @@ const [pidCustomSize, setPidCustomSize] = useState('');
                   <div className="w-6 h-6 rounded-full bg-[#FA8C16] flex items-center justify-center text-white text-xs font-bold">B</div>
                   <span className="text-sm text-[#1D2129]">测试组</span>
                   <div className="relative w-20">
-                    <Input type="number" value={groupB} onChange={(e) => setGroupB(e.target.value)} className="pr-8 text-center" />
+                    <Input type="number" value={groupB} onChange={(e) => {
+                      const val = e.target.value;
+                      setGroupB(val);
+                      if (val !== '') {
+                        const num = parseInt(val);
+                        if (!isNaN(num) && num >= 0 && num <= 100) {
+                          setGroupA(String(100 - num));
+                        }
+                      }
+                    }} className="pr-8 text-center" />
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-[#86909C]">%</span>
                   </div>
                 </div>
+                <Button
+                  type="button"
+                  size="sm"
+                  className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white h-8"
+                  onClick={() => {
+                    const a = parseInt(groupA) || 0;
+                    const b = parseInt(groupB) || 0;
+                    if (a + b !== 100) {
+                      return;
+                    }
+                    setShowRatioConfirmDialog(true);
+                  }}
+                >
+                  确认
+                </Button>
+                {groupA !== confirmedGroupA && (
+                  <span className="text-xs text-[#FA8C16]">流量占比未确认，请点击确认</span>
+                )}
               </div>
             </div>
 
@@ -1126,6 +1165,27 @@ const [pidCustomSize, setPidCustomSize] = useState('');
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* 流量占比二次确认弹窗 */}
+      <Dialog open={showRatioConfirmDialog} onOpenChange={setShowRatioConfirmDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>确认调整流量占比</DialogTitle>
+            <DialogDescription>
+              确认将对照组(A)流量占比调整为 {groupA}%，测试组(B)流量占比调整为 {groupB}%？
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowRatioConfirmDialog(false)} className="border-[#E5E6EB] text-[#1D2129]">取消</Button>
+            <Button className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white" onClick={() => {
+              setConfirmedGroupA(groupA);
+              setConfirmedGroupB(groupB);
+              setShowRatioConfirmDialog(false);
+            }}>确认</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       </div>
     </div>
   );
