@@ -150,9 +150,7 @@ function CreateABTestContent() {
   const [testName, setTestName] = useState('');
   const [groupA, setGroupA] = useState('50');
   const [groupB, setGroupB] = useState('50');
-  const [confirmedGroupA, setConfirmedGroupA] = useState('50');
-  const [confirmedGroupB, setConfirmedGroupB] = useState('50');
-  const [showRatioConfirmDialog, setShowRatioConfirmDialog] = useState(false);
+
   const [copyConfig, setCopyConfig] = useState(true);
   const [testGroup, setTestGroup] = useState<'A' | 'B'>('B');
   const [editingSource, setEditingSource] = useState<{ source: AdSource; group: 'A' | 'B'; type: 'enabled' | 'disabled' } | null>(null);
@@ -474,24 +472,7 @@ const [pidCustomSize, setPidCustomSize] = useState('');
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-[#86909C]">%</span>
                   </div>
                 </div>
-                <Button
-                  type="button"
-                  size="sm"
-                  className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white h-8"
-                  onClick={() => {
-                    const a = parseInt(groupA) || 0;
-                    const b = parseInt(groupB) || 0;
-                    if (a + b !== 100) {
-                      return;
-                    }
-                    setShowRatioConfirmDialog(true);
-                  }}
-                >
-                  确认
-                </Button>
-                {groupA !== confirmedGroupA && (
-                  <span className="text-xs text-[#FA8C16]">流量占比未确认，请点击确认</span>
-                )}
+
               </div>
             </div>
 
@@ -1163,26 +1144,6 @@ const [pidCustomSize, setPidCustomSize] = useState('');
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditingSource(null)} className="border-[#E5E6EB] text-[#1D2129]">取消</Button>
             <Button className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white" onClick={handleEditPidSource}>保存</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* 流量占比二次确认弹窗 */}
-      <Dialog open={showRatioConfirmDialog} onOpenChange={setShowRatioConfirmDialog}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>确认调整流量占比</DialogTitle>
-            <DialogDescription>
-              确认将对照组(A)流量占比调整为 {groupA}%，测试组(B)流量占比调整为 {groupB}%？
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowRatioConfirmDialog(false)} className="border-[#E5E6EB] text-[#1D2129]">取消</Button>
-            <Button className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white" onClick={() => {
-              setConfirmedGroupA(groupA);
-              setConfirmedGroupB(groupB);
-              setShowRatioConfirmDialog(false);
-            }}>确认</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
