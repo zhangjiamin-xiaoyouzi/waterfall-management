@@ -2982,6 +2982,7 @@ function WaterfallManagementPageContent() {
                   <TableHead className="text-right">预估收入</TableHead>
                   <TableHead className="text-right">eCPM</TableHead>
                   <TableHead className="text-right">千次请求价值</TableHead>
+                  <TableHead className="text-right">千人均收益</TableHead>
                   <TableHead className="text-right">请求量</TableHead>
                   <TableHead className="text-right">返回量</TableHead>
                   <TableHead className="text-right">返回率</TableHead>
@@ -3002,7 +3003,7 @@ function WaterfallManagementPageContent() {
                   <TableCell className="text-right">0.05</TableCell>
                   <TableCell className="text-right">1,014.97</TableCell>
                   <TableCell className="text-right">23.17</TableCell>
-                  <TableCell className="text-right">18.52</TableCell>
+                  <TableCell className="text-right">0.05</TableCell>
                   <TableCell className="text-right">54,720</TableCell>
                   <TableCell className="text-right">96.78%</TableCell>
                   <TableCell className="text-right">26,462</TableCell>
@@ -3019,7 +3020,7 @@ function WaterfallManagementPageContent() {
                   <TableCell className="text-right">0.01</TableCell>
                   <TableCell className="text-right">23.67</TableCell>
                   <TableCell className="text-right">11.35</TableCell>
-                  <TableCell className="text-right">8.21</TableCell>
+                  <TableCell className="text-right">0.01</TableCell>
                   <TableCell className="text-right">4,580</TableCell>
                   <TableCell className="text-right">89.27%</TableCell>
                   <TableCell className="text-right">1,950</TableCell>
@@ -3036,7 +3037,7 @@ function WaterfallManagementPageContent() {
                   <TableCell className="text-right text-[#EF4444]">-80.00%</TableCell>
                   <TableCell className="text-right text-[#EF4444]">-97.67%</TableCell>
                   <TableCell className="text-right text-[#EF4444]">-51.01%</TableCell>
-                  <TableCell className="text-right text-[#EF4444]">-55.67%</TableCell>
+                  <TableCell className="text-right text-[#EF4444]">-80.00%</TableCell>
                   <TableCell className="text-right text-[#EF4444]">-91.63%</TableCell>
                   <TableCell className="text-right text-[#EF4444]">-7.76%</TableCell>
                   <TableCell className="text-right text-[#EF4444]">-92.63%</TableCell>
