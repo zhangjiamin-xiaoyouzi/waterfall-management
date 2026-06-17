@@ -2502,20 +2502,6 @@ function WaterfallManagementPageContent() {
               </div>
             </div>
 
-            {/* 底价 */}
-            <div className="flex items-center">
-              <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0">底价<span className="text-red-500 ml-0.5">*</span></label>
-              <Input
-                type="number"
-                step="0.01"
-                min="0"
-                value={newSourceFloorPrice}
-                onChange={(e) => setNewSourceFloorPrice(e.target.value)}
-                placeholder="请输入底价"
-                className="w-64"
-              />
-            </div>
-
             {SDK_SOURCE_VALUES.has(newSourceName) && (
             <div className="flex items-center gap-3">
               <label className="text-sm font-medium text-[#1D2129] shrink-0">PID覆盖配置</label>
@@ -2636,6 +2622,20 @@ function WaterfallManagementPageContent() {
                 )}
               </>
             )}
+
+            {/* 底价 */}
+            <div className="flex items-center">
+              <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0"><span className="text-red-500">*</span> 底价</label>
+              <Input
+                type="number"
+                step="0.01"
+                min="0"
+                value={newSourceFloorPrice}
+                onChange={(e) => setNewSourceFloorPrice(e.target.value)}
+                placeholder="请输入底价"
+                className="w-64"
+              />
+            </div>
 
             {/* 状态 */}
             <div className="flex items-center">
