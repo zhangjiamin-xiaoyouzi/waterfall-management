@@ -164,6 +164,7 @@ function CreateABTestContent() {
 const [pidSizeType, setPidSizeType] = useState<'full' | 'custom'>('full');
 const [pidCustomSize, setPidCustomSize] = useState('');
   const [overrideMode, setOverrideMode] = useState(false);
+  const [newSourceFloorPrice, setNewSourceFloorPrice] = useState('');
   const [overrideEntries, setOverrideEntries] = useState<{codeId: string; minVersion: string; maxVersion: string}[]>([{codeId: '', minVersion: '', maxVersion: ''}]);
   const [isSdkSource, setIsSdkSource] = useState(false);
   const [hoveredSource, setHoveredSource] = useState<AdSource | null>(null);
@@ -214,6 +215,10 @@ const [pidCustomSize, setPidCustomSize] = useState('');
       setSourceError('请填写必填项');
       return;
     }
+    if (!newSourceFloorPrice || parseFloat(newSourceFloorPrice) < 0) {
+      setSourceError('请输入底价');
+      return;
+    }
     if (overrideMode) {
       const invalidEntries = overrideEntries.filter(e => !e.codeId.trim());
       if (overrideEntries.length === 0 || invalidEntries.length > 0) {
@@ -227,14 +232,15 @@ const [pidCustomSize, setPidCustomSize] = useState('');
       }
     }
 
+    const floorPriceVal = parseFloat(newSourceFloorPrice) || 0;
     const newSource: AdSource = {
       id: `pid-${Date.now()}`,
       name: DSP_SOURCE_NAMES[newSourceName] || newSourceName,
       status: pidStatus === 'enabled' ? 'enabled' : 'disabled',
       pricingType: 'bidding',
-      price: 0,
-      priceA: 0,
-      priceB: 0,
+      price: floorPriceVal,
+      priceA: floorPriceVal,
+      priceB: floorPriceVal,
       estimatedRevenue: 0,
       ecpm: 0,
       thousandRequestValue: 0,
@@ -295,7 +301,12 @@ const [pidCustomSize, setPidCustomSize] = useState('');
 
   const handleEditPidSource = () => {
     if (!editingSource || !pidCodeId || !newSourceName) return;
+    if (!newSourceFloorPrice || parseFloat(newSourceFloorPrice) < 0) {
+      setSourceError('请输入底价');
+      return;
+    }
 
+    const floorPriceVal = parseFloat(newSourceFloorPrice) || 0;
     setAbTestConfig(prev => ({
       ...prev,
       enabledSources: prev.enabledSources.map(s =>
@@ -304,9 +315,9 @@ const [pidCustomSize, setPidCustomSize] = useState('');
               ...s,
               name: DSP_SOURCE_NAMES[newSourceName] || newSourceName,
               status: pidStatus === 'enabled' ? 'enabled' : 'disabled',
-              price: 0,
-              priceA: 0,
-              priceB: 0,
+              price: floorPriceVal,
+              priceA: floorPriceVal,
+              priceB: floorPriceVal,
               codeId: pidCodeId,
               dspSources: [newSourceName],
               connectType: DSP_CONNECT_TYPE_MAP.get(newSourceName) || '接入我方API',
@@ -327,6 +338,7 @@ const [pidCustomSize, setPidCustomSize] = useState('');
     setPidSizeType('full');
     setPidCustomSize('');
     setPidStatus('enabled');
+    setNewSourceFloorPrice('');
   };
 
   // 鼠标悬停显示详情
@@ -599,7 +611,7 @@ const [pidCustomSize, setPidCustomSize] = useState('');
               <Button className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white" onClick={handleLaunch}>开始测试</Button>
             </div>
           </div>
-      <Dialog open={showAddPidDialog} onOpenChange={(v) => { if (!v) { setShowAddPidDialog(false); setNewSourceName(''); setPidCodeId(''); setPidMinVersion(''); setPidMaxVersion(''); setPidStatus('enabled'); setPidSizeType('full'); setPidCustomSize(''); setOverrideMode(false); setOverrideEntries([]); setSourceError(''); } }}>
+      <Dialog open={showAddPidDialog} onOpenChange={(v) => { if (!v) { setShowAddPidDialog(false); setNewSourceName(''); setPidCodeId(''); setPidMinVersion(''); setPidMaxVersion(''); setPidStatus('enabled'); setPidSizeType('full'); setPidCustomSize(''); setOverrideMode(false); setOverrideEntries([]); setNewSourceFloorPrice(''); setSourceError(''); } }}>
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
             <DialogTitle className="text-base font-semibold">添加PID</DialogTitle>
@@ -828,6 +840,23 @@ const [pidCustomSize, setPidCustomSize] = useState('');
               </>
             )}
 
+            {/* 底价 - 必填 */}
+            <div className="flex items-center">
+              <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0"><span className="text-red-500">*</span> 底价</label>
+              <div className="flex items-center gap-1 w-64">
+                <span className="text-sm text-[#86909C]">¥</span>
+                <Input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={newSourceFloorPrice}
+                  onChange={(e) => setNewSourceFloorPrice(e.target.value)}
+                  placeholder="请输入底价"
+                  className="flex-1"
+                />
+              </div>
+            </div>
+
             {/* 状态 */}
             <div className="flex items-center">
               <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0">状态</label>
@@ -902,7 +931,7 @@ const [pidCustomSize, setPidCustomSize] = useState('');
       )}
 
       {/* 编辑PID弹窗 */}
-      <Dialog open={!!editingSource} onOpenChange={(v) => { if (!v) { setEditingSource(null); setNewSourceName(''); setPidCodeId(''); setPidMinVersion(''); setPidMaxVersion(''); setPidStatus('enabled'); setPidSizeType('full'); setPidCustomSize(''); setOverrideMode(false); setOverrideEntries([]); setSourceError(''); } }}>
+      <Dialog open={!!editingSource} onOpenChange={(v) => { if (!v) { setEditingSource(null); setNewSourceName(''); setPidCodeId(''); setPidMinVersion(''); setPidMaxVersion(''); setPidStatus('enabled'); setPidSizeType('full'); setPidCustomSize(''); setOverrideMode(false); setOverrideEntries([]); setNewSourceFloorPrice(''); setSourceError(''); } }}>
         <DialogContent className="max-w-[700px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>编辑PID</DialogTitle>
@@ -1066,6 +1095,23 @@ const [pidCustomSize, setPidCustomSize] = useState('');
                   )}
                 </>
               )}
+            </div>
+
+            {/* 底价 - 必填 */}
+            <div className="flex items-center">
+              <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0"><span className="text-red-500">*</span> 底价</label>
+              <div className="flex items-center gap-1 w-64">
+                <span className="text-sm text-[#86909C]">¥</span>
+                <Input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={newSourceFloorPrice}
+                  onChange={(e) => setNewSourceFloorPrice(e.target.value)}
+                  placeholder="请输入底价"
+                  className="flex-1"
+                />
+              </div>
             </div>
 
             {/* 状态 */}
