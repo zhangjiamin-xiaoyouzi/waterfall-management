@@ -2964,7 +2964,7 @@ function WaterfallManagementPageContent() {
             <div className="flex items-center gap-6">
               <span className="text-sm text-[#1D2129]">测试名称：<span className="font-medium">{currentGroup?.name}-A/B测试</span></span>
               <span className="text-sm text-[#86909C]">生效时间：{new Date().toLocaleString()}</span>
-              <span className="text-sm text-[#86909C]">运行时长：0小时</span>
+
             </div>
             <div className="flex items-center gap-2">
               <Button size="sm" className="bg-[#10B981] hover:bg-[#059669] text-white" onClick={() => { setRolloutTargetGroup('A'); setShowRolloutConfirm(true); }}>全量A组</Button>
