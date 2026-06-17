@@ -58,6 +58,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -473,6 +474,9 @@ function WaterfallManagementPageContent() {
   const [abTestGroupSources, setAbTestGroupSources] = useState<{ groupA: AdSource[], groupB: AdSource[] }>({ groupA: [], groupB: [] });
   const [abTestSelectedGroup, setAbTestSelectedGroup] = useState<'A' | 'B'>('B');
   const [showAbTestAddSource, setAbTestAddSource] = useState(false);
+  const [confirmedGroupA, setConfirmedGroupA] = useState('50');
+  const [confirmedGroupB, setConfirmedGroupB] = useState('50');
+  const [showRatioConfirmDialog, setShowRatioConfirmDialog] = useState(false);
   const [showABTestDialog, setShowABTestDialog] = useState(false);
   const [showABTestDataDialog, setShowABTestDataDialog] = useState(false);
   const [abTestDraftData, setAbTestDraftData] = useState<{
@@ -1377,16 +1381,31 @@ function WaterfallManagementPageContent() {
                               max="100"
                               value={abTestSelectedGroup === 'A' ? abTestGroupA : abTestGroupB}
                               onChange={(e) => {
+                                const val = parseInt(e.target.value) || 0;
+                                const clamped = Math.max(0, Math.min(100, val));
                                 if (abTestSelectedGroup === 'A') {
-                                  setAbTestGroupA(e.target.value);
+                                  setAbTestGroupA(String(clamped));
+                                  setAbTestGroupB(String(100 - clamped));
                                 } else {
-                                  setAbTestGroupB(e.target.value);
+                                  setAbTestGroupB(String(clamped));
+                                  setAbTestGroupA(String(100 - clamped));
                                 }
                               }}
                               className="w-16 h-8 text-sm text-center"
                             />
                             <span className="text-sm text-[#86909C]">%</span>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-7 px-3 text-xs ml-1"
+                              onClick={() => setShowRatioConfirmDialog(true)}
+                            >
+                              确认
+                            </Button>
                           </div>
+                          {(abTestGroupA !== confirmedGroupA || abTestGroupB !== confirmedGroupB) && (
+                            <span className="text-xs text-orange-500">流量占比未确认，请点击确认</span>
+                          )}
                         </div>
                       )}
                     </div>
@@ -3064,6 +3083,30 @@ function WaterfallManagementPageContent() {
             </Button>
             <Button className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white" onClick={() => setShowABTestDataDialog(false)}>
               确定
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* 流量占比确认弹窗 */}
+      <Dialog open={showRatioConfirmDialog} onOpenChange={setShowRatioConfirmDialog}>
+        <DialogContent className="sm:max-w-[400px]">
+          <DialogHeader>
+            <DialogTitle>确认流量占比调整</DialogTitle>
+            <DialogDescription>
+              确认将对照组(A)流量占比调整为 {abTestGroupA}%，测试组(B)流量占比调整为 {abTestGroupB}%？
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowRatioConfirmDialog(false)}>
+              取消
+            </Button>
+            <Button className="bg-[#FF4D88] hover:bg-[#FF6A9E] text-white" onClick={() => {
+              setConfirmedGroupA(abTestGroupA);
+              setConfirmedGroupB(abTestGroupB);
+              setShowRatioConfirmDialog(false);
+            }}>
+              确认
             </Button>
           </DialogFooter>
         </DialogContent>
