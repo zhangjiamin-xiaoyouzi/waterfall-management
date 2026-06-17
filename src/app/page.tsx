@@ -1394,19 +1394,21 @@ function WaterfallManagementPageContent() {
                               className="w-16 h-8 text-sm text-center"
                             />
                             <span className="text-sm text-[#86909C]">%</span>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="h-7 px-3 text-xs ml-1"
-                              onClick={() => setShowRatioConfirmDialog(true)}
-                            >
-                              确认
-                            </Button>
+                            {(abTestGroupA !== confirmedGroupA || abTestGroupB !== confirmedGroupB) && (
+                              <>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="h-7 px-3 text-xs ml-1"
+                                  onClick={() => setShowRatioConfirmDialog(true)}
+                                >
+                                  确认
+                                </Button>
+                                <span className="text-xs text-orange-500">流量占比未确认，请点击确认</span>
+                              </>
+                            )}
+                            </div>
                           </div>
-                          {(abTestGroupA !== confirmedGroupA || abTestGroupB !== confirmedGroupB) && (
-                            <span className="text-xs text-orange-500">流量占比未确认，请点击确认</span>
-                          )}
-                        </div>
                       )}
                     </div>
                   </div>
