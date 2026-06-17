@@ -732,6 +732,33 @@ const [pidCustomSize, setPidCustomSize] = useState('');
                 </div>
             </div>
 
+            {/* 尺寸 - 广告位下方 */}
+            <div className="flex items-start">
+              <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0 pt-1">尺寸</label>
+              <div className="flex-1">
+                <div className="flex items-center gap-6 mb-2">
+                  <label className="flex items-center gap-2 text-sm cursor-pointer">
+                    <input type="radio" name="pidSizeTop" checked={pidSizeType === 'full'}
+                      onChange={() => setPidSizeType('full')} className="accent-[#FF4D88]" />
+                    全尺寸
+                  </label>
+                  <label className="flex items-center gap-2 text-sm cursor-pointer">
+                    <input type="radio" name="pidSizeTop" checked={pidSizeType === 'custom'}
+                      onChange={() => setPidSizeType('custom')} className="accent-[#FF4D88]" />
+                    自定义
+                  </label>
+                </div>
+                {pidSizeType === 'custom' && (
+                  <Input
+                    value={pidCustomSize}
+                    onChange={(e) => setPidCustomSize(e.target.value)}
+                    placeholder="如1080*1555"
+                    className="w-64"
+                  />
+                )}
+              </div>
+            </div>
+
             {SDK_SOURCE_VALUES.has(newSourceName) && (
             <div className="flex items-center gap-3">
               <label className="text-sm font-medium text-[#1D2129] shrink-0">PID覆盖配置</label>
@@ -823,33 +850,6 @@ const [pidCustomSize, setPidCustomSize] = useState('');
                     placeholder="请输入PID"
                     className="w-64"
                   />
-                </div>
-
-                {/* 尺寸 */}
-                <div className="flex items-start">
-                  <label className="w-24 text-sm font-medium text-[#1D2129] shrink-0 pt-1">尺寸</label>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-6 mb-2">
-                      <label className="flex items-center gap-2 text-sm cursor-pointer">
-                        <input type="radio" name="pidSize" checked={pidSizeType === 'full'}
-                          onChange={() => setPidSizeType('full')} className="accent-[#FF4D88]" />
-                        全尺寸
-                      </label>
-                      <label className="flex items-center gap-2 text-sm cursor-pointer">
-                        <input type="radio" name="pidSize" checked={pidSizeType === 'custom'}
-                          onChange={() => setPidSizeType('custom')} className="accent-[#FF4D88]" />
-                        自定义
-                      </label>
-                    </div>
-                    {pidSizeType === 'custom' && (
-                      <Input
-                        value={pidCustomSize}
-                        onChange={(e) => setPidCustomSize(e.target.value)}
-                        placeholder="如1080*1555"
-                        className="w-64"
-                      />
-                    )}
-                  </div>
                 </div>
 
                 {/* SDK版本配置 - 仅在选择SDK类型DSP来源时显示 */}
@@ -1043,6 +1043,26 @@ const [pidCustomSize, setPidCustomSize] = useState('');
               </div>
             </div>
 
+            {/* 尺寸 - 广告位下方 */}
+            <div>
+              <label className="block text-sm font-medium mb-1">尺寸</label>
+              <div className="flex items-center gap-6 mb-2">
+                <label className="flex items-center gap-2 text-sm cursor-pointer">
+                  <input type="radio" name="editPidSizeTop" checked={pidSizeType === 'full'}
+                    onChange={() => setPidSizeType('full')} className="accent-[#FF4D88]" />
+                  全尺寸
+                </label>
+                <label className="flex items-center gap-2 text-sm cursor-pointer">
+                  <input type="radio" name="editPidSizeTop" checked={pidSizeType === 'custom'}
+                    onChange={() => setPidSizeType('custom')} className="accent-[#FF4D88]" />
+                  自定义
+                </label>
+              </div>
+              {pidSizeType === 'custom' && (
+                <Input value={pidCustomSize} onChange={(e) => setPidCustomSize(e.target.value)} placeholder="如1080*1555" />
+              )}
+            </div>
+
             {/* PID */}
             <div>
               <label className="block text-sm font-medium mb-1">
@@ -1097,25 +1117,6 @@ const [pidCustomSize, setPidCustomSize] = useState('');
               ) : (
                 <>
                   <Input value={pidCodeId} onChange={(e) => setPidCodeId(e.target.value)} placeholder="请输入代码位Id" />
-                  {/* 尺寸 */}
-                  <div className="mt-4">
-                    <label className="block text-sm font-medium mb-2">尺寸</label>
-                    <div className="flex items-center gap-6 mb-2">
-                      <label className="flex items-center gap-2 text-sm cursor-pointer">
-                        <input type="radio" name="editPidSize" checked={pidSizeType === 'full'}
-                          onChange={() => setPidSizeType('full')} className="accent-[#FF4D88]" />
-                        全尺寸
-                      </label>
-                      <label className="flex items-center gap-2 text-sm cursor-pointer">
-                        <input type="radio" name="editPidSize" checked={pidSizeType === 'custom'}
-                          onChange={() => setPidSizeType('custom')} className="accent-[#FF4D88]" />
-                        自定义
-                      </label>
-                    </div>
-                    {pidSizeType === 'custom' && (
-                      <Input value={pidCustomSize} onChange={(e) => setPidCustomSize(e.target.value)} placeholder="如1080*1555" />
-                    )}
-                  </div>
                   {/* 应用版本 */}
                   {SDK_SOURCE_VALUES.has(newSourceName) && (
                     <div className="mt-4 bg-[#FFFBF0] border border-[#FFE58F] rounded-lg p-3">
