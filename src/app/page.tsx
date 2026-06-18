@@ -476,6 +476,7 @@ function WaterfallManagementPageContent() {
   const [showAbTestAddSource, setAbTestAddSource] = useState(false);
   const [confirmedGroupA, setConfirmedGroupA] = useState('50');
   const [confirmedGroupB, setConfirmedGroupB] = useState('50');
+  const [lastChangedGroup, setLastChangedGroup] = useState<'A' | 'B'>('A');
   const [showRatioConfirmDialog, setShowRatioConfirmDialog] = useState(false);
   const [showABTestDialog, setShowABTestDialog] = useState(false);
   const [showABTestDataDialog, setShowABTestDataDialog] = useState(false);
@@ -1391,9 +1392,11 @@ function WaterfallManagementPageContent() {
                                 if (abTestSelectedGroup === 'A') {
                                   setAbTestGroupA(String(clamped));
                                   setAbTestGroupB(String(100 - clamped));
+                                  setLastChangedGroup('A');
                                 } else {
                                   setAbTestGroupB(String(clamped));
                                   setAbTestGroupA(String(100 - clamped));
+                                  setLastChangedGroup('B');
                                 }
                               }}
                               className="w-16 h-8 text-sm text-center"
@@ -3102,7 +3105,9 @@ function WaterfallManagementPageContent() {
           <DialogHeader>
             <DialogTitle>确认流量占比调整</DialogTitle>
             <DialogDescription>
-              确认将对照组(A)流量占比调整为 {abTestGroupA}%，测试组(B)流量占比调整为 {abTestGroupB}%？
+              {lastChangedGroup === 'B'
+                ? `确认将测试组(B)流量占比调整为 ${abTestGroupB}%，对照组(A)流量占比将自动调整为 ${abTestGroupA}%？`
+                : `确认将对照组(A)流量占比调整为 ${abTestGroupA}%，测试组(B)流量占比将自动调整为 ${abTestGroupB}%？`}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
