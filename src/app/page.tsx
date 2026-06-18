@@ -1234,7 +1234,12 @@ function WaterfallManagementPageContent() {
                         : 'text-[#1D2129] hover:text-[#86909C]'
                     }`}
                   >
-                    {isDefaultGroup(group) ? group.name : `${group.priority}-${group.name}`}
+                    <span className={group.status === 'disabled' ? 'text-[#C9CDD4] line-through' : ''}>
+                      {isDefaultGroup(group) ? group.name : `${group.priority}-${group.name}`}
+                    </span>
+                    {group.status === 'disabled' && (
+                      <span className="text-[10px] text-[#C9CDD4] bg-[#F2F3F5] px-1 py-0.5 rounded">已关闭</span>
+                    )}
                     {group.abTestStarted && (
                       <span className="px-1 py-0.5 text-[10px] font-bold bg-[#FF4D88] text-white rounded">
                         AB
