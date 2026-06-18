@@ -1833,6 +1833,7 @@ function WaterfallManagementPageContent() {
                   onChange={(e) => setNewGroupName(e.target.value.slice(0, 20))}
                   placeholder="请输入分组名称"
                   className="pr-14"
+                  disabled={!!editingGroup && isDefaultGroup(editingGroup)}
                 />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#86909C]">
                   {newGroupName.length}/20
