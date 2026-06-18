@@ -1917,7 +1917,7 @@ function WaterfallManagementPageContent() {
               {newGroupRules.length > 0 && (
                 <div className="space-y-3">
                   {newGroupRules.map((rule, index) => (
-                    <div key={rule.ruleType} className="flex items-start gap-2">
+                    <div key={`${rule.ruleType}-${index}`} className="flex items-start gap-2">
                       <Select
                         value={rule.ruleType}
                         onValueChange={(val: RuleType) => {
