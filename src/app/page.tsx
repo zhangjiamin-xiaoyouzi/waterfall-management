@@ -3002,8 +3002,9 @@ function WaterfallManagementPageContent() {
               <span className="text-sm text-[#1D2129]">测试名称：<span className="font-medium">{currentGroup?.name}-A/B测试</span></span>
               <span className="text-sm text-[#1D2129]">数据统计周期：<span className="font-medium text-[#86909C]">{
                 (() => {
-                  if (!currentGroup?.abTestStartedAt) return '未开始';
-                  const start = new Date(currentGroup.abTestStartedAt);
+                  if (!currentGroup?.abTestStartedAt && !currentGroup?.createdAt) return '未开始';
+                  const startDate = currentGroup?.abTestStartedAt || currentGroup?.createdAt;
+                  const start = new Date(startDate!);
                   const now = currentGroup?.abTestEndedAt ? new Date(currentGroup.abTestEndedAt) : new Date();
                   const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
                   const displayStart = (now.getTime() - start.getTime() > thirtyDaysMs) ? new Date(now.getTime() - thirtyDaysMs) : start;
