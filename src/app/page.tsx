@@ -3065,7 +3065,7 @@ function WaterfallManagementPageContent() {
                   <TableCell className="text-right">0.96</TableCell></TableRow>
                 {/* B组实验组 */}
                 <TableRow>
-                  <TableCell><span className="inline-block px-2 py-1 bg-[#F59E0B] text-white text-xs rounded">B(实验组)</span></TableCell>
+                  <TableCell><span className="inline-block px-2 py-1 bg-[#F59E0B] text-white text-xs rounded">B(测试组)</span></TableCell>
                   <TableCell className="text-right">4,280</TableCell>
                   <TableCell className="text-right">0.01</TableCell>
                   <TableCell className="text-right">0.01</TableCell>
