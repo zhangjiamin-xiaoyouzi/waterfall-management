@@ -25,6 +25,7 @@ function rowToGroup(row: typeof adGroups.$inferSelect, sources: AdSource[]): AdG
     abTestStartedAt: row.abTestStartedAt ?? undefined,
     abTestEndedAt: row.abTestEndedAt ?? undefined,
     abTestDraftData: row.abTestDraftData as AdGroup['abTestDraftData'] ?? undefined,
+    createdAt: row.createdAt ?? undefined,
   };
 }
 

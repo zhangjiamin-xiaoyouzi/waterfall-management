@@ -3010,6 +3010,9 @@ function WaterfallManagementPageContent() {
                   return `${formatDbDate(displayStart.toISOString())} ~ ${formatDbDate(now.toISOString())}`;
                 })()
               }</span></span>
+              {currentGroup?.createdAt && (
+                <span className="text-sm text-[#1D2129] ml-6">创建时间：<span className="font-medium text-[#86909C]">{formatDbDate(currentGroup.createdAt)}</span></span>
+              )}
 
             </div>
             <div className="flex items-center gap-2">
