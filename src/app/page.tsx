@@ -3000,7 +3000,16 @@ function WaterfallManagementPageContent() {
           <div className="flex items-center justify-between px-4 py-3 bg-[#ECFDF5] rounded-lg">
             <div className="flex items-center gap-6">
               <span className="text-sm text-[#1D2129]">测试名称：<span className="font-medium">{currentGroup?.name}-A/B测试</span></span>
-              <span className="text-sm text-[#1D2129]">数据统计周期：<span className="font-medium text-[#86909C]">{currentGroup?.abTestStartedAt ? formatDbDate(currentGroup.abTestStartedAt) : '未开始'} ~ {currentGroup?.abTestEndedAt ? formatDbDate(currentGroup.abTestEndedAt) : '进行中'}</span></span>
+              <span className="text-sm text-[#1D2129]">数据统计周期：<span className="font-medium text-[#86909C]">{
+                (() => {
+                  if (!currentGroup?.abTestStartedAt) return '未开始';
+                  const start = new Date(currentGroup.abTestStartedAt);
+                  const now = currentGroup?.abTestEndedAt ? new Date(currentGroup.abTestEndedAt) : new Date();
+                  const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
+                  const displayStart = (now.getTime() - start.getTime() > thirtyDaysMs) ? new Date(now.getTime() - thirtyDaysMs) : start;
+                  return `${formatDbDate(displayStart.toISOString())} ~ ${formatDbDate(now.toISOString())}`;
+                })()
+              }</span></span>
 
             </div>
             <div className="flex items-center gap-2">
